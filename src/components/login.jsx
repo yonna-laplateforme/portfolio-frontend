@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthProvider'; // 👈 Ajout de ton super hook ! (Ajuste le chemin ../ si besoin)
 
-const Login = ({ setToken }) => {
+const Login = () => { // 👈 On a enlevé le { setToken } ici
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  
+  const { login } = useAuth(); // 👈 On récupère la fonction login depuis ton contexte
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,11 +22,9 @@ const Login = ({ setToken }) => {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // 1. On stocke le token dans le localStorage (pour rester connecté au refresh)
-        localStorage.setItem('token', data.token);
-        // 2. On met à jour l'état dans App.jsx
-        setToken(data.token);
-        // 3. On redirige vers l'accueil
+        // 1. On utilise la fonction centralisée (qui gère le localStorage ET le state)
+        login(data.token);
+        // 2. On redirige vers l'accueil Admin
         navigate('/admin');
       } else {
         alert(data.message || 'Identifiants incorrects');

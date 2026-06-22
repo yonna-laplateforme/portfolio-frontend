@@ -3,9 +3,13 @@
 :root {
   --primary-color: #090a09;
   --bg-color: #fffcfc;
-  --text-main: #a90606;
-  --text-secondary: #b78686; /* Ton gris pour les textes secondaires */
-  --accent-color: #d7c221;
+  
+  /* Modifie ici pour avoir du noir */
+  --text-main: #000000;      /* Texte principal en noir */
+  --text-secondary: #282727; /* Texte secondaire en gris foncé */
+  
+  /* Garde tes couleurs d'accentuation pour les boutons ou les détails */
+  --accent-color: #d72121;
 }
 
 @theme {

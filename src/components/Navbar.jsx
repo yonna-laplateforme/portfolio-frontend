@@ -22,22 +22,48 @@ const Navbar = ({ token, onLogout }) => {
         </div>
 
         {/* BOUTON BURGER (Mobile uniquement) */}
-        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-main p-2">
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <button 
+  onClick={() => setIsOpen(!isOpen)} 
+  aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+  className="md:hidden text-main p-2"
+>
+  {isOpen ? <X size={24} /> : <Menu size={24} />}
+</button>
 
-        {/* NAVIGATION (Desktop: flex, Mobile: menu overlay) */}
-       <div className={`
+<div className={`
   fixed inset-0 top-16 z-40 
-  bg-bg text-primary 
-  w-full h-[calc(100vh-64px)] 
+  bg-[#fdfcfc] 
+  w-full h-dvh 
   flex flex-col items-center justify-center gap-12
   md:static md:flex-row md:justify-end md:h-auto md:w-auto md:gap-8 md:p-0 md:bg-transparent
   ${isOpen ? 'flex' : 'hidden md:flex'}
 `}>
-  <button onClick={() => handleNavigation('/projects')} className="text-3xl md:text-sm hover:text-primary transition-colors font-mono uppercase tracking-[0.2em]">Projets</button>
-  <button onClick={() => handleNavigation('/about')} className="text-3xl md:text-sm hover:text-primary transition-colors font-mono uppercase tracking-[0.2em]">À Propos</button>
-  <button onClick={() => handleNavigation('/#contact')} className="text-3xl md:text-sm hover:text-primary transition-colors font-mono uppercase tracking-[0.2em]">Contact</button>
+  <ul className="flex flex-col md:flex-row items-center gap-12 md:gap-8">
+    <li>
+      <button 
+        onClick={() => handleNavigation('/projects')} 
+        className="text-3xl md:text-sm hover:text-accent hover:font-bold transition-colors font-mono uppercase tracking-[0.2em]"
+      >
+        Projets
+      </button>
+    </li>
+    <li>
+      <button 
+        onClick={() => handleNavigation('/about')} 
+        className="text-3xl md:text-sm hover:text-accent hover:font-bold transition-colors font-mono uppercase tracking-[0.2em]"
+      >
+        À Propos
+      </button>
+    </li>
+    <li>
+      <button 
+        onClick={() => handleNavigation('/contact')} 
+        className="text-3xl md:text-sm hover:text-accent hover:font-bold transition-colors font-mono uppercase tracking-[0.2em]"
+      >
+        Contact
+      </button>
+    </li>
+  </ul>
 
           
           {token && (

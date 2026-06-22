@@ -18,70 +18,62 @@ const ProjectDetailPage = () => {
       .catch(err => { console.error(err); setLoading(false); });
   }, [id]);
 
-  if (loading) return <div className="min-h-screen bg-bg flex items-center justify-center font-mono text-primary text-xs uppercase tracking-[0.3em]">Chargement...</div>;
+  if (loading) return <div className="min-h-screen bg-(--bg-color) flex items-center justify-center font-mono text-(--primary-color) text-xs uppercase tracking-[0.3em]">Chargement...</div>;
 
   const imgSrc = project?.image_url?.startsWith('http') ? project.image_url : `http://localhost:3001${project?.image_url}`;
 
   return (
-    <main className="min-h-screen bg-bg text-main px-6 py-24">
-      <article className="max-w-5xl mx-auto">
-        <nav className="mb-16">
-          <Link to="/projects" className="text-[10px] uppercase tracking-[0.3em] text-primary hover:text-main transition-colors font-mono">
-            ← Retour aux projets
-          </Link>
-        </nav>
+    <main className="min-h-screen bg-(--bg-color) text-(--text-main) px-6 py-24">
+      <article className="max-w-4xl mx-auto">
+        
+        <Link to="/projects" className="inline-block text-[10px] uppercase tracking-[0.3em] text-(--text-secondary) hover:text-(--accent-color) mb-12 font-mono">
+          ← Retour
+        </Link>
 
-        <header className="mb-16">
-          <h1 className="text-4xl md:text-6xl font-black uppercase text-main leading-tight tracking-tight mb-8">
+        {/* 1. TITRE ET CATÉGORIE EN HAUT */}
+        <header className="text-center mb-16">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-(--accent-color) font-mono mb-4 block">// {project.category || "PROJET"}</span>
+          <h1 className="text-4xl md:text-5xl font-black uppercase text-(--primary-color) tracking-tighter">
             {project.title}
           </h1>
-          <div className="h-[1px] w-full bg-zinc-800 mb-8"></div>
-          
-          {/* INFOS COMPLÈTES (Role & Client ajoutés) */}
-          <div className="flex flex-wrap gap-x-8 gap-y-4 text-[10px] uppercase tracking-[0.3em] font-mono text-primary">
-            <span>Rôle : {project.role || "Développeur"}</span>
-            <span>Client : {project.client || "Personnel"}</span>
-          </div>
         </header>
 
-        <section className="grid md:grid-cols-[1fr,300px] gap-16">
-          <div className="space-y-12">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="aspect-video w-full overflow-hidden border border-zinc-800 bg-zinc-900"
-            >
-              <img src={imgSrc} alt={project.title} className="w-full h-full object-cover" />
-            </motion.div>
+        {/* 2. IMAGE */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-full mb-16"
+        >
+          <img src={imgSrc} alt={project.title} className="w-full grayscale hover:grayscale-0 transition-all duration-700" />
+        </motion.div>
 
-            <div className="text-main/80 text-lg font-mono leading-relaxed space-y-6">
-              {project.description?.split('\n').map((p, i) => <p key={i}>{p}</p>)}
-            </div>
+        {/* 3. INFOS SOUS L'IMAGE */}
+        <div className="flex justify-center gap-8 text-[10px] uppercase tracking-[0.3em] font-mono text-(--text-secondary) mb-16">
+          <span>RÔLE : {project.role || "Développeur"}</span>
+          <span>CLIENT : {project.client || "Personnel"}</span>
+        </div>
+
+        {/* 4. DESCRIPTION ET SIDEBAR */}
+        <section className="grid md:grid-cols-3 gap-16 border-t border-(--text-secondary)/20 pt-16">
+          <div className="md:col-span-2 text-(--text-main)/90 text-lg font-mono leading-relaxed space-y-6">
+            {project.description?.split('\n').map((p, i) => <p key={i}>{p}</p>)}
           </div>
 
           <aside className="space-y-12">
             <div>
-              <h3 className="text-[10px] uppercase tracking-[0.3em] text-primary mb-6">Stack Technique</h3>
+              <h3 className="text-[10px] uppercase tracking-[0.3em] text-(--text-secondary) mb-6">Stack</h3>
               <div className="flex flex-wrap gap-2">
-                {project.tech_stack?.split(',').map((tech, i) => (
-                  <span key={i} className="px-3 py-1 bg-zinc-900 border border-zinc-800 text-main text-[10px] uppercase tracking-[0.1em]">
+                {project.tech_stack?.split(/[\s,]+/).filter(Boolean).map((tech, i) => (
+                  <span key={i} className="px-3 py-1 border border-(--primary-color) text-(--primary-color) text-[9px] uppercase tracking-widest hover:bg-(--primary-color) hover:text-(--bg-color) transition-colors cursor-default">
                     {tech.trim()}
                   </span>
                 ))}
               </div>
             </div>
             
-            <div className="border-t border-zinc-800 pt-8 space-y-4">
-              {project.demo_url && (
-                <a href={project.demo_url} target="_blank" rel="noreferrer" className="block text-sm uppercase tracking-[0.1em] hover:text-primary transition-colors">
-                  → Site en direct
-                </a>
-              )}
-              {project.github_url && (
-                <a href={project.github_url} target="_blank" rel="noreferrer" className="block text-sm uppercase tracking-[0.1em] hover:text-primary transition-colors">
-                  → Code Source
-                </a>
-              )}
+            <div className="space-y-4">
+              {project.demo_url && <a href={project.demo_url} target="_blank" rel="noreferrer" className="block text-[10px] uppercase tracking-[0.3em] text-(--accent-color) hover:underline">→ Voir le projet</a>}
+              {project.github_url && <a href={project.github_url} target="_blank" rel="noreferrer" className="block text-[10px] uppercase tracking-[0.3em] text-(--primary-color) hover:underline">→ GitHub</a>}
             </div>
           </aside>
         </section>

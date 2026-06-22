@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import ContactForm from '../components/ContactForm';
+import { motion } from 'framer-motion';
 import WordRotation from '../components/WordRotation';
 import ZigzagProject from '../components/ZigzagProject';
+import ContactForm from '../components/ContactForm';
+import ContactMinimal from '../components/ContactMinimal';
 
 const HomePage = () => {
   const [allProjects, setAllProjects] = useState([]);
@@ -24,64 +25,97 @@ const HomePage = () => {
   }, []);
 
   const featured = allProjects.filter(p => Number(p.isFeatured) === 1);
-  
+
   return (
-    // Utilisation des variables de ton theme: bg-bg, text-main
-    <main className="bg-bg text-main min-h-screen"> 
-     
+    <main className="bg-bg text-text-main min-h-screen">
 
-      {/* SECTION HÉRO : Responsive taille texte */}
-      <section className="min-h-screen flex flex-col justify-center items-center px-6 text-center">
-        <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-accent uppercase">
-          YONNA<span className="text-primary block md:inline">MERLINI</span>
-        </h1>
-        <div className="text-xl md:text-4xl font-mono text-primary mt-4 md:mb-12">
-          <WordRotation />
-        </div>
-      </section>
+      
+{/* SECTION HÉRO */}
+<section className="min-h-screen flex flex-col justify-center items-center px-6 text-center">
+  <h1 className="text-5xl md:text-7xl lg:text-9xl font-black uppercase whitespace-nowrap">
+    <span className="text-accent">YONNA</span><span className="text-primary">MERLINI</span>
+  </h1>
+  
+  {/* Ligne d'accentuation centrée */}
+  <div className="w-24 h-1 bg-accent mt-6 mb-8 mx-auto"></div>
+  
+  <div className="text-xl md:text-4xl font-mono text-secondary">
+    <WordRotation />
+  </div>
+</section>
 
-      {/* SECTION PROJETS : Responsive Grid/Spacing */}
-      <section className="py-16 md:py-32 px-6 max-w-7xl mx-auto">
-        <h2 className="text-xs md:text-sm font-mono text-primary mb-16 md:mb-24 uppercase tracking-[0.3em] md:tracking-[0.5em] text-center">
-          // PROJETS_SÉLECTIONNÉS
+      {/* SECTION VISION - Adaptation hauteur fenêtre */}
+<section className="min-h-screen flex flex-col justify-center items-center py-24 px-6 md:px-24 bg-primary text-bg">
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    className="max-w-3xl flex flex-col items-center text-center"
+  >
+    {/* CORRECTION : Remplacement du titre h2 par un span block */}
+    <span className="text-[10px] block font-mono text-accent font-bold mb-6 uppercase tracking-[0.3em]">
+      // VISION_TECHNIQUE
+    </span>
+    
+    <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight uppercase">
+      LE CODE COMME <br/>
+      <span className="text-accent">OUTIL CRÉATIF</span>.
+    </h2>
+    
+    <p className="text-lg md:text-xl font-light opacity-90 leading-relaxed max-w-2xl">
+      Mon approche ne se limite pas à faire fonctionner les interfaces. 
+      Je structure le DOM pour qu'il soit sémantique et je transforme 
+      les contraintes techniques en opportunités de design. 
+      Moins de superflu, plus d'impact.
+    </p>
+
+    <div className="mt-12 w-24 h-0.5 bg-accent"></div>
+  </motion.div>
+</section>
+
+      {/* SECTION PROJETS */}
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <h2 className="text-xs md:text-sm font-mono text-secondary mb-24 uppercase tracking-[0.3em] flex items-center gap-4">
+          <span className="w-12 h-px bg-accent"></span> // PROJETS_SÉLECTIONNÉS
         </h2>
-        
+
         {loading ? (
           <p className="text-center font-mono text-secondary">Chargement...</p>
         ) : (
-         
-          <div className="space-y-16 md:space-y-32">
+          <div className="space-y-32">
             {featured.slice(0, visibleCount).map((project, index) => (
-              <Link to={`/projects/${project.id}`} key={project.id} className="block hover:opacity-90 transition-opacity">
+              <Link to={`/projects/${project.id}`} key={project.id} className="block group">
                 <ZigzagProject project={project} index={index} />
               </Link>
             ))}
           </div>
         )}
 
-        {/* Boutons centrés - Stack vertical sur mobile, horizontal sur desktop */}
-        <div className="flex flex-col md:flex-row justify-center gap-4 mt-16">
-          {visibleCount < featured.length && (
-            <button 
-              onClick={() => setVisibleCount(prev => prev + 3)}
-              className="w-full md:w-auto px-6 py-4 md:py-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-all bg-transparent border border-primary text-primary hover:bg-primary hover:text-bg"
-            >
-              Voir plus
-            </button>
-          )}
-
-          <Link 
+        {/* Bouton CTA final (Bas-droite du Z) */}
+        <div className="flex justify-end mt-24">
+          <Link
             to="/projects"
-            className="w-full md:w-auto px-6 py-4 md:py-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-all bg-transparent border border-accent text-accent hover:bg-accent hover:text-bg text-center"
+            className="px-12 py-6 text-sm font-bold uppercase tracking-[0.3em] transition-all bg-accent text-bg hover:bg-primary"
           >
-            Tout voir
+            MES PROJETS →
           </Link>
         </div>
       </section>
 
-      <div id="contact" className="py-24 border-t border-zinc-800">
-        <ContactForm />
-      </div>
+{/* SECTION CONTACT - HOMEPAGE */}
+<section id="contact" className="py-24 border-t border-zinc-200">
+  <div className="text-center mb-16">
+    {/* CORRECTION : Remplacement du h2 par un span block pour respecter la hiérarchie h1 -> h2 -> h2 */}
+    <span className="text-[10px] block font-bold font-mono text-accent uppercase tracking-[0.3em] mb-4">
+      // COLLABORATION
+    </span>
+    <h2 className="text-4xl md:text-5xl font-black uppercase text-primary">
+      DISCUTONS DE VOTRE <span className="text-(--accent-color)">PROJET</span>
+    </h2>
+  </div>
+  
+  <ContactMinimal />
+</section>
     </main>
   );
 };

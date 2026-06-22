@@ -1,51 +1,55 @@
-import { useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer.jsx';
+import { Suspense, lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-// Pages
-import Login from './components/login.jsx';
-import HomePage from './pages/HomePage.jsx';
-import ProjectDetailPage from './pages/ProjectDetailPage.jsx'; 
-import ProjectsPage from './pages/ProjectsPage';
-import AdminDashboard from './pages/admin/AdminDashboard.jsx';
-import CreateProject from './pages/admin/CreateProjectPage.jsx';
-import EditProject from './pages/admin/EditProjectPage.jsx';
-import AboutPage from './pages/AboutPage.jsx';
+import { useAuth } from './context/AuthProvider';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+import Footer from './components/Footer.jsx'
+
+const HomePage = lazy(() => import('./pages/HomePage.jsx'));
+const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
+const CreateProject = lazy(() => import('./pages/admin/CreateProjectPage.jsx'));
+const EditProject = lazy(() => import('./pages/admin/EditProjectPage.jsx'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage.jsx'));
+const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage.jsx'));
+const ContactPage= lazy(() => import('./pages/ContactPage.jsx'));
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    navigate("/");
-  };
+  const { token, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-bg text-main font-sans selection:bg-primary selection:text-white">
-      {/* Navbar unique et globale */}
+    <div className="min-h-screen bg-bg">
       <Navbar token={token} onLogout={logout} />
-
-      {/* Conteneur principal avec padding-top pour compenser la Navbar fixe */}
       <main className="pt-16">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/projects/:id" element={<ProjectDetailPage />} /> 
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/projects" element={<ProjectsPage isAdmin={!!token} />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/create" element={<CreateProject />} />
-          <Route path="/admin/edit/:id" element={<EditProject />} />
-          
-          <Route path="/la-porte-secrete-du-portfolio" element={
-            <div className="px-6 md:px-12 py-12"><Login setToken={setToken} /></div>
-          } />
-        </Routes>
-      </main>
+        <Suspense fallback={<div>CHARGEMENT...</div>}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/projects" element={<ProjectsPage isAdmin={!!token} />} />
+            <Route path="/about" element={<AboutPage/>}/>
+            <Route path="/projects/:id" element={<ProjectDetailPage />} />
+            <Route path="/Contact" element={<ContactPage/>}/>
+<Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
+            {/* Dashboard Admin */}
+            <Route path="/admin" element={
+              <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+            } />
 
-      <Footer />
+            {/* Création de projet */}
+            <Route path="/admin/create" element={
+              <ProtectedRoute><CreateProject /></ProtectedRoute>
+            } />
+
+            {/* Édition de projet (avec l'ID dynamique) */}
+            <Route path="/admin/edit/:id" element={
+              <ProtectedRoute><EditProject /></ProtectedRoute>
+            } />
+
+          </Routes>
+        </Suspense>
+        <Footer/>
+      </main>
     </div>
   );
 }

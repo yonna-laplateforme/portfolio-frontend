@@ -1,115 +1,123 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form'; 
+import { apiFetch } from "../../api/apiFetch";
 
 const CreateProject = () => {
   const navigate = useNavigate();
-  
+  const { register, handleSubmit, formState: { errors } } = useForm(); 
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  
-  const [project, setProject] = useState({
-    title: '',
-    description: '',
-    tech_stack: '',
-    client: '',
-    role: '',
-    year: '2026',
-    github_url: '',
-    demo_url: '',
-    isFeatured: false // Initialisé à false
-  });
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-    }
+    if (file) setPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-
+  const onSubmit = async (data) => {
     const formData = new FormData();
-    formData.append('title', project.title);
-    formData.append('description', project.description);
-    formData.append('tech_stack', project.tech_stack);
-    formData.append('client', project.client);
-    formData.append('role', project.role);
-    formData.append('year', project.year);
-    formData.append('github_url', project.github_url);
-    formData.append('demo_url', project.demo_url);
-    // On envoie 1 si true, 0 si false pour correspondre au TINYINT SQL
-    formData.append('isFeatured', project.isFeatured ? 1 : 0);
-    
-    if (selectedFile) {
-      formData.append('image', selectedFile); 
-    }
+
+    Object.keys(data).forEach(key => {
+      formData.append(key, key === 'isFeatured' ? (data.isFeatured ? 1 : 0) : data[key]);
+    });
+
+    if (selectedFile) formData.append('image', selectedFile);
 
     try {
-      const response = await fetch(`http://localhost:3001/api/projects`, {
+      await apiFetch(`/projects`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       });
-
-      if (response.ok) {
-        alert("Nouveau projet créé avec succès !");
-        navigate('/');
-      } else {
-        alert("Erreur lors de la création");
-      }
+      alert("Nouveau projet créé avec succès !");
+      navigate('/admin');
     } catch (err) {
-      console.error(err);
+      alert(err.message || "Erreur lors de la création");
     }
   };
 
   return (
-    <div className="bg-[#fcfaf8] text-[#333] font-sans p-6 md:p-10 min-h-screen">
+    <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        
-        <div className="mb-12">
-          <h2 className="text-4xl font-light mb-2 tracking-wide">Nouveau projet</h2>
-          <p className="text-gray-500 text-sm">Ajoutez une nouvelle réalisation à votre portfolio.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-12">
-          
-          {/* COLONNE GAUCHE (Principale) */}
+        <motion.form
+          onSubmit={handleSubmit(onSubmit)} 
+          className="flex flex-col lg:flex-row gap-8"
+        >
           <div className="flex-1 space-y-8">
-            <div className="space-y-6 bg-white p-6 md:p-10 border border-[#f0ebe1] shadow-sm">
+            <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6">
+
+              {/* Titre avec erreur */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Titre du projet *</label>
-                <input 
-                  className="w-full p-3 bg-[#f8f6f3] border border-[#e8e4dc] focus:outline-none focus:border-[#a67c52] transition-colors text-sm"
-                  value={project.title}
-                  onChange={(e) => setProject({...project, title: e.target.value})}
-                  required
+                <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Titre du projet *</label>
+                <input
+                  {...register("title", { required: "Le titre est obligatoire" })}
+                  className={`w-full p-3.5 bg-bg/50 border ${errors.title ? 'border-red-500' : 'border-(--primary-color)/20'} focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main`}
+                  placeholder="Nom du projet"
                 />
+                {errors.title && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.title.message}</p>}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Client</label>
+                  <input {...register("client")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main" placeholder="Nom du client" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Année</label>
+                  <input {...register("date_realisation")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main" defaultValue="2026" />
+                </div>
+              </div>
+
+              {/* Catégorie avec erreur */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Catégorie *</label>
+                <select {...register("category", { required: "Veuillez choisir une catégorie" })} className={`w-full p-3.5 bg-bg/50 border ${errors.category ? 'border-red-500' : 'border-(--primary-color)/20'} focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main appearance-none cursor-pointer`}>
+                  <option value="web">Web</option>
+                  <option value="photo">Photo</option>
+                </select>
+                {errors.category && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.category.message}</p>}
+              </div>
+
+              {/* Description avec erreur */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Description *</label>
+                <textarea {...register("description", { required: "La description est requise" })} className={`w-full p-4 bg-bg/50 border ${errors.description ? 'border-red-500' : 'border-(--primary-color)/20'} focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main h-32 resize-none`} placeholder="Description..." />
+                {errors.description && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.description.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Description *</label>
-                <textarea 
-                  className="w-full p-4 bg-[#f8f6f3] border border-[#e8e4dc] focus:outline-none focus:border-[#a67c52] text-sm h-48 resize-none"
-                  value={project.description}
-                  onChange={(e) => setProject({...project, description: e.target.value})}
-                  required
-                />
+                <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Stack technique</label>
+                <input {...register("tech_stack")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main" placeholder="React, Tailwind..." />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Lien GitHub</label>
+                  <input {...register("github_url")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main" placeholder="https://..." />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Lien Démo</label>
+                  <input {...register("demo_url")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main" placeholder="https://..." />
+                </div>
               </div>
             </div>
 
-            <div className="bg-white p-6 md:p-10 border border-[#f0ebe1] shadow-sm space-y-4">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Image principale *</label>
-              <label className="relative flex flex-col items-center justify-center w-full h-64 border-2 border-[#d9d4cc] border-dashed bg-[#faf8f5] hover:bg-[#f0ebe1] transition-colors cursor-pointer group">
+            {/* Section Image */}
+            <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6">
+              <h3 className="text-lg font-medium text-(--primary-color) mb-2">Image principale *</h3>
+              <label className="relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-(--primary-color)/30 bg-bg/30 hover:bg-bg/60 transition-colors cursor-pointer group overflow-hidden">
                 {preview ? (
-                  <img src={preview} alt="Aperçu" className="absolute inset-0 w-full h-full object-cover" />
+                  <>
+                    <img src={preview} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-30 transition-opacity" alt="Aperçu" />
+                    <p className="relative z-10 text-sm font-bold text-(--primary-color) bg-white/80 px-4 py-2">Changer l'image</p>
+                  </>
                 ) : (
-                  <div className="flex flex-col items-center justify-center text-gray-500">
-                    <p className="text-sm font-medium">Glissez-déposez ou cliquez</p>
+                  <div className="flex flex-col items-center text-center p-4">
+                    <span className="text-2xl mb-2 opacity-50">📁</span>
+                    <p className="text-sm opacity-60">Glissez-déposez une image ici</p>
+                    <p className="text-[10px] opacity-40 uppercase tracking-widest mt-2">ou cliquez pour parcourir</p>
                   </div>
                 )}
                 <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
@@ -117,61 +125,21 @@ const CreateProject = () => {
             </div>
           </div>
 
-          {/* COLONNE DROITE */}
-          <div className="w-full lg:w-80 space-y-6">
-            <div className="bg-white p-6 md:p-8 border border-[#f0ebe1] shadow-sm space-y-5">
-              
-              {/* NOUVELLE SECTION: Statut */}
-              <div className="pb-5 border-b border-[#f0ebe1]">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="w-4 h-4 text-[#8b4513] border-gray-300 rounded focus:ring-[#8b4513]"
-                    checked={project.isFeatured}
-                    onChange={(e) => setProject({...project, isFeatured: e.target.checked})}
-                  />
-                  <span className="text-sm text-gray-700">Mettre en avant sur l'accueil</span>
-                </label>
+          <div className="w-full lg:w-80 space-y-8">
+            <div className="bg-white p-6 md:p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6">
+              <h3 className="text-lg font-medium text-(--primary-color) pb-4 border-b border-(--primary-color)/10">Statut & Options</h3>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" {...register("isFeatured")} className="w-5 h-5 border border-(--primary-color)/30" />
+                <span className="text-sm opacity-80">Mettre en avant sur l'accueil</span>
+              </label>
+              <div className="space-y-2 pt-4">
+                <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Votre rôle</label>
+                <input {...register("role")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20" placeholder="Ex: Développeur Fullstack" />
               </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Client</label>
-                <input 
-                  className="w-full p-2.5 bg-[#f8f6f3] border border-[#e8e4dc] focus:outline-none focus:border-[#a67c52] text-sm"
-                  value={project.client}
-                  onChange={(e) => setProject({...project, client: e.target.value})}
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Technologies</label>
-                <input 
-                  className="w-full p-2.5 bg-[#f8f6f3] border border-[#e8e4dc] focus:outline-none focus:border-[#a67c52] text-sm"
-                  value={project.tech_stack}
-                  onChange={(e) => setProject({...project, tech_stack: e.target.value})}
-                />
-              </div>
-
-              <div className="pt-2 space-y-5 border-t border-[#f0ebe1]">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Lien GitHub</label>
-                  <input 
-                    className="w-full p-2.5 bg-[#f8f6f3] border border-[#e8e4dc] focus:outline-none focus:border-[#a67c52] text-sm"
-                    value={project.github_url}
-                    onChange={(e) => setProject({...project, github_url: e.target.value})}
-                  />
-                </div>
-              </div>
+              <button type="submit" className="w-full bg-(--accent-color) text-white py-4 text-xs font-bold uppercase">Enregistrer le projet</button>
             </div>
-
-            <button 
-              type="submit" 
-              className="w-full bg-[#8b4513] text-white py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-[#6b350e] transition-colors"
-            >
-              Enregistrer le projet
-            </button>
           </div>
-        </form>
+        </motion.form>
       </div>
     </div>
   );

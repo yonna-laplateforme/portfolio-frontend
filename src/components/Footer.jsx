@@ -10,31 +10,39 @@ const Footer = () => {
           YM<span className="text-(--primary-color)">.</span>
         </div>
 
-        {/* Liens techniques */}
-        <div className="flex gap-8 font-mono text-[10px] uppercase tracking-[0.2em] text-(--text-main)/60">
-          <a 
-            href="https://github.com" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="hover:text-(--primary-color) transition-colors"
-          >
-            GitHub
-          </a>
-          <a 
-            href="https://linkedin.com" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="hover:text-(--primary-color) transition-colors"
-          >
-            LinkedIn
-          </a>
-          <a 
-            href="mailto:yonna.s.merlini@gmail.com" 
-            className="hover:text-(--primary-color) transition-colors"
-          >
-            Email
-          </a>
-        </div>
+        {/* Liens techniques en liste */}
+        <nav aria-label="Liens sociaux et contact">
+          <ul className="flex gap-8 font-mono text-[12px] uppercase tracking-[0.2em] text-(--text-main)/90">
+            <li>
+              <a 
+                href="https://github.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="text-(--primary-color) transition-colors font-bold"
+              >
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="text-(--primary-color) transition-colors font-bold"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a 
+                href="mailto:yonna.s.merlini@gmail.com" 
+                className="text-(--primary-color) transition-colors font-bold"
+              >
+                Email
+              </a>
+            </li>
+          </ul>
+        </nav>
 
         {/* Copyright */}
         <div className="font-mono text-[10px] text-[#333] uppercase tracking-widest">

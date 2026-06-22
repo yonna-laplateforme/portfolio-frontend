@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { useAuth } from '../../context/AuthProvider';
+import { motion } from 'framer-motion';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
+  const { token } = useAuth(); 
 
   const fetchProjects = async () => {
     try {
@@ -17,11 +20,15 @@ const AdminDashboard = () => {
 
   const deleteProject = async (id) => {
     if (window.confirm("Supprimer ce projet ?")) {
-      await fetch(`http://localhost:3001/api/projects/${id}`, {
-        method: 'DELETE',
-        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
-      });
-      fetchProjects();
+      try {
+        await fetch(`http://localhost:3001/api/projects/${id}`, {
+          method: 'DELETE',
+          headers: { "Authorization": `Bearer ${token}` } 
+        });
+        fetchProjects(); // Recharge la liste après suppression
+      } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
+      }
     }
   };
 
@@ -30,45 +37,87 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="pt-24 pb-20 max-w-5xl mx-auto px-6">
-      <div className="flex justify-between items-end mb-12">
-        <div>
-            <h1 className="text-4xl font-serif text-zinc-900">Dashboard</h1>
-            <p className="text-zinc-400 mt-2">Gérez vos projets et votre contenu.</p>
-        </div>
-        <Link 
-          to="/admin/create" 
-          className="flex items-center gap-2 bg-zinc-900 text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#8C5A3C] transition-colors"
+    // Le min-h-screen et flex flex-col assurent que le composant prend au moins toute la hauteur de l'écran
+    <div className="min-h-screen flex flex-col bg-bg text-text-main font-sans pt-24 pb-20 px-6">
+      
+      {/* flex-1 permet à cette zone de s'étirer et de pousser le footer vers le bas */}
+      <div className="max-w-5xl mx-auto w-full flex-1">
+        
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12"
         >
-          <Plus size={16} /> Ajouter un projet
-        </Link>
-      </div>
+          <div>
+              <h1 className="text-4xl font-light text-[var(--primary-color)] tracking-wide mb-2">Dashboard</h1>
+              <div className="h-0.5 w-12 bg-[var(--accent-color)] mb-4"></div>
+              <p className="text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
+          </div>
+          <Link 
+            to="/admin/create" 
+            className="flex items-center gap-2 bg-[var(--accent-color)] text-white px-6 py-3.5 text-xs font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.99] transition-all shadow-sm"
+          >
+            <Plus size={16} /> Ajouter un projet
+          </Link>
+        </motion.div>
 
-      <div className="border-t border-zinc-200">
-        {projects.length === 0 ? (
-          <p className="py-10 text-center text-zinc-400">Aucun projet trouvé.</p>
-        ) : (
-          projects.map((project, index) => (
-            <div key={project.id ? project.id : `project-${index}`} className="flex items-center justify-between py-6 border-b border-zinc-100 hover:bg-zinc-50 transition-colors px-2">
-              <div className="flex items-center gap-6">
-                <img src={project.image_url} alt={project.title} className="w-20 h-14 object-cover rounded-sm" />
-                <div>
-                  <h3 className="font-medium text-zinc-900">{project.title}</h3>
-                  <p className="text-xs text-zinc-400 uppercase tracking-wider">{project.category || "Projet"}</p>
-                </div>
-              </div>
-              
-              <div className="flex gap-4">
-                <Link to={`/admin/edit/${project.id}`} className="text-zinc-500 hover:text-[#8C5A3C]">
-                  <Edit2 size={16} />
-                </Link>
-                <button onClick={() => deleteProject(project.id)} className="text-zinc-500 hover:text-red-500">
-                  <Trash2 size={16} />
-                </button>
-              </div>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white border border-[var(--primary-color)]/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
+        >
+          {projects.length === 0 ? (
+            <p className="py-16 text-center text-sm opacity-50 font-medium">Aucun projet trouvé pour le moment.</p>
+          ) : (
+            <div className="divide-y divide-[var(--primary-color)]/10">
+              {projects.map((project, index) => (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  key={project.id || `project-${index}`} 
+                  className="flex items-center justify-between p-6 hover:bg-bg/30 transition-colors group"
+                >
+                  <div className="flex items-center gap-6">
+                    {/* Conteneur image stylisé */}
+                    <div className="w-24 h-16 bg-bg/50 border border-[var(--primary-color)]/10 overflow-hidden flex-shrink-0">
+                      {project.image_url ? (
+                        <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center opacity-30 text-xs">IMG</div>
+                      )}
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-medium text-[var(--primary-color)] text-lg mb-1">{project.title}</h3>
+                      <p className="text-[10px] opacity-60 uppercase tracking-widest">
+                        {project.tech_stack || "Projet"} {project.isFeatured ? "• À la une" : ""}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3 sm:gap-5">
+                    <Link 
+                      to={`/admin/edit/${project.id}`} 
+                      className="p-2 text-[var(--primary-color)] opacity-50 hover:opacity-100 hover:text-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 rounded-full transition-all"
+                      title="Modifier"
+                    >
+                      <Edit2 size={18} />
+                    </Link>
+                    <button 
+                      onClick={() => deleteProject(project.id)} 
+                      className="p-2 text-[var(--primary-color)] opacity-50 hover:opacity-100 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                      title="Supprimer"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          ))
-        )}
+          )}
+        </motion.div>
       </div>
     </div>
   );
