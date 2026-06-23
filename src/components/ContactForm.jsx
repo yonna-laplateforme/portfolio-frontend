@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CheckCircle2 } from 'lucide-react';
+import { apiFetch } from '../api/apiFetch';
 
 const ContactForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -16,18 +17,16 @@ const ContactForm = () => {
   const onSubmit = async (data) => {
     setServerError(null);
     try {
-      const response = await fetch('http://localhost:3001/api/contact', {
+      
+      await apiFetch('/contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Une erreur est survenue");
 
       setIsSubmitted(true);
       reset();
     } catch (err) {
+     
       setServerError(err.message);
     }
   };

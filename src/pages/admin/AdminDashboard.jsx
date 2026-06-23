@@ -3,31 +3,32 @@ import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthProvider';
 import { motion } from 'framer-motion';
+import { apiFetch } from '../../api/apiFetch';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
   const { token } = useAuth(); 
 
-  const fetchProjects = async () => {
+ const fetchProjects = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/projects');
-      const data = await response.json();
+      const data = await apiFetch('/projects'); // Simple et propre
       setProjects(data);
     } catch (error) {
-      console.error("Erreur lors du fetch :", error);
+      console.error("Erreur :", error);
     }
   };
 
   const deleteProject = async (id) => {
     if (window.confirm("Supprimer ce projet ?")) {
       try {
-        await fetch(`http://localhost:3001/api/projects/${id}`, {
+        await apiFetch(`/projects/${id}`, {
           method: 'DELETE',
-          headers: { "Authorization": `Bearer ${token}` } 
+          // Plus besoin de gérer le Bearer token manuellement ici,
+          // apiFetch le fait pour toi grâce au localStorage !
         });
-        fetchProjects(); // Recharge la liste après suppression
+        fetchProjects();
       } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
+        console.error("Erreur :", error);
       }
     }
   };

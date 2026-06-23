@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider'; 
 import { motion } from 'framer-motion';
+import { apiFetch } from '../api/apiFetch';
 
 const LoginPage = () => { 
   const [email, setEmail] = useState('');
@@ -12,31 +13,29 @@ const LoginPage = () => {
   const { login } = useAuth(); 
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    // Utilise apiFetch au lieu de fetch natif
+    // Il gère déjà l'URL de base, il ne manque que le chemin relatif
+    const data = await apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      // Pas besoin de headers 'Content-Type' si apiFetch les ajoute par défaut
+    });
 
-      const data = await response.json();
-
-      if (response.ok && data.token) {
-        login(data.token);
-        navigate('/admin');
-      } else {
-        alert(data.message || 'Identifiants incorrects');
-      }
-    } catch (error) {
-      console.error('Erreur connexion:', error);
-      alert('Le serveur ne répond pas.');
-    } finally {
-      setIsLoading(false);
+    if (data.token) {
+      login(data.token);
+      navigate('/admin');
     }
-  };
+  } catch (error) {
+    console.error('Erreur connexion:', error);
+    alert(error.message || 'Identifiants incorrects');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-center items-center p-6 text-text-main font-sans">

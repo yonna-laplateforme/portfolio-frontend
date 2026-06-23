@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { apiFetch } from '../api/apiFetch';
 
 const ContactMinimal = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -8,19 +9,14 @@ const ContactMinimal = () => {
 
    const onSubmit = async (data) => {
     try {
-        const response = await fetch('http://localhost:3001/api/contact', {
+        await apiFetch('/contact', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        
-        if (response.ok) {
-            setIsSubmitted(true);
-        } else {
-            alert("Une erreur est survenue lors de l'envoi.");
-        }
+        setIsSubmitted(true);
     } catch (error) {
-        alert("Impossible de contacter le serveur.");
+        console.error(error);
+        alert(error.message || "Impossible de contacter le serveur.");
     }
 };
 const inputClasses = "w-full bg-transparent border-b-2 border-zinc-500 pb-2 outline-none focus:border-primary transition-all placeholder:text-zinc-600 font-mono text-sm uppercase";

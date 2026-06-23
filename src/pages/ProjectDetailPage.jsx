@@ -9,16 +9,25 @@ const ProjectDetailPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch(`http://localhost:3001/api/projects/${id}`)
-      .then(res => res.json())
+    // Utilise une base d'URL explicite pour le test
+    const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+    
+    fetch(`${baseUrl}/projects/${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Erreur serveur");
+        return res.json();
+      })
       .then(data => {
         setProject(data.project || data);
         setLoading(false);
       })
-      .catch(err => { console.error(err); setLoading(false); });
+      .catch(err => { 
+        console.error("Erreur chargement:", err); 
+        setLoading(false); 
+      });
   }, [id]);
 
-  if (loading) return <div className="min-h-screen bg-(--bg-color) flex items-center justify-center font-mono text-(--primary-color) text-xs uppercase tracking-[0.3em]">Chargement...</div>;
+  if (loading) return <div className="min-h-screen bg-(--bg-color) flex items-center justify-center font-mono text-[var(--primary-color)] text-xs uppercase tracking-[0.3em]">Chargement...</div>;
 
   const imgSrc = project?.image_url?.startsWith('http') ? project.image_url : `http://localhost:3001${project?.image_url}`;
 

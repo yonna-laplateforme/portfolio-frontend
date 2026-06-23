@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProjectCard from "./ProjectCard"; 
+import { apiFetch } from "../api/apiFetch";
 
 const ProjectList = ({ isAdmin }) => { 
   const [projects, setProjects] = useState([]);
@@ -8,13 +9,16 @@ const ProjectList = ({ isAdmin }) => {
   const [filter, setFilter] = useState("TOUT");
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/projects")
-      .then(res => res.json())
+   
+    apiFetch("/projects")
       .then(data => {
         setProjects(data);
         setLoading(false);
       })
-      .catch(err => console.error("Erreur:", err));
+      .catch(err => {
+        console.error("Erreur chargement projets:", err);
+        setLoading(false);
+      });
   }, []);
 
   const filteredProjects = filter === "TOUT" 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { apiFetch } from "../../api/apiFetch";
+import { apiFetch } from '../../api/apiFetch';
 
 const EditProject = () => {
     const { id } = useParams();

@@ -3,26 +3,25 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import WordRotation from '../components/WordRotation';
 import ZigzagProject from '../components/ZigzagProject';
-import ContactForm from '../components/ContactForm';
 import ContactMinimal from '../components/ContactMinimal';
+import { apiFetch } from "../api/apiFetch";
 
 const HomePage = () => {
   const [allProjects, setAllProjects] = useState([]);
   const [visibleCount, setVisibleCount] = useState(3);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch('http://localhost:3001/api/projects')
-      .then(res => res.json())
-      .then(data => {
-        setAllProjects(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Erreur chargement:", err);
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+    apiFetch("/projects")
+        .then(data => {
+            setAllProjects(data);
+            setLoading(false);
+        })
+        .catch(err => {
+            console.error("Erreur chargement HomePage:", err);
+            setLoading(false);
+        });
+}, []);
 
   const featured = allProjects.filter(p => Number(p.isFeatured) === 1);
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthProvider'; // 👈 Ajout de ton super hook ! (Ajuste le chemin ../ si besoin)
+import { useAuth } from '../context/AuthProvider'; 
+import { apiFetch } from '../api/apiFetch';
 
 const Login = () => { // 👈 On a enlevé le { setToken } ici
   const [email, setEmail] = useState('');
@@ -10,30 +11,25 @@ const Login = () => { // 👈 On a enlevé le { setToken } ici
   const { login } = useAuth(); // 👈 On récupère la fonction login depuis ton contexte
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    // Utilise apiFetch au lieu de fetch natif
+    // Note : on passe un objet config personnalisé pour le POST
+    const data = await apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await response.json();
-
-      if (response.ok && data.token) {
-        // 1. On utilise la fonction centralisée (qui gère le localStorage ET le state)
-        login(data.token);
-        // 2. On redirige vers l'accueil Admin
-        navigate('/admin');
-      } else {
-        alert(data.message || 'Identifiants incorrects');
-      }
-    } catch (error) {
-      console.error('Erreur connexion:', error);
-      alert('Le serveur ne répond pas.');
+    if (data.token) {
+      login(data.token);
+      navigate('/admin');
     }
-  };
+  } catch (error) {
+    // Ton service apiFetch a déjà géré l'erreur, tu l'affiches juste
+    alert(error.message); 
+  }
+};
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh]">
