@@ -6,8 +6,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         
         {/* Identité */}
-        <div className="font-black text-(--accent-color) tracking-tighter">
-          YM<span className="text-(--primary-color)">.</span>
+       <div onClick={() => handleNavigation('/')} className="cursor-pointer flex items-center font-black text-xl text-accent">
+          Y<span className="text-primary">M</span>
         </div>
 
         {/* Liens techniques en liste */}
