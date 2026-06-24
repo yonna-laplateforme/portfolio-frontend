@@ -14,15 +14,17 @@ const EditProject = () => {
     });
 
     useEffect(() => {
-        apiFetch(`/projects/${id}`)
-            .then(data => {
-                setProject({
-                    ...data,
-                    isFeatured: Number(data.isFeatured) === 1
-                });
-            })
-            .catch(err => console.error("Erreur chargement:", err));
-    }, [id]);
+  apiFetch(`/projects/${id}`).then((data) => {
+    if (data) {
+      // Nettoyage : transforme chaque null en ""
+      const sanitizedData = Object.keys(data).reduce((acc, key) => {
+        acc[key] = data[key] === null ? "" : data[key];
+        return acc;
+      }, {});
+      setProject(sanitizedData);
+    }
+  });
+}, [id]);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];

@@ -10,6 +10,7 @@ const CreateProject = () => {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // 1. État de chargement
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -18,6 +19,7 @@ const CreateProject = () => {
   };
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true); // 2. Activer le chargement
     const formData = new FormData();
 
     Object.keys(data).forEach(key => {
@@ -35,6 +37,8 @@ const CreateProject = () => {
       navigate('/admin');
     } catch (err) {
       alert(err.message || "Erreur lors de la création");
+    } finally {
+      setIsSubmitting(false); // 3. Désactiver le chargement même en cas d'erreur
     }
   };
 
@@ -136,7 +140,19 @@ const CreateProject = () => {
                 <label className="text-[10px] font-bold opacity-60 uppercase tracking-widest">Votre rôle</label>
                 <input {...register("role")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20" placeholder="Ex: Développeur Fullstack" />
               </div>
-              <button type="submit" className="w-full bg-(--accent-color) text-white py-4 text-xs font-bold uppercase">Enregistrer le projet</button>
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`w-full py-4 text-xs font-bold uppercase transition-all flex items-center justify-center ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-(--accent-color) text-white'}`}
+              >
+                {isSubmitting ? (
+                  <motion.div 
+                    animate={{ rotate: 360 }} 
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                  />
+                ) : "Enregistrer le projet"}
+              </button>
             </div>
           </div>
         </motion.form>

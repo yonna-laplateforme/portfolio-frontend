@@ -1,27 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../api/apiFetch'; 
+import { motion } from 'framer-motion';
 
 const AboutPage = () => {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/about')
-      .then(res => setData(res))
-      .catch(err => console.error("Erreur API:", err));
+    apiFetch('/about').then(res => {
+      setData(res);
+      setLoading(false);
+    }).catch(err => {
+      console.error("Erreur chargement :", err);
+      setLoading(false);
+    });
   }, []);
 
-  if (!data) return <main className="min-h-screen"></main>;
+  if (loading || !data) return <main className="min-h-screen"></main>;
 
   return (
-    <main className="min-h-screen bg-(--bg-color) text-(--text-main) py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
+    <main className="min-h-screen bg-[var(--bg-color)] text-[var(--text-main)] py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
       
       {/* HEADER SECTION */}
       <header className="mb-24">
-        <span className="font-mono text-xs uppercase text-(--accent-color) mb-4 block">// IDENTITÉ_VISUELLE</span>
+        <span className="font-mono text-xs uppercase text-[var(--accent-color)] mb-4 block">// IDENTITÉ_VISUELLE</span>
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.9]">
             {data.header_line1} <br />
-            <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
+            <span className="text-[var(--accent-color)]">{data.header_accent}</span> {data.header_line2}
           </h1>
           <span className="font-mono text-sm opacity-60 mt-6 md:mt-0">{data.header_subtitle}</span>
         </div>
@@ -31,18 +37,22 @@ const AboutPage = () => {
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-32">
         <div className="lg:col-span-5 relative w-full max-w-sm mx-auto lg:mx-0">
           <div className="group relative">
-            <div className="relative border border-(--text-main) p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
+            <div className="relative border border-[var(--text-main)] p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
               <div className="aspect-4/5 bg-gray-200 overflow-hidden">
-                <img src="ton-image.jpg" alt="Yonna Merlini" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img 
+                  src={data.photo_url} 
+                  alt="Yonna Merlini" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                />
               </div>
-              <div className="bg-(--accent-color) text-white font-mono text-[10px] px-2 py-1 inline-block mt-2">YONNA_MERLINI.JPG</div>
+              <div className="bg-[var(--accent-color)] text-white font-mono text-[10px] px-2 py-1 inline-block mt-2">YONNA_MERLINI.JPG</div>
             </div>
-            <div className="absolute top-4 left-4 w-full h-full border border-(--text-main) z-0 hidden lg:block"></div>
+            <div className="absolute top-4 left-4 w-full h-full border border-[var(--text-main)] z-0 hidden lg:block"></div>
           </div>
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <h2 className="text-3xl md:text-4xl font-bold uppercase mb-8">L'INTERSECTION DU CODE ET DE L'IMAGE</h2>
+          <h2 className="text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
           <div className="space-y-6 text-lg opacity-90 leading-relaxed">
             <p>{data.bio_text}</p>
           </div>
@@ -51,9 +61,9 @@ const AboutPage = () => {
 
       {/* SÉPARATEUR BRUTALISTE */}
       <div className="flex items-center gap-6 mb-16 w-full">
-        <div className="h-px flex-1 bg-(--text-main)"></div>
+        <div className="h-px flex-1 bg-[var(--text-main)]"></div>
         <span className="font-mono text-sm uppercase whitespace-nowrap">CHAMPS D'EXPERTISE</span>
-        <div className="h-px flex-1 bg-(--text-main)"></div>
+        <div className="h-px flex-1 bg-[var(--text-main)]"></div>
       </div>
 
       {/* EXPERTISE CARDS */}
@@ -63,7 +73,7 @@ const AboutPage = () => {
           { t: "PHOTOGRAPHIE", i: ["DIRECTION ARTISTIQUE", "ÉDITION NUMÉRIQUE", "ARGENTIQUE", "PORTRAIT"] },
           { t: "STRATÉGIE", i: ["ANALYSE DE BESOINS", "OPTIMISATION SEO", "BRAND IDENTITY"] }
         ].map((box, i) => (
-          <div key={i} className="border border-(--text-main) p-8 hover:bg-(--text-main) hover:text-(--bg-color) transition-colors duration-300">
+          <div key={i} className="border border-[var(--text-main)] p-8 hover:bg-[var(--text-main)] hover:text-[var(--bg-color)] transition-colors duration-300">
             <h4 className="font-bold text-xl mb-8 uppercase">{box.t}</h4>
             <ul className="font-mono text-sm space-y-3 opacity-90">
               {box.i.map(item => <li key={item}>— {item}</li>)}
@@ -72,15 +82,24 @@ const AboutPage = () => {
         ))}
       </section>
 
-      {/* GRAND CADRE NOIR (CITATION DYNAMIQUE) */}
-      <section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main)">
-        <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
-          "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
-        </h3>
-        <p className="font-mono text-sm max-w-xl mx-auto opacity-70">
-          {data.philosophy_author}
-        </p>
-      </section>
+     {/* GRAND CADRE NOIR (CITATION DYNAMIQUE) */}
+<section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
+  
+  {/* Le bloc central qui prend l'espace disponible */}
+  <div className="grow flex flex-col justify-center">
+    <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
+      "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
+    </h3>
+    <p className="font-mono text-sm max-w-xl mx-auto opacity-70"> 
+      {data.philosophy_text}
+    </p>
+  </div>
+
+  {/* L'auteur est poussé tout en bas grâce à mt-auto */}
+  <p className="font-mono text-sm max-w-xl mx-auto opacity-70 mt-auto pt-12">
+    {data.philosophy_author}
+  </p>
+</section>
     </main>
   );
 };

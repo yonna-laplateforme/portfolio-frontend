@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ProjectList from '../components/ProjectList';
+import { apiFetch } from '../api/apiFetch';
 
 
 
@@ -9,18 +10,14 @@ const ProjectsPage = ({ isAdmin }) => {
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-    // On utilise une URL absolue qui pointe directement sur ton API
-    // En Docker, comme ton front et ton back sont sur le même réseau, 
-    // le navigateur du client doit appeler le serveur sur le port 3001.
-    fetch("http://localhost:3001/api/projects") 
-      .then(res => res.json())
+    // Utilisation de apiFetch comme pour ta page About
+    apiFetch('/projects') 
       .then(data => {
-        console.log("Données reçues dans le Front :", data); // Vérifie la console F12
         setProjects(data);
         setLoading(false);
       })
       .catch(err => {
-        console.error("Erreur fatale lors du fetch :", err);
+        console.error("Erreur fatale lors du fetch des projets :", err);
         setLoading(false);
       });
   }, []);
@@ -36,7 +33,7 @@ useEffect(() => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h3 className="text-[10px] font-mono text-accent uppercase tracking-[0.3em]">// SÉLECTION</h3>
+            <h3 className="text-[10px] font-mono font-bold text-accent uppercase tracking-[0.3em]">// SÉLECTION</h3>
             
             <h1 className="text-4xl md:text-7xl font-black uppercase mt-4 mb-8 text-(--primary-color)">
   TOUS MES <span className="text-(--accent-color)">PROJETS</span>

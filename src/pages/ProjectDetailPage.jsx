@@ -1,35 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Utilise une base d'URL explicite pour le test
     const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
     
+    // Appel API
     fetch(`${baseUrl}/projects/${id}`)
       .then(res => {
-        if (!res.ok) throw new Error("Erreur serveur");
+        // Si 404 ou 500, on déclenche le catch
+        if (!res.ok) throw new Error("Projet introuvable");
         return res.json();
       })
       .then(data => {
+        // On s'assure de récupérer l'objet projet correctement
         setProject(data.project || data);
         setLoading(false);
       })
       .catch(err => { 
         console.error("Erreur chargement:", err); 
-        setLoading(false); 
+        // Redirection propre vers la page 404
+        navigate('/404', { replace: true });
       });
-  }, [id]);
+  }, [id, navigate]);
 
-  if (loading) return <div className="min-h-screen bg-(--bg-color) flex items-center justify-center font-mono text-[var(--primary-color)] text-xs uppercase tracking-[0.3em]">Chargement...</div>;
+  // Logique de chargement sécurisée
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-(--bg-color) flex items-center justify-center font-mono text-[var(--primary-color)] text-xs uppercase tracking-[0.3em]">
+        Chargement...
+      </div>
+    );
+  }
 
-  const imgSrc = project?.image_url?.startsWith('http') ? project.image_url : `http://localhost:3001${project?.image_url}`;
+  // Si on est ici, project est défini. Calcul de l'image.
+  const imgSrc = project?.image_url?.startsWith('http') 
+    ? project.image_url 
+    : `http://localhost:3001${project?.image_url}`;
 
   return (
     <main className="min-h-screen bg-(--bg-color) text-(--text-main) px-6 py-24">
@@ -39,7 +53,7 @@ const ProjectDetailPage = () => {
           ← Retour
         </Link>
 
-        {/* 1. TITRE ET CATÉGORIE EN HAUT */}
+        {/* Header */}
         <header className="text-center mb-16">
           <span className="text-[10px] uppercase tracking-[0.3em] text-(--accent-color) font-mono mb-4 block">// {project.category || "PROJET"}</span>
           <h1 className="text-4xl md:text-5xl font-black uppercase text-(--primary-color) tracking-tighter">
@@ -47,7 +61,7 @@ const ProjectDetailPage = () => {
           </h1>
         </header>
 
-        {/* 2. IMAGE */}
+        {/* Image */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -56,13 +70,13 @@ const ProjectDetailPage = () => {
           <img src={imgSrc} alt={project.title} className="w-full grayscale hover:grayscale-0 transition-all duration-700" />
         </motion.div>
 
-        {/* 3. INFOS SOUS L'IMAGE */}
+        {/* Infos */}
         <div className="flex justify-center gap-8 text-[10px] uppercase tracking-[0.3em] font-mono text-(--text-secondary) mb-16">
           <span>RÔLE : {project.role || "Développeur"}</span>
           <span>CLIENT : {project.client || "Personnel"}</span>
         </div>
 
-        {/* 4. DESCRIPTION ET SIDEBAR */}
+        {/* Description et Stack */}
         <section className="grid md:grid-cols-3 gap-16 border-t border-(--text-secondary)/20 pt-16">
           <div className="md:col-span-2 text-(--text-main)/90 text-lg font-mono leading-relaxed space-y-6">
             {project.description?.split('\n').map((p, i) => <p key={i}>{p}</p>)}

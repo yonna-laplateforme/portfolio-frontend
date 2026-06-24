@@ -68,6 +68,21 @@ const AdminDashboard = () => {
           transition={{ delay: 0.2 }}
           className="bg-white border border-[var(--primary-color)]/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
         >
+          {/* NOUVEAU BLOC : GESTION PAGE À PROPOS */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between p-6 bg-white border border-[var(--primary-color)]/10 shadow-sm">
+            <div>
+              <h2 className="font-bold uppercase text-sm tracking-widest text-[var(--primary-color)]">Page "À Propos"</h2>
+              <p className="text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
+            </div>
+            <Link 
+              to="/admin/edit-about" // Assure-toi que cette route existe dans ton App.js
+              className="flex items-center gap-2 border border-[var(--primary-color)]/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-[var(--primary-color)] hover:text-white transition-all"
+            >
+              <Edit2 size={16} /> Modifier la page
+            </Link>
+          </div>
+        </section>
           {projects.length === 0 ? (
             <p className="py-16 text-center text-sm opacity-50 font-medium">Aucun projet trouvé pour le moment.</p>
           ) : (
