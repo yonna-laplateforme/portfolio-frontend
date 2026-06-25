@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiFetch } from '../api/apiFetch'; 
-import { motion } from 'framer-motion';
+
 
 const AboutPage = () => {
   const [data, setData] = useState(null);
@@ -19,11 +19,11 @@ const AboutPage = () => {
   if (loading || !data) return <main className="min-h-screen"></main>;
 
   return (
-    <main className="min-h-screen bg-[var(--bg-color)] text-[var(--text-main)] py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
+    <main className="min-h-screen bg-(--bg-color) text-(--text-main) py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
       
       {/* HEADER SECTION */}
       <header className="mb-24">
-        <span className="font-mono text-xs uppercase text-[var(--accent-color)] mb-4 block">// IDENTITÉ_VISUELLE</span>
+        <span className="font-mono text-xs uppercase text-(--accent-color) mb-4 block">// IDENTITÉ_VISUELLE</span>
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.9]">
             {data.header_line1} <br />
@@ -95,8 +95,8 @@ const AboutPage = () => {
     </p>
   </div>
 
-  {/* L'auteur est poussé tout en bas grâce à mt-auto */}
-  <p className="font-mono text-sm max-w-xl mx-auto opacity-70 mt-auto pt-12">
+ 
+  <p className="font-mono text-sm text-(--accent-color) max-w-xl mx-auto opacity-70 mt-auto pt-12">
     {data.philosophy_author}
   </p>
 </section>
