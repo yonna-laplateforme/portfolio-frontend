@@ -13,13 +13,13 @@ const ProjectsPage = lazy(() => import('./pages/ProjectsPage.jsx'));
 const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
 const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage.jsx'));
 const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
-const NotFoundPage = lazy (() => import('./pages/NotFoundPage.jsx') )
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
 
-// Pages Admin (Lazy loaded)
+// Pages Admin
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
 const CreateProject = lazy(() => import('./pages/admin/CreateProjectPage.jsx'));
 const EditProject = lazy(() => import('./pages/admin/EditProjectPage.jsx'));
-const EditAboutPage = lazy(() => import('./pages/admin/EditAboutPage.jsx')); // 1. IMPORT AJOUTÉ
+const EditAboutPage = lazy(() => import('./pages/admin/EditAboutPage.jsx'));
 
 function App() {
   const { token, logout } = useAuth();
@@ -37,27 +37,29 @@ function App() {
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
             <Route path="/contact" element={<ContactPage />} />
 
+            {/* Porte secrète de connexion */}
             <Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
-{/* Routes Admin : URLs secrètes (ex: /tableau-de-bord-secret-yonna-2026) */}
-  <Route path="/secret-yonna-dashboard" element={
-    <ProtectedRoute><AdminDashboard /></ProtectedRoute>
-  } />
-  
-  <Route path="/secret-yonna-create" element={
-    <ProtectedRoute><CreateProject /></ProtectedRoute>
-  } />
 
-  <Route path="/secret-yonna-edit/:id" element={
-    <ProtectedRoute><EditProject /></ProtectedRoute>
-  } />
+           
+            <Route path="/dashboard-yonna-2026" element={
+              <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+            } />
+            
+            <Route path="/secret-yonna-create" element={
+              <CreateProject />
+            } />
 
-  <Route path="/secret-yonna-edit-about" element={
-    <ProtectedRoute><EditAboutPage /></ProtectedRoute>
-  } />
+            <Route path="/secret-yonna-edit/:id" element={
+              <ProtectedRoute><EditProject /></ProtectedRoute>
+            } />
 
-  {/* Si quelqu'un tape /admin, il tombera ici car la route n'existe plus */}
-  <Route path="*" element={<NotFoundPage />} />
-</Routes>
+            <Route path="/secret-yonna-edit-about" element={
+              <ProtectedRoute><EditAboutPage /></ProtectedRoute>
+            } />
+
+            {/* Tout le reste finit en 404 */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
         </Suspense>
         <Footer />
       </main>

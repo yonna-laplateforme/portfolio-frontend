@@ -46,7 +46,7 @@ const EditProject = () => {
         try {
             await apiFetch(`/projects/${id}`, { method: 'PUT', body: formData });
             alert("Projet modifié !");
-            navigate('/admin');
+            navigate('/dashboard-yonna-2026');
         } catch (err) {
             alert(err.message || "Erreur lors de la modification");
         }
@@ -60,7 +60,7 @@ const EditProject = () => {
                     className="mb-10"
                 >
                     <button 
-                        onClick={() => navigate('/admin')} 
+                        onClick={() => navigate('/dashboard-yonna-2026')} 
                         className="text-[10px] font-bold opacity-60 hover:opacity-100 hover:text-[var(--accent-color)] uppercase tracking-widest transition-all flex items-center gap-2 mb-6"
                     >
                         <span>←</span> Retour au dashboard

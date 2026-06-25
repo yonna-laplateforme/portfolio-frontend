@@ -21,7 +21,7 @@ const Navbar = ({ token, onLogout }) => {
           Y<span className="text-primary">M</span>
         </div>
 
-        {/* BOUTON BURGER (Mobile uniquement) */}
+        {/* BOUTON BURGER MOBILE */}
         <button 
   onClick={() => setIsOpen(!isOpen)} 
   aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
@@ -67,10 +67,12 @@ const Navbar = ({ token, onLogout }) => {
 
           
           {token && (
-            <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-zinc-800 pt-8 md:pt-0 md:pl-6">
-              <Link to="/admin" className="hover:text-primary">ADMIN</Link>
-              <button onClick={onLogout} className="hover:text-red-500"><LogOut size={16}/></button>
-            </div>
+  <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-zinc-800 pt-8 md:pt-0 md:pl-6">
+   
+    <Link to="/dashboard-yonna-2026" className="hover:text-primary">ADMIN</Link>
+    <button onClick={onLogout} className="hover:text-red-500"><LogOut size={16}/></button>
+  </div>
+
           )}
         </div>
       </nav>

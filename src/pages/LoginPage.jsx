@@ -17,26 +17,30 @@ const LoginPage = () => {
   setIsLoading(true);
 
   try {
-    // Utilise apiFetch au lieu de fetch natif
-    // Il gère déjà l'URL de base, il ne manque que le chemin relatif
+    // 1. Appel API via apiFetch
     const data = await apiFetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
-      // Pas besoin de headers 'Content-Type' si apiFetch les ajoute par défaut
     });
 
-    if (data.token) {
+    // 2. Vérification de la présence du token
+    if (data?.token) {
+      // 3. Mise à jour de l'état d'authentification
       login(data.token);
-      navigate('/admin');
+      
+      // 4. Redirection vers ton chemin secret 
+      navigate('/dashboard-yonna-2026', { replace: true });
+    } else {
+      throw new Error("Token manquant dans la réponse du serveur.");
     }
   } catch (error) {
+    // 5. Gestion des erreurs plus explicite
     console.error('Erreur connexion:', error);
     alert(error.message || 'Identifiants incorrects');
   } finally {
     setIsLoading(false);
   }
 };
-
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-center items-center p-6 text-text-main font-sans">
       

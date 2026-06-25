@@ -55,7 +55,7 @@ const AdminDashboard = () => {
               <p className="text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
           </div>
           <Link 
-            to="/admin/create" 
+            to="/secret-yonna-create" 
             className="flex items-center gap-2 bg-[var(--accent-color)] text-white px-6 py-3.5 text-xs font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.99] transition-all shadow-sm"
           >
             <Plus size={16} /> Ajouter un projet
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
               <p className="text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
             </div>
             <Link 
-              to="/admin/edit-about" // Assure-toi que cette route existe dans ton App.js
+              to="/secret-yonna-edit-about" // Assure-toi que cette route existe dans ton App.js
               className="flex items-center gap-2 border border-[var(--primary-color)]/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-[var(--primary-color)] hover:text-white transition-all"
             >
               <Edit2 size={16} /> Modifier la page
@@ -115,7 +115,7 @@ const AdminDashboard = () => {
                   
                   <div className="flex gap-3 sm:gap-5">
                     <Link 
-                      to={`/admin/edit/${project.id}`} 
+                      to={`/secret-yonna-edit/${project.id}`}
                       className="p-2 text-[var(--primary-color)] opacity-50 hover:opacity-100 hover:text-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 rounded-full transition-all"
                       title="Modifier"
                     >

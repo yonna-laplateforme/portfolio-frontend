@@ -3,33 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider'; 
 import { apiFetch } from '../api/apiFetch';
 
-const Login = () => { // 👈 On a enlevé le { setToken } ici
+const Login = () => { 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   
-  const { login } = useAuth(); // 👈 On récupère la fonction login depuis ton contexte
+  const { login } = useAuth(); 
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    // Utilise apiFetch au lieu de fetch natif
-    // Note : on passe un objet config personnalisé pour le POST
-    const data = await apiFetch('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const data = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (data.token) {
-      login(data.token);
-      navigate('/admin');
+      if (data.token) {
+        login(data.token);
+        
+       
+        navigate('/dashboard-yonna-2026', { replace: true });
+      }
+    } catch (error) {
+      alert(error.message || "Erreur de connexion"); 
     }
-  } catch (error) {
-    // Ton service apiFetch a déjà géré l'erreur, tu l'affiches juste
-    alert(error.message); 
-  }
-};
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh]">

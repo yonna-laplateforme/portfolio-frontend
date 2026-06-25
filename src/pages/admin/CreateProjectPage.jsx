@@ -34,7 +34,7 @@ const CreateProject = () => {
         body: formData
       });
       alert("Nouveau projet créé avec succès !");
-      navigate('/admin');
+      navigate('/dashboard-yonna-2026');
     } catch (err) {
       alert(err.message || "Erreur lors de la création");
     } finally {
