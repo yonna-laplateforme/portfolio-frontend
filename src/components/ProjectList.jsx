@@ -9,7 +9,6 @@ const ProjectList = ({ isAdmin }) => {
   const [filter, setFilter] = useState("TOUT");
 
   useEffect(() => {
-   
     apiFetch("/projects")
       .then(data => {
         setProjects(data);
@@ -30,7 +29,6 @@ const ProjectList = ({ isAdmin }) => {
       Chargement...
     </div>
   );
-
  
   return (
     <section className="w-full max-w-7xl mx-auto px-6 md:px-12 py-16">
@@ -51,31 +49,44 @@ const ProjectList = ({ isAdmin }) => {
         ))}
       </nav>
 
-      {/* GRILLE ANIMÉE */}
-      <motion.ul 
-        layout 
-        className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-32"
-        aria-live="polite"
-      > 
-        <AnimatePresence>
-          {filteredProjects.map((project, index) => (
-            <motion.li 
-              key={project.id || project._id}
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className={`list-none ${index % 2 !== 0 ? 'md:mt-32' : 'mt-0'}`}
-            >
-              <ProjectCard 
-                project={project} 
-                isAdmin={isAdmin} 
-                index={index} 
-              />
-            </motion.li>
-          ))}
-        </AnimatePresence>
-      </motion.ul>
+      {/* VÉRIFICATION SI PROJETS EXISTENT */}
+      {filteredProjects.length === 0 ? (
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }}
+          className="text-center py-20"
+        >
+          <p className="font-mono text-zinc-400 uppercase tracking-widest text-sm">
+            Aucun projet pour le moment.
+          </p>
+        </motion.div>
+      ) : (
+        /* GRILLE ANIMÉE */
+        <motion.ul 
+          layout 
+          className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-32"
+          aria-live="polite"
+        > 
+          <AnimatePresence>
+            {filteredProjects.map((project, index) => (
+              <motion.li 
+                key={project.id || project._id}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className={`list-none ${index % 2 !== 0 ? 'md:mt-32' : 'mt-0'}`}
+              >
+                <ProjectCard 
+                  project={project} 
+                  isAdmin={isAdmin} 
+                  index={index} 
+                />
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </motion.ul>
+      )}
     </section>
   );
 };

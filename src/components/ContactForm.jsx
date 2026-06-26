@@ -43,7 +43,7 @@ const ContactForm = () => {
           <h2 id="contact-title" className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-4">
             <span className="text-[var(--primary-color)]">CONTACT</span>
           </h2>
-          <p className="text-sm font-mono text-[var(--text-main)]/60 uppercase tracking-widest">
+          <p className="text-sm font-mono  text-[var(--text-main)]/100 uppercase tracking-widest">
             Prêt pour une nouvelle implémentation ?
           </p>
         </div>

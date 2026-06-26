@@ -3,14 +3,11 @@ import { motion } from 'framer-motion';
 import ProjectList from '../components/ProjectList';
 import { apiFetch } from '../api/apiFetch';
 
-
-
 const ProjectsPage = ({ isAdmin }) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-    // Utilisation de apiFetch comme pour ta page About
+  useEffect(() => {
     apiFetch('/projects') 
       .then(data => {
         setProjects(data);
@@ -36,8 +33,8 @@ useEffect(() => {
             <h3 className="text-[10px] font-mono font-bold text-accent uppercase tracking-[0.3em]">// SÉLECTION</h3>
             
             <h1 className="text-4xl md:text-7xl font-black uppercase mt-4 mb-8 text-(--primary-color)">
-  TOUS MES <span className="text-(--accent-color)">PROJETS</span>
-</h1>
+              TOUS MES <span className="text-(--accent-color)">PROJETS</span>
+            </h1>
             
             <div className="h-0.5 w-12 bg-accent mx-auto"></div>
             
@@ -49,10 +46,10 @@ useEffect(() => {
           </motion.div>
         </header>
 
-        {/* LISTE DES PROJETS  */}
+        {/* LISTE DES PROJETS */}
         <section>
           {loading ? (
-            <div className="text-center font-mono text-secondary animate-pulse">Chargement...</div>
+            <div className="text-center font-mono text-secondary animate-pulse py-20">Chargement...</div>
           ) : (
             <ProjectList projects={projects} isAdmin={isAdmin} />
           )}

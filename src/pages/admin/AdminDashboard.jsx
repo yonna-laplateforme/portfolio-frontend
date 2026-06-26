@@ -50,13 +50,13 @@ const AdminDashboard = () => {
           className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12"
         >
           <div>
-              <h1 className="text-4xl font-light text-[var(--primary-color)] tracking-wide mb-2">Dashboard</h1>
-              <div className="h-0.5 w-12 bg-[var(--accent-color)] mb-4"></div>
+              <h1 className="text-4xl font-light text-(--primary-color) tracking-wide mb-2">Dashboard</h1>
+              <div className="h-0.5 w-12 bg-(--accent-color) mb-4"></div>
               <p className="text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
           </div>
           <Link 
             to="/secret-yonna-create" 
-            className="flex items-center gap-2 bg-[var(--accent-color)] text-white px-6 py-3.5 text-xs font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.99] transition-all shadow-sm"
+            className="flex items-center gap-2 bg-(--accent-color) text-white px-6 py-3.5 text-xs font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.99] transition-all shadow-sm"
           >
             <Plus size={16} /> Ajouter un projet
           </Link>
@@ -66,18 +66,18 @@ const AdminDashboard = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white border border-[var(--primary-color)]/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
+          className="bg-white border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
         >
           {/* NOUVEAU BLOC : GESTION PAGE À PROPOS */}
         <section className="mb-12">
-          <div className="flex items-center justify-between p-6 bg-white border border-[var(--primary-color)]/10 shadow-sm">
+          <div className="flex items-center justify-between p-6 bg-white border border-(--primary-color)/10 shadow-sm">
             <div>
-              <h2 className="font-bold uppercase text-sm tracking-widest text-[var(--primary-color)]">Page "À Propos"</h2>
+              <h2 className="font-bold uppercase text-sm tracking-widest text-(--primary-color)">Page "À Propos"</h2>
               <p className="text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
             </div>
             <Link 
               to="/secret-yonna-edit-about" // Assure-toi que cette route existe dans ton App.js
-              className="flex items-center gap-2 border border-[var(--primary-color)]/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-[var(--primary-color)] hover:text-white transition-all"
+              className="flex items-center gap-2 border border-(--primary-color)/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-(--primary-color) hover:text-white transition-all"
             >
               <Edit2 size={16} /> Modifier la page
             </Link>
@@ -86,7 +86,7 @@ const AdminDashboard = () => {
           {projects.length === 0 ? (
             <p className="py-16 text-center text-sm opacity-50 font-medium">Aucun projet trouvé pour le moment.</p>
           ) : (
-            <div className="divide-y divide-[var(--primary-color)]/10">
+            <div className="divide-y divide-(--primary-color)/10">
               {projects.map((project, index) => (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
@@ -97,16 +97,21 @@ const AdminDashboard = () => {
                 >
                   <div className="flex items-center gap-6">
                     {/* Conteneur image stylisé */}
-                    <div className="w-24 h-16 bg-bg/50 border border-[var(--primary-color)]/10 overflow-hidden flex-shrink-0">
+                    {/* Conteneur image stylisé */}
+                    <div className="w-24 h-16 bg-bg/50 border border-(--primary-color)/10 overflow-hidden shrink-0">
                       {project.image_url ? (
-                        <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img 
+                          src={project.image_url.split(',')[0]} 
+                          alt={project.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center opacity-30 text-xs">IMG</div>
                       )}
                     </div>
                     
                     <div>
-                      <h3 className="font-medium text-[var(--primary-color)] text-lg mb-1">{project.title}</h3>
+                      <h3 className="font-medium text-(--primary-color) text-lg mb-1">{project.title}</h3>
                       <p className="text-[10px] opacity-60 uppercase tracking-widest">
                         {project.tech_stack || "Projet"} {project.isFeatured ? "• À la une" : ""}
                       </p>
@@ -116,14 +121,14 @@ const AdminDashboard = () => {
                   <div className="flex gap-3 sm:gap-5">
                     <Link 
                       to={`/secret-yonna-edit/${project.id}`}
-                      className="p-2 text-[var(--primary-color)] opacity-50 hover:opacity-100 hover:text-[var(--accent-color)] hover:bg-[var(--accent-color)]/10 rounded-full transition-all"
+                      className="p-2 text-(--primary-color) opacity-50 hover:opacity-100 hover:text-(--accent-color) hover:bg-(--accent-color)/10 rounded-full transition-all"
                       title="Modifier"
                     >
                       <Edit2 size={18} />
                     </Link>
                     <button 
                       onClick={() => deleteProject(project.id)} 
-                      className="p-2 text-[var(--primary-color)] opacity-50 hover:opacity-100 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+                      className="p-2 text-(--primary-color) opacity-50 hover:opacity-100 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
                       title="Supprimer"
                     >
                       <Trash2 size={18} />

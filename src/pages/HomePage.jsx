@@ -11,8 +11,10 @@ const HomePage = () => {
   const [visibleCount, setVisibleCount] = useState(3);
   const [loading, setLoading] = useState(true);
 
+// Dans ton HomePage.jsx
 useEffect(() => {
-    apiFetch("/projects")
+    // Appel à la route simplifiée pour la Home
+    apiFetch("/projects/home") 
         .then(data => {
             setAllProjects(data);
             setLoading(false);
@@ -72,34 +74,37 @@ useEffect(() => {
   </motion.div>
 </section>
 
-      {/* SECTION PROJETS */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <h2 className="text-xs md:text-sm font-mono text-secondary mb-24 uppercase tracking-[0.3em] flex items-center gap-4">
-          <span className="w-12 h-px bg-accent"></span> // PROJETS_SÉLECTIONNÉS
-        </h2>
+     {/* SECTION PROJETS */}
+<section className="py-24 px-6 max-w-7xl mx-auto">
+  <h2 className="text-xs md:text-sm font-mono text-secondary mb-24 uppercase tracking-[0.3em] flex items-center gap-4">
+    <span className="w-12 h-px bg-accent"></span> // PROJETS_SÉLECTIONNÉS
+  </h2>
 
-        {loading ? (
-          <p className="text-center font-mono text-secondary">Chargement...</p>
-        ) : (
-          <div className="space-y-32">
-            {featured.slice(0, visibleCount).map((project, index) => (
-              <Link to={`/projects/${project.id}`} key={project.id} className="block group">
-                <ZigzagProject project={project} index={index} />
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* Bouton CTA final (Bas-droite du Z) */}
-        <div className="flex justify-end mt-24">
-          <Link
-            to="/projects"
-            className="px-12 py-6 text-sm font-bold uppercase tracking-[0.3em] transition-all bg-accent text-bg hover:bg-primary"
-          >
-            MES PROJETS →
+  {loading ? (
+    <p className="text-center font-mono text-secondary">Chargement...</p>
+  ) : (
+    /* Transformation du container en une liste sémantique */
+    <ul className="space-y-32">
+      {featured.slice(0, visibleCount).map((project, index) => (
+        <li key={project.id}>
+          <Link to={`/projects/${project.id}`} className="block group">
+            <ZigzagProject project={project} index={index} />
           </Link>
-        </div>
-      </section>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {/* Bouton CTA final */}
+  <div className="flex justify-end mt-24">
+    <Link
+      to="/projects"
+      className="px-12 py-6 text-sm font-bold uppercase tracking-[0.3em] transition-all bg-accent text-bg hover:bg-primary"
+    >
+      MES PROJETS →
+    </Link>
+  </div>
+</section>
 
 {/* SECTION CONTACT - HOMEPAGE */}
 <section id="contact" className="py-24 border-t border-zinc-200">
