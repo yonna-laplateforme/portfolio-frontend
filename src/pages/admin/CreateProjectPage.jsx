@@ -32,22 +32,23 @@ const CreateProject = () => {
       formData.append('images', file);
     });
 
-  try {
-  const response = await fetch(`${API_URL}/api/projects`, {
-    method: 'POST',
-    body: formData, // Si tu envoies un FormData
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
+    try {
+      const response = await fetch(`${API_URL}/api/projects`, {
+        method: 'POST',
+        body: formData, // Si tu envoies un FormData
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
-  if (!response.ok) {
-    // ICI : on extrait le message d'erreur proprement
-    const errorData = await response.json().catch(() => ({ message: "Erreur serveur inconnue" }));
-    throw new Error(errorData.message || "Erreur lors de l'envoi");
-  }
-} catch (err) {
-  // Au lieu d'afficher err (qui est un objet), affiche err.message
-  alert("Erreur: " + err.message); 
-}
+      if (!response.ok) {
+        // ICI : on extrait le message d'erreur proprement
+        const errorData = await response.json().catch(() => ({ message: "Erreur serveur inconnue" }));
+        throw new Error(errorData.message || "Erreur lors de l'envoi");
+      }
+    } catch (err) {
+      // Au lieu d'afficher err (qui est un objet), affiche err.message
+      alert("Erreur: " + err.message);
+    }
+  };
 
   return (
     <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">
