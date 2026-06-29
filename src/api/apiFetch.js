@@ -1,7 +1,9 @@
-// Remplace tout le contenu par ceci :
 export async function apiFetch(endpoint, options = {}) {
-  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
- const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
+
+  const baseUrl = import.meta.env.VITE_API_URL || "https://portfolio-backend-7xj4.onrender.com";
+  
+  const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
+  
   const token = localStorage.getItem('token'); 
 
   const isFormData = options.body instanceof FormData;
