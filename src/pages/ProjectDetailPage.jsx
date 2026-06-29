@@ -97,18 +97,8 @@ console.log("Données du projet reçues :", project);
               </div>
 
               <section className="grid md:grid-cols-3 gap-16 border-t border-secondary/20 pt-16">
-                {/* SECTION DESCRIPTION */}
-             <div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6">
-  {project.description ? (
-   
-    project.description
-      .replace(/^"|"$/g, '') 
-      .replace(/\\"/g, '"')
-      .split('\n')
-      .map((p, i) => <p key={i}>{p}</p>)
-  ) : (
-    <p>Aucune description disponible.</p>
-  )}
+  <div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6 border border-red-500">
+  <p>DEBUG : {JSON.stringify(project.description)}</p>
 </div>
                 
                 <aside className="space-y-12">
