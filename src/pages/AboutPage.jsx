@@ -7,7 +7,7 @@ const AboutPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/about').then(res => {
+    apiFetch('api/about').then(res => {
       setData(res);
       setLoading(false);
     }).catch(err => {

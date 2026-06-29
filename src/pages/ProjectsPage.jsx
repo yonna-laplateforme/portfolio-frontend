@@ -8,7 +8,7 @@ const ProjectsPage = ({ isAdmin }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/projects') 
+    apiFetch('api/projects') 
       .then(data => {
         setProjects(data);
         setLoading(false);

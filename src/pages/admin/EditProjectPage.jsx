@@ -18,7 +18,7 @@ const EditProject = () => {
     });
 
     useEffect(() => {
-        apiFetch(`/projects/${id}`).then((data) => {
+        apiFetch(`api/projects/${id}`).then((data) => {
             if (data) {
                 // Sanitize : transforme null en ""
                 const sanitizedData = Object.keys(data).reduce((acc, key) => {
@@ -57,7 +57,7 @@ const EditProject = () => {
     });
 
     try {
-        await apiFetch(`/projects/${id}`, { method: 'PUT', body: formData });
+        await apiFetch(`api/projects/${id}`, { method: 'PUT', body: formData });
         alert("Projet modifié !");
         navigate('/dashboard-yonna-2026');
     } catch (err) {

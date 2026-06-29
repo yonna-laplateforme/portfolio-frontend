@@ -18,7 +18,7 @@ const ContactForm = () => {
     setServerError(null);
     try {
       
-      await apiFetch('/contact', {
+      await apiFetch('api/contact', {
         method: 'POST',
         body: JSON.stringify(data),
       });

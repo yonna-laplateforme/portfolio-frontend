@@ -33,7 +33,7 @@ const CreateProject = () => {
     });
 
     try {
-      await apiFetch(`/projects`, { method: 'POST', body: formData });
+      await apiFetch(`api/projects`, { method: 'POST', body: formData });
       alert("Projet créé avec succès !");
       navigate('/dashboard-yonna-2026');
     } catch (err) {

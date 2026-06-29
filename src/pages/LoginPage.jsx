@@ -18,7 +18,7 @@ const LoginPage = () => {
 
   try {
     // 1. Appel API via apiFetch
-    const data = await apiFetch('/auth/login', {
+    const data = await apiFetch('api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });

@@ -9,7 +9,7 @@ const ProjectList = ({ isAdmin }) => {
   const [filter, setFilter] = useState("TOUT");
 
   useEffect(() => {
-    apiFetch("/projects")
+    apiFetch("api/projects")
       .then(data => {
         setProjects(data);
         setLoading(false);

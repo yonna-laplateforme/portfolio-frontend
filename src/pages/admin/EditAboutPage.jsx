@@ -10,7 +10,7 @@ const EditAboutPage = () => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    apiFetch('/about').then(data => {
+    apiFetch('api/about').then(data => {
       setFormData(data || {});
       if (data && data.photo_url) setPreview(data.photo_url);
       setLoading(false);
@@ -34,7 +34,7 @@ const EditAboutPage = () => {
     try {
       const { image, ...textData } = formData; 
       
-      await apiFetch('/about', {
+      await apiFetch('api/about', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(textData)
@@ -44,7 +44,7 @@ const EditAboutPage = () => {
         const imageData = new FormData();
         imageData.append('image', selectedFile);
         
-        await apiFetch('/about/photo', {
+        await apiFetch('api/about/photo', {
           method: 'POST',
           body: imageData
         });
