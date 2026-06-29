@@ -30,6 +30,15 @@ function App() {
       <main className="pt-16">
         <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
           <Routes>
+            const RouteLogger = () => {
+  const location = useLocation();
+  useEffect(() => {
+    console.log("--- NAVIGATION ---");
+    console.log("URL tentée :", location.pathname);
+    console.log("Search params :", location.search);
+  }, [location]);
+  return null;
+};
             {/* Routes publiques */}
             <Route path="/" element={<HomePage />} />
             <Route path="/projects" element={<ProjectsPage isAdmin={!!token} />} />
