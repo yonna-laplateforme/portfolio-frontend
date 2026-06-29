@@ -1,7 +1,7 @@
 // Remplace tout le contenu par ceci :
 export async function apiFetch(endpoint, options = {}) {
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
-  const url = `${baseUrl}${endpoint}`;
+ const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   const token = localStorage.getItem('token'); 
 
   const isFormData = options.body instanceof FormData;
