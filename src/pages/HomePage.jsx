@@ -13,7 +13,7 @@ const HomePage = () => {
 
 // Dans ton HomePage.jsx
 useEffect(() => {
-    // Appel à la route simplifiée pour la Home
+   
     apiFetch("api/projects/home") 
         .then(data => {
             setAllProjects(data);

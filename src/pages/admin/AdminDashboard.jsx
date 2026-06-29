@@ -37,7 +37,7 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    // Le min-h-screen et flex flex-col assurent que le composant prend au moins toute la hauteur de l'écran
+  
     <div className="min-h-screen flex flex-col bg-bg text-text-main font-sans pt-24 pb-20 px-6">
       
       {/* flex-1 permet à cette zone de s'étirer et de pousser le footer vers le bas */}
