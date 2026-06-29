@@ -2,27 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const API_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-7xj4.onrender.com";
+
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [hoveredImage, setHoveredImage] = useState(null);
 
  useEffect(() => {
-  console.log("ID détecté par useParams :", id); // Si c'est undefined, c'est là le pb
+  console.log("ID détecté par useParams :", id); 
+ useEffect(() => {
+  window.scrollTo(0, 0);
+  setLoading(true); 
   
   fetch(`${API_URL}/api/projects/${id}`)
     .then(res => {
-      console.log("Statut réponse API :", res.status); // 404 ? 200 ?
       if (!res.ok) throw new Error("Erreur API");
       return res.json();
     })
+    .then(data => {
+      setProject(data);
+      setLoading(false); 
+    })
     .catch(err => {
       console.error("DEBUG : Le fetch a échoué car :", err);
+      setLoading(false); 
+      navigate('/404', { replace: true });
     });
-}, [id]);
+}, [id, navigate]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center font-mono">CHARGEMENT...</div>;
 
