@@ -1,3 +1,8 @@
+import { defineConfig } from 'vite'; // C'EST CETTE LIGNE QUI MANQUE SUREMENT
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
