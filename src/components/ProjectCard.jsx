@@ -18,7 +18,7 @@ const ProjectCard = ({ project, index }) => {
   });
   const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
-  const handleNavigate = () => navigate(`api/projects/${project.id}`);
+  const handleNavigate = () => navigate(`/projects/${project.id}`);
 
   return (
     <article ref={cardRef} className="group relative">
