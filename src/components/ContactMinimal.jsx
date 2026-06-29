@@ -80,7 +80,7 @@ const inputClasses = "w-full bg-transparent border-b-2 border-zinc-500 pb-2 outl
                                 className="font-mono text-xs uppercase tracking-[0.3em] hover:text-accent transition-colors block font-bold cursor-pointer"
                                 aria-label="Envoyer le formulaire de contact"
                             >
-                                {isSubmitting ? "ENVOI..." : ">> ENVOYER"}
+                               {isSubmitting ? "ENVOI EN COURS..." : ">> ENVOYER"}
                             </button>
                         </form>
                     )}
