@@ -12,7 +12,7 @@ const ProjectDetailPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+    const baseUrl = import.meta.env.VITE_API_URL ;
     
     fetch(`${baseUrl}/projects/${id}`)
       .then(res => { if (!res.ok) throw new Error(); return res.json(); })

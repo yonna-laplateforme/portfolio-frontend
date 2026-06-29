@@ -11,7 +11,7 @@ const AdminDashboard = () => {
 
  const fetchProjects = async () => {
     try {
-      const data = await apiFetch('api/projects'); // Simple et propre
+      const data = await apiFetch('api/projects'); 
       setProjects(data);
     } catch (error) {
       console.error("Erreur :", error);
@@ -23,8 +23,7 @@ const AdminDashboard = () => {
       try {
         await apiFetch(`api/projects/${id}`, {
           method: 'DELETE',
-          // Plus besoin de gérer le Bearer token manuellement ici,
-          // apiFetch le fait pour toi grâce au localStorage !
+       
         });
         fetchProjects();
       } catch (error) {
