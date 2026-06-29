@@ -14,7 +14,7 @@ const ProjectDetailPage = () => {
     window.scrollTo(0, 0);
     const baseUrl = import.meta.env.VITE_API_URL ;
     
-    fetch(`${baseUrl}/projects/${id}`)
+    fetch(`${baseUrl}api/projects/${id}`)
       .then(res => { if (!res.ok) throw new Error(); return res.json(); })
       .then(data => { setProject(data); setLoading(false); })
       .catch(() => navigate('/404', { replace: true }));
