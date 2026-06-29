@@ -20,7 +20,13 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
 const CreateProject = lazy(() => import('./pages/admin/CreateProjectPage.jsx'));
 const EditProject = lazy(() => import('./pages/admin/EditProjectPage.jsx'));
 const EditAboutPage = lazy(() => import('./pages/admin/EditAboutPage.jsx'));
-
+const RouteLogger = () => {
+  const location = useLocation();
+  useEffect(() => {
+    console.log("URL tentée :", location.pathname);
+  }, [location]);
+  return null;
+};
 function App() {
   const { token, logout } = useAuth();
 
@@ -30,15 +36,7 @@ function App() {
       <main className="pt-16">
         <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
           <Routes>
-            const RouteLogger = () => {
-  const location = useLocation();
-  useEffect(() => {
-    console.log("--- NAVIGATION ---");
-    console.log("URL tentée :", location.pathname);
-    console.log("Search params :", location.search);
-  }, [location]);
-  return null;
-};
+            
             {/* Routes publiques */}
             <Route path="/" element={<HomePage />} />
             <Route path="/projects" element={<ProjectsPage isAdmin={!!token} />} />

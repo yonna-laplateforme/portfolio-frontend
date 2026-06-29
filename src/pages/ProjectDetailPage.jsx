@@ -10,15 +10,19 @@ const ProjectDetailPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredImage, setHoveredImage] = useState(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    const baseUrl = import.meta.env.VITE_API_URL ;
-    
-    fetch(`${baseUrl}api/projects/${id}`)
-      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-      .then(data => { setProject(data); setLoading(false); })
-      .catch(() => navigate('/404', { replace: true }));
-  }, [id, navigate]);
+ useEffect(() => {
+  console.log("ID détecté par useParams :", id); // Si c'est undefined, c'est là le pb
+  
+  fetch(`${API_URL}/api/projects/${id}`)
+    .then(res => {
+      console.log("Statut réponse API :", res.status); // 404 ? 200 ?
+      if (!res.ok) throw new Error("Erreur API");
+      return res.json();
+    })
+    .catch(err => {
+      console.error("DEBUG : Le fetch a échoué car :", err);
+    });
+}, [id]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center font-mono">CHARGEMENT...</div>;
 
