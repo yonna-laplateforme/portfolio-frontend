@@ -99,12 +99,16 @@ console.log("Données du projet reçues :", project);
               <section className="grid md:grid-cols-3 gap-16 border-t border-secondary/20 pt-16">
                 {/* ICI TA SECTION DESCRIPTION */}
                 <div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6">
-                  {project.description ? (
-                    project.description.split('\n').map((p, i) => <p key={i}>{p}</p>)
-                  ) : (
-                    <p>Aucune description disponible.</p>
-                  )}
-                </div>
+  {project.description ? (
+    // On retire les guillemets superflus qui entourent ta chaîne
+    project.description
+      .replace(/^"|"$/g, '') 
+      .split('\n')
+      .map((p, i) => <p key={i}>{p}</p>)
+  ) : (
+    <p>Aucune description disponible.</p>
+  )}
+</div>
                 
                 <aside className="space-y-12">
                   <div>
