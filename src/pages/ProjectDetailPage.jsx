@@ -36,7 +36,7 @@ const ProjectDetailPage = () => {
   if (!project) return null;
 
   const imagesArray = project?.image_url ? project.image_url.split(',').map(u => u.trim()) : [];
-
+console.log("Données du projet reçues :", project);
   return (
     <>
       <main className="min-h-screen bg-(--bg-color) text-(--text-main) px-6 py-24">
