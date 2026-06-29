@@ -97,11 +97,11 @@ console.log("Données du projet reçues :", project);
               </div>
 
               <section className="grid md:grid-cols-3 gap-16 border-t border-secondary/20 pt-16">
-<div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6">
-  <div style={{ padding: '20px', border: '2px solid blue' }}>
-    <p>DEBUG : {project.description ? "La description existe" : "La description est absente"}</p>
-    <p>CONTENU BRUT : {JSON.stringify(project.description)}</p>
-  </div>
+<div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6 border-2 border-red-500 p-4">
+  <p>DEBUG INFO :</p>
+  <pre style={{ fontSize: '10px' }}>
+    {JSON.stringify(project, null, 2)}
+  </pre>
 </div>
                 
                 <aside className="space-y-12">
