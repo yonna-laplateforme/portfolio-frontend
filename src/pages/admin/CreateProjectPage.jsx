@@ -2,15 +2,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form'; 
-import { apiFetch } from '../../api/apiFetch';
+// Assure-toi d'importer ton hook d'authentification
+import { useAuth } from '../../context/AuthProvider'; 
 
 const CreateProject = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm(); 
+  const { token } = useAuth(); // Récupération du token ici
+  const { register, handleSubmit } = useForm(); 
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Définition de l'URL API
+  const API_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-7xj4.onrender.com";
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -22,12 +27,10 @@ const CreateProject = () => {
     setIsSubmitting(true);
     const formData = new FormData();
 
-    // Ajout de tous les champs du formulaire
     Object.keys(data).forEach(key => {
       formData.append(key, key === 'isFeatured' ? (data.isFeatured ? 1 : 0) : data[key]);
     });
 
-    // Ajout des images
     selectedFiles.forEach((file) => {
       formData.append('images', file);
     });
@@ -35,20 +38,29 @@ const CreateProject = () => {
     try {
       const response = await fetch(`${API_URL}/api/projects`, {
         method: 'POST',
-        body: formData, // Si tu envoies un FormData
-        headers: { 'Authorization': `Bearer ${token}` }
+        body: formData,
+        headers: { 
+          'Authorization': `Bearer ${token}` 
+          // Note: Ne pas mettre 'Content-Type': 'multipart/form-data' ici, 
+          // le navigateur le gère tout seul avec le FormData
+        }
       });
 
       if (!response.ok) {
-        // ICI : on extrait le message d'erreur proprement
-        const errorData = await response.json().catch(() => ({ message: "Erreur serveur inconnue" }));
+        const errorData = await response.json().catch(() => ({ message: "Erreur serveur" }));
         throw new Error(errorData.message || "Erreur lors de l'envoi");
       }
+      
+      alert("Projet créé avec succès !");
+      navigate('/dashboard-yonna-2026');
     } catch (err) {
-      // Au lieu d'afficher err (qui est un objet), affiche err.message
       alert("Erreur: " + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  // ... (Ton JSX reste le même)
 
   return (
     <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">
