@@ -11,26 +11,24 @@ const ProjectDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
  useEffect(() => {
-  console.log("ID détecté par useParams :", id); 
- useEffect(() => {
-  window.scrollTo(0, 0);
-  setLoading(true); 
-  
-  fetch(`${API_URL}/api/projects/${id}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Erreur API");
-      return res.json();
-    })
-    .then(data => {
-      setProject(data);
-      setLoading(false); 
-    })
-    .catch(err => {
-      console.error("DEBUG : Le fetch a échoué car :", err);
-      setLoading(false); 
-      navigate('/404', { replace: true });
-    });
-}, [id, navigate]);
+    window.scrollTo(0, 0);
+    setLoading(true);
+    
+    fetch(`${API_URL}/api/projects/${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Erreur API");
+        return res.json();
+      })
+      .then(data => {
+        setProject(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("DEBUG : Le fetch a échoué car :", err);
+        setLoading(false);
+        navigate('/404', { replace: true });
+      });
+  }, [id, navigate]); 
 
   if (loading) return <div className="min-h-screen flex items-center justify-center font-mono">CHARGEMENT...</div>;
 
