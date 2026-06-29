@@ -4,16 +4,16 @@ import { useRef, useState, useEffect } from 'react';
 const ZigzagProject = ({ project, index }) => {
     const ref = useRef(null);
     
-    // Ton log pour vérifier
+    
     useEffect(() => {
         console.log("Images pour le projet", project.title, ":", project.image_url);
     }, [project]);
 
-    // On transforme en tableau. Si c'est une seule image, ça fera un tableau de 1 élément.
+
     const imagesArray = project.image_url ? project.image_url.split(',').map(u => u.trim()) : [];
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Carrousel auto 10s
+   
     useEffect(() => {
         if (imagesArray.length <= 1) return; // Ne fait rien si pas d'autres images
         
@@ -23,7 +23,7 @@ const ZigzagProject = ({ project, index }) => {
         return () => clearInterval(interval);
     }, [imagesArray.length]);
 
-    // Animations (Ton code existant)
+   
     const isReverse = index % 2 !== 0;
     const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
     const x = useTransform(scrollYProgress, [0, 1], [isReverse ? 100 : -100, 0]);

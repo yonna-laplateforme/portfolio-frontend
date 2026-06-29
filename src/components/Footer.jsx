@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  // Fonction pour remonter en haut de page en douceur
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,

@@ -7,7 +7,7 @@ const Navbar = ({ token, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleNavigation = (path) => {
-    setIsOpen(false); // Ferme le menu après clic
+    setIsOpen(false); 
     navigate(path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
