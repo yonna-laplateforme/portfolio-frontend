@@ -45,7 +45,7 @@ useEffect(() => {
   </div>
 </section>
 
-      {/* SECTION VISION - Adaptation hauteur fenêtre */}
+      {/* SECTION VISION  */}
 <section className="min-h-screen flex flex-col justify-center items-center py-24 px-6 md:px-24 bg-primary text-bg">
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
@@ -83,7 +83,7 @@ useEffect(() => {
   {loading ? (
     <p className="text-center font-mono text-secondary">Chargement...</p>
   ) : (
-    /* Transformation du container en une liste sémantique */
+   
     <ul className="space-y-32">
       {featured.slice(0, visibleCount).map((project, index) => (
         <li key={project.id}>
@@ -109,7 +109,7 @@ useEffect(() => {
 {/* SECTION CONTACT - HOMEPAGE */}
 <section id="contact" className="py-24 border-t border-zinc-200">
   <div className="text-center mb-16">
-    {/* CORRECTION : Remplacement du h2 par un span block pour respecter la hiérarchie h1 -> h2 -> h2 */}
+  
     <span className="text-[10px] block font-bold font-mono text-accent uppercase tracking-[0.3em] mb-4">
       // COLLABORATION
     </span>
