@@ -31,7 +31,7 @@ const RouteLogger = () => {
 };
 
 // INTERRUPTEUR DE MAINTENANCE
-const IS_MAINTENANCE = true; 
+const IS_MAINTENANCE = false; 
 
 function App() {
   const { token, logout } = useAuth();
