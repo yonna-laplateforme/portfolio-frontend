@@ -85,7 +85,7 @@ const Navbar = ({ token, onLogout }) => {
   </div>
 )}
 
-          )}
+          
         </div>
       </nav>
     </header>
