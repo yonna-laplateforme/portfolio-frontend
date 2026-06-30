@@ -66,14 +66,24 @@ const Navbar = ({ token, onLogout }) => {
   </ul>
 
           
-          {token && (
- <button 
-  onClick={onLogout} 
-  className="hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded p-1"
-  aria-label="Se déconnecter"
->
-  <LogOut size={16} aria-hidden="true" />
-</button>
+  {token && (
+  <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-zinc-800 pt-8 md:pt-0 md:pl-6">
+    <Link 
+      to="/dashboard-yonna-2026" 
+      className="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
+    >
+      ADMIN
+    </Link>
+    
+    <button 
+      onClick={onLogout} 
+      className="hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded p-1"
+      aria-label="Se déconnecter"
+    >
+      <LogOut size={16} aria-hidden="true" />
+    </button>
+  </div>
+)}
 
           )}
         </div>
