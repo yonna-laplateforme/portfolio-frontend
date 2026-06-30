@@ -40,7 +40,7 @@ const AdminDashboard = () => {
   
     <div className="min-h-screen flex flex-col bg-bg text-text-main font-sans pt-24 pb-20 px-6">
       
-      {/* flex-1 permet à cette zone de s'étirer et de pousser le footer vers le bas */}
+     
       <div className="max-w-5xl mx-auto w-full flex-1">
         
         <motion.div 
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
           transition={{ delay: 0.2 }}
           className="bg-white border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
         >
-          {/* NOUVEAU BLOC : GESTION PAGE À PROPOS */}
+          {/* GESTION PAGE À PROPOS */}
         <section className="mb-12">
           <div className="flex items-center justify-between p-6 bg-white border border-(--primary-color)/10 shadow-sm">
             <div>
