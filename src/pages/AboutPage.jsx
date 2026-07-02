@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { apiFetch } from '../api/apiFetch'; 
 
 
@@ -59,7 +59,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* SÉPARATEUR BRUTALISTE */}
+      {/* SÉPARATEUR */}
       <div className="flex items-center gap-6 mb-16 w-full">
         <div className="h-px flex-1 bg-(--text-main)"></div>
         <span className="font-mono text-sm uppercase whitespace-nowrap">CHAMPS D'EXPERTISE</span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CheckCircle2 } from 'lucide-react';
 import { apiFetch } from '../api/apiFetch';
@@ -36,20 +36,20 @@ const ContactForm = () => {
   const errorClass = "text-[10px] text-red-500 font-mono mt-2";
 
   return (
-    <section className="w-full bg-[var(--bg-color)] py-20 px-6" aria-labelledby="contact-title">
+    <section className="w-full bg-(--bg-color) py-20 px-6" aria-labelledby="contact-title">
       <div className="max-w-2xl mx-auto">
         
-        <div className="mb-12 border-l-2 border-[var(--primary-color)] pl-6">
+        <div className="mb-12 border-l-2 border-(--primary-color) pl-6">
           <h2 id="contact-title" className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter mb-4">
-            <span className="text-[var(--primary-color)]">CONTACT</span>
+            <span className="text-(--primary-color)">CONTACT</span>
           </h2>
-          <p className="text-sm font-mono  text-[var(--text-main)]/100 uppercase tracking-widest">
+          <p className="text-sm font-mono  text-(--text-main) uppercase tracking-widest">
             Prêt pour une nouvelle implémentation ?
           </p>
         </div>
 
         {isSubmitted ? (
-          <div role="status" aria-live="polite" className="p-8 border border-[var(--primary-color)] bg-[var(--primary-color)]/5 text-[var(--primary-color)] text-center space-y-4">
+          <div role="status" aria-live="polite" className="p-8 border border-(--primary-color) bg-(--primary-color)/5 text-(--primary-color) text-center space-y-4">
             <CheckCircle2 className="w-12 h-12 mx-auto" aria-hidden="true" />
             <h3 className="font-mono uppercase tracking-widest">Transmission réussie</h3>
           </div>
@@ -113,7 +113,7 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto px-8 py-4 bg-[var(--primary-color)] text-[var(--bg-color)] font-black uppercase tracking-[0.2em] hover:bg-[var(--accent-color)] transition-all disabled:opacity-50"
+              className="w-full md:w-auto px-8 py-4 bg-(--primary-color) text-(--bg-color) font-black uppercase tracking-[0.2em] hover:bg-(--accent-color) transition-all disabled:opacity-50"
             >
               {isSubmitting ? "ENVOI EN COURS..." : "ENVOYER"}
             </button>

@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form'; 
-// Assure-toi d'importer ton hook d'authentification
 import { useAuth } from '../../context/AuthProvider'; 
 
 const CreateProject = () => {
   const navigate = useNavigate();
-  const { token } = useAuth(); // Récupération du token ici
+  const { token } = useAuth();
   const { register, handleSubmit } = useForm(); 
 
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -41,8 +40,7 @@ const CreateProject = () => {
         body: formData,
         headers: { 
           'Authorization': `Bearer ${token}` 
-          // Note: Ne pas mettre 'Content-Type': 'multipart/form-data' ici, 
-          // le navigateur le gère tout seul avec le FormData
+         
         }
       });
 
@@ -60,7 +58,7 @@ const CreateProject = () => {
     }
   };
 
-  // ... (Ton JSX reste le même)
+ 
 
   return (
     <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">

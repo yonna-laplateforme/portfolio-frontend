@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Maintenance = () => {
   return (
     <div className="min-h-screen bg-(--bg-color) text-(--text-main) flex flex-col items-center justify-center p-6 font-mono">
@@ -10,7 +8,7 @@ const Maintenance = () => {
         <p className="text-secondary uppercase tracking-[0.3em] text-[10px]">
           LE PORTFOLIO EST ACTUELLEMENT EN MISE À JOUR.
         </p>
-        <div className="w-16 h-[1px] bg-accent mx-auto"></div>
+        <div className="w-16 h-px bg-accent mx-auto"></div>
         <p className="text-primary text-sm">
           RETOUR PRÉVU TRÈS PROCHAINEMENT.
         </p>

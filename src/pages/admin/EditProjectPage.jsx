@@ -47,7 +47,8 @@ const EditProject = () => {
         formData.append(key, key === 'isFeatured' ? (project.isFeatured ? 1 : 0) : project[key]);
     });
     
-    // AJOUT IMPORTANT : Envoie la liste des photos déjà existantes
+    // AJOUT IMPORTANT : 
+    // Envoie la liste des photos déjà existantes
     // pour que le serveur sache lesquelles garder.
     formData.append('existingImages', JSON.stringify(existingImages));
     
@@ -105,7 +106,7 @@ const EditProject = () => {
                             </div>
                         </div>
 
-                        {/* MÉDIAS CORRIGÉS */}
+                        {/* MÉDIAS */}
                         <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6">
                             <h3 className="text-lg font-medium text-(--primary-color) mb-4">Galerie Photos</h3>
                             {/* Images existantes */}

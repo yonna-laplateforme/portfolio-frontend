@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import WordRotation from '../components/WordRotation';
@@ -11,7 +11,7 @@ const HomePage = () => {
   const [visibleCount, setVisibleCount] = useState(3);
   const [loading, setLoading] = useState(true);
 
-// Dans ton HomePage.jsx
+
 useEffect(() => {
    
     apiFetch("api/projects/home") 
@@ -37,7 +37,7 @@ useEffect(() => {
     <span className="text-accent">YONNA</span><span className="text-primary">MERLINI</span>
   </h1>
   
-  {/* Ligne d'accentuation centrée */}
+ 
   <div className="w-24 h-1 bg-accent mt-6 mb-8 mx-auto"></div>
   
   <div className="text-xl md:text-4xl font-mono text-secondary">
@@ -53,7 +53,7 @@ useEffect(() => {
     transition={{ duration: 0.8 }}
     className="max-w-3xl flex flex-col items-center text-center"
   >
-    {/* CORRECTION : Remplacement du titre h2 par un span block */}
+    
     <span className="text-[10px] block font-mono text-accent font-bold mb-6 uppercase tracking-[0.3em]">
       // VISION_TECHNIQUE
     </span>

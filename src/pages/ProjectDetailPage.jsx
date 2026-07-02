@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -97,7 +97,7 @@ const ProjectDetailPage = () => {
             </div>
           )}
 
-          {/* SECTION DESCRIPTION - SORTIE DE LA CONDITION POUR S'AFFICHER TOUJOURS */}
+          {/* SECTION DESCRIPTION */}
           <section className="grid md:grid-cols-3 gap-16 border-t border-secondary/20 pt-16 mt-16">
             <div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6">
               {project.description ? (
@@ -132,7 +132,7 @@ const ProjectDetailPage = () => {
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-0 cursor-pointer"
+            className="fixed inset-0 z-9999 flex items-center justify-center bg-black/90 p-0 cursor-pointer"
             onClick={() => setHoveredImage(null)}
           >
             <motion.img 

@@ -33,7 +33,7 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh]">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">🔐 Accès Admin</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center"> Accès Admin</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

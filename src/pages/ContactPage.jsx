@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import ContactForm from '../components/ContactForm'; // On importe ton composant logique
+import ContactForm from '../components/ContactForm';
 
 const ContactPage = () => {
   return (

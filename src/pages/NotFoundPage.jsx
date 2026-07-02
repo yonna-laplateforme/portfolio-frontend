@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirection automatique vers l'accueil après 5 secondes
+    
     const timer = setTimeout(() => {
       navigate('/');
     }, 5000);

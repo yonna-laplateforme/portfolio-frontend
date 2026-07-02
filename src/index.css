@@ -4,11 +4,11 @@
   --primary-color: #090a09;
   --bg-color: #fffcfc;
   
-  /* Modifie ici pour avoir du noir */
+  
   --text-main: #000000;      /* Texte principal en noir */
   --text-secondary: #282727; /* Texte secondaire en gris foncé */
   
-  /* Garde tes couleurs d'accentuation pour les boutons ou les détails */
+  /* couleurs d'accentuation pour les boutons ou les détails */
   --accent-color: #ce1212;
 }
 
@@ -17,7 +17,7 @@
   --color-primary: var(--primary-color);
   --color-bg: var(--bg-color);
   --color-main: var(--text-main);
-  --color-secondary: var(--text-secondary); /* Ajouté ici */
+  --color-secondary: var(--text-secondary);
   --color-accent: var(--accent-color);
   
   /* Tailles de texte utilitaires */
