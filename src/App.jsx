@@ -22,13 +22,13 @@ const CreateProject = lazy(() => import('./pages/admin/CreateProjectPage.jsx'));
 const EditProject = lazy(() => import('./pages/admin/EditProjectPage.jsx'));
 const EditAboutPage = lazy(() => import('./pages/admin/EditAboutPage.jsx'));
 
-// const RouteLogger = () => {
-//   const location = useLocation();
-//   useEffect(() => {
-//     console.log("URL tentée :", location.pathname);
-//   }, [location]);
-//   return null;
-// };
+const RouteLogger = () => {
+  const location = useLocation();
+  useEffect(() => {
+    //console.log("URL tentée :", location.pathname);
+  }, [location]);
+  return null;
+};
 
 // INTERRUPTEUR DE MAINTENANCE
 const IS_MAINTENANCE = false; 
