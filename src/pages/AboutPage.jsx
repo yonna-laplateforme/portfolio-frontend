@@ -55,7 +55,7 @@ const AboutPage = () => {
           <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
           <div className="space-y-12">
             {data.bio_text.split('|').map((part, i) => (
-              <p key={i} className={`leading-relaxed ${i === 0 ? "text-4xl font-black uppercase" : "text-lg opacity-80"}`}>
+              <p key={i} className={`leading-relaxed ${i === 0 ? "text-2xl font-black uppercase" : "text-lg opacity-80"}`}>
                 {part.trim()}
               </p>
             ))}
