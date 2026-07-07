@@ -57,49 +57,106 @@ const EditAboutPage = () => {
     }
   };
 
+  if (loading) return <div className="min-h-screen bg-bg flex items-center justify-center font-mono text-sm uppercase">Chargement...</div>;
+
   return (
-    <motion.form 
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-      onSubmit={handleSubmit} 
-      className="max-w-4xl mx-auto p-8 space-y-6 bg-white"
-    >
-      <h2 className="text-2xl font-black uppercase">Éditer le À Propos</h2>
+    <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">
+      <div className="max-w-4xl mx-auto">
+        <motion.form 
+          initial={{ opacity: 0, y: 10 }} 
+          animate={{ opacity: 1, y: 0 }}
+          onSubmit={handleSubmit} 
+          className="bg-white p-8 md:p-12 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-12"
+        >
+          <div className="border-b border-(--primary-color)/10 pb-6">
+            <h1 className="font-heading text-3xl md:text-4xl font-bold uppercase text-(--primary-color)">Éditer "À Propos"</h1>
+            <p className="font-mono text-[10px] opacity-60 uppercase tracking-widest mt-2">Gérez le contenu de votre page de présentation</p>
+          </div>
 
-      {/* --- ZONE PHOTO --- */}
-      <div 
-        onClick={() => fileInputRef.current.click()}
-        className="w-full h-64 border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden"
-      >
-        {preview ? <img src={preview} className="max-h-full" alt="Portrait" /> : <p>Cliquer pour changer la photo</p>}
-        <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="image/*" />
+          {/* --- ZONE PHOTO --- */}
+          <div className="space-y-3">
+            <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Portrait de profil</label>
+            <div 
+              onClick={() => fileInputRef.current.click()}
+              className="w-full h-80 border-2 border-dashed border-(--primary-color)/30 bg-bg/30 flex items-center justify-center cursor-pointer overflow-hidden hover:border-(--accent-color) transition-colors group"
+            >
+              {preview ? (
+                <img src={preview} className="max-h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Portrait" />
+              ) : (
+                <p className="font-mono text-xs opacity-60 uppercase tracking-widest group-hover:text-(--accent-color)">Cliquez pour uploader une photo</p>
+              )}
+              <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="image/*" />
+            </div>
+          </div>
+
+          {/* --- EN-TÊTE PRINCIPAL --- */}
+          <div className="space-y-6">
+            <h3 className="font-heading text-lg uppercase text-(--primary-color) border-b border-(--primary-color)/10 pb-2">Titre d'accroche (Header)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Début du titre</label>
+                <input name="header_line1" value={formData.header_line1 || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="DÉVELOPPEUSE &" />
+              </div>
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold text-(--accent-color) uppercase tracking-widest">Mot accentué (Rouge)</label>
+                <input name="header_accent" value={formData.header_accent || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--accent-color)/50 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="PHOTOGRAPHE" />
+              </div>
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Fin du titre</label>
+                <input name="header_line2" value={formData.header_line2 || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="(Optionnel)" />
+              </div>
+            </div>
+          </div>
+
+          {/* --- TEXTE BIO --- */}
+          <div className="space-y-6">
+            <h3 className="font-heading text-lg uppercase text-(--primary-color) border-b border-(--primary-color)/10 pb-2">Biographie</h3>
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Titre de la bio</label>
+              <input name="bio_title" value={formData.bio_title || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="MON APPROCHE" />
+            </div>
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Contenu</label>
+              <textarea name="bio_text" value={formData.bio_text || ''} onChange={handleChange} className="w-full p-4 bg-bg/50 border border-(--primary-color)/20 text-sm h-48 resize-none focus:border-(--accent-color) outline-none transition-colors" placeholder="Écrivez votre parcours ici..." />
+            </div>
+          </div>
+
+          {/* --- NOUVEAUX CHAMPS PHILOSOPHIE --- */}
+          <div className="space-y-6">
+            <h3 className="font-heading text-lg uppercase text-(--primary-color) border-b border-(--primary-color)/10 pb-2">Cadre Noir (Citation / Philosophie)</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Début de la citation</label>
+                <input name="philosophy_prefix" value={formData.philosophy_prefix || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="LA TECHNIQUE" />
+              </div>
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold text-(--accent-color) uppercase tracking-widest">Mot accentué</label>
+                <input name="philosophy_important" value={formData.philosophy_important || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--accent-color)/50 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="SANS VISION" />
+              </div>
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Fin de la citation</label>
+                <input name="philosophy_suffix" value={formData.philosophy_suffix || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="N'EST QUE DU BRUIT." />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Sous-texte explicatif</label>
+              <textarea name="philosophy_text" value={formData.philosophy_text || ''} onChange={handleChange} className="w-full p-4 bg-bg/50 border border-(--primary-color)/20 text-sm h-32 resize-none focus:border-(--accent-color) outline-none transition-colors" placeholder="Explication de votre philosophie..." />
+            </div>
+
+            <div className="space-y-2">
+              <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Auteur de la citation</label>
+              <input name="philosophy_author" value={formData.philosophy_author || ''} onChange={handleChange} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="YONNA MERLINI" />
+            </div>
+          </div>
+
+          <button type="submit" className="w-full py-4 bg-(--primary-color) text-white text-xs font-mono font-bold uppercase tracking-widest hover:bg-(--accent-color) transition-colors cursor-pointer mt-8">
+            Enregistrer les modifications
+          </button>
+        </motion.form>
       </div>
-
-      {/* --- CHAMPS TEXTES ORIGINAUX --- */}
-      <div className="grid grid-cols-3 gap-4">
-        <input name="header_line1" value={formData.header_line1 || ''} onChange={handleChange} className="border p-2" placeholder="Ligne 1" />
-        <input name="header_accent" value={formData.header_accent || ''} onChange={handleChange} className="border p-2" placeholder="Accent" />
-        <input name="header_line2" value={formData.header_line2 || ''} onChange={handleChange} className="border p-2" placeholder="Ligne 2" />
-      </div>
-
-      <input name="bio_title" value={formData.bio_title || ''} onChange={handleChange} className="w-full border p-2" placeholder="Sous-titre" />
-      <textarea name="bio_text" value={formData.bio_text || ''} onChange={handleChange} className="w-full border p-2 h-32" placeholder="Texte Bio" />
-
-      {/* --- NOUVEAUX CHAMPS PHILOSOPHIE --- */}
-      <div className="space-y-4 pt-4 border-t border-gray-200">
-        <textarea name="philosophy_quote" value={formData.philosophy_quote || ''} onChange={handleChange} className="w-full border p-2" placeholder="Citation complète" />
-        <input name="philosophy_author" value={formData.philosophy_author || ''} onChange={handleChange} className="w-full border p-2" placeholder="Auteur" />
-        
-        <div className="grid grid-cols-3 gap-4">
-          <input name="philosophy_prefix" value={formData.philosophy_prefix || ''} onChange={handleChange} className="border p-2" placeholder="Préfixe citation" />
-          <input name="philosophy_important" value={formData.philosophy_important || ''} onChange={handleChange} className="border p-2" placeholder="Mot important" />
-          <input name="philosophy_suffix" value={formData.philosophy_suffix || ''} onChange={handleChange} className="border p-2" placeholder="Suffixe citation" />
-        </div>
-        
-        <textarea name="philosophy_text" value={formData.philosophy_text || ''} onChange={handleChange} className="w-full border p-2" placeholder="Texte de philosophie" />
-      </div>
-
-      <button type="submit" className="w-full bg-black text-white p-4 uppercase font-bold">Enregistrer tout</button>
-    </motion.form>
+    </div>
   );
 };
 

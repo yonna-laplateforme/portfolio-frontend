@@ -25,7 +25,7 @@ const AboutPage = () => {
       <header className="mb-24">
         <span className="font-mono text-xs font-bold uppercase text-(--accent-color) mb-4 block">// IDENTITÉ_VISUELLE</span>
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.9]">
+          <h1 className="font-heading text-5xl md:text-8xl font-black uppercase leading-[0.9]">
             {data.header_line1} <br />
             <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
           </h1>
@@ -52,7 +52,7 @@ const AboutPage = () => {
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <h2 className="text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
+         <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
           <div className="space-y-6 text-lg opacity-90 leading-relaxed">
             <p>{data.bio_text}</p>
           </div>

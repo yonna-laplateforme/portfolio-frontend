@@ -49,9 +49,9 @@ const AdminDashboard = () => {
           className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12"
         >
           <div>
-              <h1 className="text-4xl font-light text-(--primary-color) tracking-wide mb-2">Dashboard</h1>
+              <h1 className="font-heading text-4xl font-bold uppercase text-(--primary-color) mb-2">DASHBOARD</h1>
               <div className="h-0.5 w-12 bg-(--accent-color) mb-4"></div>
-              <p className="text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
+              <p className="font-mono text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
           </div>
           <Link 
             to="/secret-yonna-create" 
@@ -72,7 +72,7 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between p-6 bg-white border border-(--primary-color)/10 shadow-sm">
             <div>
               <h2 className="font-bold uppercase text-sm tracking-widest text-(--primary-color)">Page "À Propos"</h2>
-              <p className="text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
+              <p className="font-mono text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
             </div>
             <Link 
               to="/secret-yonna-edit-about" // Assure-toi que cette route existe dans ton App.js
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
                     <div>
                       <h3 className="font-medium text-(--primary-color) text-lg mb-1">{project.title}</h3>
                       <p className="text-[10px] opacity-60 uppercase tracking-widest">
-                        {project.tech_stack || "Projet"} {project.isFeatured ? "• À la une" : ""}
+                        {project.technologies || "Projet"} {project.isFeatured ? "• À la une" : ""}
                       </p>
                     </div>
                   </div>
