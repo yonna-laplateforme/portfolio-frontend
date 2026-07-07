@@ -108,14 +108,15 @@ const ProjectDetailPage = () => {
             </div>
 
             <aside className="space-y-12">
+              {/* SECTION STACK CORRIGÉE */}
               <div>
                 <h3 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h3>
                 <div className="flex flex-wrap gap-2">
-                  {/* On vérifie si project.technologies existe (si ton backend l'envoie bien) */}
-                  {project.technologies && project.technologies.length > 0 ? (
-                    project.technologies.map((tech, i) => (
+                  {project.technologies ? (
+                    // On transforme la chaîne en tableau ici avec .split(',')
+                    project.technologies.split(',').filter(Boolean).map((tech, i) => (
                       <span key={i} className="px-3 py-1 border border-primary text-[9px] uppercase">
-                        {typeof tech === 'string' ? tech : tech.name}
+                        {tech.trim()}
                       </span>
                     ))
                   ) : (
