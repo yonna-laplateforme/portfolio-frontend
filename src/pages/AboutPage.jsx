@@ -31,32 +31,33 @@ const AboutPage = () => {
     <main className="bg-bg text-text-main min-h-screen overflow-hidden">
       
       {/* 1. SECTION HÉROS : Immersion totale */}
-      <section className="relative h-screen w-full flex items-end p-8 md:p-20 overflow-hidden">
-        {data.video_url && (
-          <video
-            autoPlay loop muted playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src={data.video_url} type="video/mp4" />
-          </video>
-        )}
-        
-        {/* Overlay sombre */}
-        <div className="absolute inset-0 bg-black/30" />
 
-       <motion.div 
-  initial={{ opacity: 0, y: 50 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 1.2, ease: "easeOut" }}
-  className="relative z-10 px-8"
->
-  {/* On utilise text-6xl sur mobile et text-9xl sur grand écran pour limiter la casse */}
-  <h1 className="text-6xl md:text-9xl font-black uppercase leading-[0.9] text-white">
-    {data.header_line1}<br />
-    <span className="text-(--accent-color)">{data.header_accent}</span>
-  </h1>
-</motion.div>
-      </section>
+<section className="relative h-screen w-full flex items-end p-8 md:p-20 overflow-hidden">
+  {data.video_url && (
+    <video
+      autoPlay loop muted playsInline
+      className="absolute inset-0 w-full h-full object-cover"
+    >
+      <source src={data.video_url} type="video/mp4" />
+    </video>
+  )}
+  
+  {/* Overlay sombre */}
+  <div className="absolute inset-0 bg-black/40" />
+
+  <motion.div 
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 1.2, ease: "easeOut" }}
+    className="relative z-10 w-full"
+  >
+   
+    <h1 className="text-5xl md:text-[8rem] font-black uppercase leading-[0.9] text-white">
+      {data.header_line1} <br />
+      <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
+    </h1>
+  </motion.div>
+</section>
 
       {/* 2. SECTION BIO : Typographie "Brutaliste" */}
       <section className="max-w-6xl mx-auto py-32 px-6">
@@ -118,19 +119,25 @@ const AboutPage = () => {
       </section>
 
       {/* 5. PHILOSOPHIE : Le Grand Final */}
-      <section className="py-32 px-6 text-center bg-(--accent-color) text-white">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="max-w-4xl mx-auto"
-        >
-          <h4 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-12">
-            "{data.philosophy_prefix} <span className="text-(--bg-color)">{data.philosophy_important}</span>"
-          </h4>
-          <p className="font-mono opacity-80 uppercase tracking-widest">{data.philosophy_author}</p>
-        </motion.div>
-      </section>
+<section className="py-32 px-6 text-center bg-(--accent-color) text-white w-full">
+  <motion.div 
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    transition={{ duration: 1.5 }}
+    className="max-w-5xl mx-auto px-4"
+  >
+    {/* On supprime les contraintes de hauteur fixe et on laisse le texte s'exprimer */}
+    <h4 className="text-3xl md:text-5xl font-black uppercase leading-tight mb-8 break-words">
+      "{data.philosophy_prefix} <span className="text-(--bg-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
+    </h4>
+    
+    <div className="h-px w-20 bg-white/30 mx-auto my-8"></div>
+    
+    <p className="font-mono text-xs opacity-80 uppercase tracking-widest">
+      {data.philosophy_author}
+    </p>
+  </motion.div>
+</section>
 
     </main>
   );
