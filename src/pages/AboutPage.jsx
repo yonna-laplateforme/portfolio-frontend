@@ -109,7 +109,7 @@ const AboutPage = () => {
           { t: "STRATÉGIE", i: ["ANALYSE DE BESOINS", "OPTIMISATION SEO", "BRAND IDENTITY"] }
         ].map((box, i) => (
           <div key={i} className="border border-(--text-main) p-8 hover:bg-(--text-main) hover:text-(--bg-color) transition-colors duration-300">
-            <h4 className="font-bold text-xl mb-8 uppercase">{box.t}</h4>
+            <h3 className="font-bold text-xl mb-8 uppercase">{box.t}</h3>
             <ul className="font-mono text-sm space-y-3 opacity-90">
               {box.i.map(item => <li key={item}>— {item}</li>)}
             </ul>
@@ -120,9 +120,9 @@ const AboutPage = () => {
       {/* GRAND CADRE NOIR */}
       <section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
         <div className="grow flex flex-col justify-center">
-          <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
+          <h4 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
             "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
-          </h3>
+          </h4>
           <p className="font-mono text-sm max-w-xl mx-auto opacity-70">
             {data.philosophy_text}
           </p>
