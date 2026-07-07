@@ -30,9 +30,8 @@ const AboutPage = () => {
   return (
     <main className="bg-bg text-text-main min-h-screen overflow-hidden">
       
-      {/* 1. SECTION HÉROS : Immersion totale */}
-
-<section className="relative h-screen w-full flex items-end p-8 md:p-20 overflow-hidden">
+  {/* 1. SECTION HÉROS : Immersion totale */}
+<section className="relative h-screen w-full flex items-center justify-center p-8 md:p-20 overflow-hidden">
   {data.video_url && (
     <video
       autoPlay loop muted playsInline
@@ -42,23 +41,22 @@ const AboutPage = () => {
     </video>
   )}
   
-  {/* Overlay sombre */}
+  {/* Overlay sombre pour la lisibilité */}
   <div className="absolute inset-0 bg-black/40" />
 
   <motion.div 
-    initial={{ opacity: 0, y: 50 }}
+    initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 1.2, ease: "easeOut" }}
-    className="relative z-10 w-full"
+    transition={{ duration: 1, ease: "easeOut" }}
+    className="relative z-10 w-full max-w-7xl mx-auto"
   >
-   
-    <h1 className="text-5xl md:text-[8rem] font-black uppercase leading-[0.9] text-white">
+    {/* Titre centré et plus compact pour éviter qu'il ne soit trop bas */}
+    <h1 className="text-5xl md:text-[6rem] lg:text-[8rem] font-black uppercase leading-[0.9] text-white">
       {data.header_line1} <br />
       <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
     </h1>
   </motion.div>
 </section>
-
       {/* 2. SECTION BIO : Typographie "Brutaliste" */}
       <section className="max-w-6xl mx-auto py-32 px-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
