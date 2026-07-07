@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { apiFetch } from '../api/apiFetch'; 
+import { apiFetch } from '../api/apiFetch';
 
 
 const AboutPage = () => {
@@ -20,7 +20,7 @@ const AboutPage = () => {
 
   return (
     <main className="min-h-screen bg-(--bg-color) text-(--text-main) py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
-      
+
       {/* HEADER SECTION */}
       <header className="mb-24">
         <span className="font-mono text-xs font-bold uppercase text-(--accent-color) mb-4 block">// IDENTITÉ_VISUELLE</span>
@@ -39,10 +39,10 @@ const AboutPage = () => {
           <div className="group relative">
             <div className="relative border border-(--text-main) p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
               <div className="aspect-4/5 bg-gray-200 overflow-hidden">
-                <img 
-                  src={data.photo_url} 
-                  alt="Yonna Merlini" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                <img
+                  src={data.photo_url}
+                  alt="Yonna Merlini"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
               <div className="bg-(--accent-color) text-white font-mono text-[10px] px-2 py-1 inline-block mt-2">YONNA_MERLINI.JPG</div>
@@ -52,9 +52,13 @@ const AboutPage = () => {
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
-         <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
-          <div className="space-y-6 text-lg opacity-90 leading-relaxed">
-            <p>{data.bio_text}</p>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
+          <div className="space-y-12">
+            {data.bio_text.split('|').map((part, i) => (
+              <p key={i} className={`leading-relaxed ${i === 0 ? "text-4xl font-black uppercase" : "text-lg opacity-80"}`}>
+                {part.trim()}
+              </p>
+            ))}
           </div>
         </div>
       </section>
@@ -82,24 +86,24 @@ const AboutPage = () => {
         ))}
       </section>
 
-     {/* GRAND CADRE NOIR (CITATION DYNAMIQUE) */}
-<section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
-  
-  {/* Le bloc central qui prend l'espace disponible */}
-  <div className="grow flex flex-col justify-center">
-    <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
-      "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
-    </h3>
-    <p className="font-mono text-sm max-w-xl mx-auto opacity-70"> 
-      {data.philosophy_text}
-    </p>
-  </div>
+      {/* GRAND CADRE NOIR (CITATION DYNAMIQUE) */}
+      <section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
 
- 
-  <p className="font-mono text-sm text-(--bg-color font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
-    {data.philosophy_author}
-  </p>
-</section>
+        {/* Le bloc central qui prend l'espace disponible */}
+        <div className="grow flex flex-col justify-center">
+          <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
+            "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
+          </h3>
+          <p className="font-mono text-sm max-w-xl mx-auto opacity-70">
+            {data.philosophy_text}
+          </p>
+        </div>
+
+
+        <p className="font-mono text-sm text-(--bg-color font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
+          {data.philosophy_author}
+        </p>
+      </section>
     </main>
   );
 };
