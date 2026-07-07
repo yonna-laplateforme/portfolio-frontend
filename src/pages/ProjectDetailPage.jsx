@@ -135,23 +135,56 @@ const ProjectDetailPage = () => {
       </main>
 
       <AnimatePresence>
-        {hoveredImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-9999 flex items-center justify-center bg-black/90 p-0 cursor-pointer"
-            onClick={() => setHoveredImage(null)}
-          >
-            <motion.img
-              initial={{ scale: 0.98 }}
-              animate={{ scale: 1 }}
-              src={hoveredImage}
-              className="w-full h-full object-contain cursor-default"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+  {hoveredImage !== null && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4"
+    >
+      {/* Bouton pour fermer la vue plein écran */}
+      <button 
+        className="absolute top-8 right-8 text-white/50 hover:text-white text-4xl"
+        onClick={() => setHoveredImage(null)}
+      >
+        ×
+      </button>
+
+      {/* Boutons de navigation */}
+      <button 
+        className="absolute left-8 text-white/50 hover:text-white text-5xl"
+        onClick={(e) => {
+          e.stopPropagation(); // Empêche de fermer la modale
+          const currentIndex = imagesArray.indexOf(hoveredImage);
+          const nextIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
+          setHoveredImage(imagesArray[nextIndex]);
+        }}
+      >
+        ←
+      </button>
+
+      <motion.img
+        key={hoveredImage} 
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        src={hoveredImage}
+        className="max-h-[90vh] max-w-[90vw] object-contain"
+      />
+
+      <button 
+        className="absolute right-8 text-white/50 hover:text-white text-5xl"
+        onClick={(e) => {
+          e.stopPropagation(); 
+          const currentIndex = imagesArray.indexOf(hoveredImage);
+          const nextIndex = (currentIndex + 1) % imagesArray.length;
+          setHoveredImage(imagesArray[nextIndex]);
+        }}
+      >
+        →
+      </button>
+    </motion.div>
+  )}
+</AnimatePresence>
     </>
   );
 };
