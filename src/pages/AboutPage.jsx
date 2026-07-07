@@ -53,6 +53,18 @@ const AboutPage = () => {
             <div className="absolute top-4 left-4 w-full h-full border border-(--text-main) z-0 hidden lg:block"></div>
           </div>
         </div>
+        {data.video_url && (
+          <section className="mt-16">
+            <h2 className="font-heading text-xl mb-6 uppercase">// Vidéo de présentation</h2>
+            <div className="border border-(--text-main) p-2 bg-white">
+              <video
+                src={data.video_url}
+                controls
+                className="w-full aspect-video object-cover"
+              />
+            </div>
+          </section>
+        )}
 
         <div className="lg:col-span-6 lg:col-start-7">
           <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
