@@ -110,7 +110,7 @@ const ProjectDetailPage = () => {
             <aside className="space-y-12">
               {/* SECTION STACK CORRIGÉE */}
               <div>
-                <h3 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h3>
+                <h2 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h2>
                 <div className="flex flex-wrap gap-2">
                   {project.technologies ? (
                     // On transforme la chaîne en tableau ici avec .split(',')
