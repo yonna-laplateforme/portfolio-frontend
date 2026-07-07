@@ -31,7 +31,7 @@ const RouteLogger = () => {
 };
 
 // INTERRUPTEUR DE MAINTENANCE
-const IS_MAINTENANCE = false; 
+const IS_MAINTENANCE = false;
 
 function App() {
   const { token, logout } = useAuth();
@@ -42,7 +42,7 @@ function App() {
       <main className="pt-16">
         <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
           <RouteLogger />
-          
+
           {/* Si maintenance = true, on affiche uniquement la page maintenance */}
           {IS_MAINTENANCE ? (
             <MaintenancePage />
@@ -56,12 +56,14 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
 
               {/* Porte secrète */}
-              <Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
+              <Route path="/secret-yonna-create" element={
+                <ProtectedRoute><CreateProject /></ProtectedRoute>
+              } />
 
               <Route path="/dashboard-yonna-2026" element={
                 <ProtectedRoute><AdminDashboard /></ProtectedRoute>
               } />
-              
+
               <Route path="/secret-yonna-create" element={
                 <CreateProject />
               } />
