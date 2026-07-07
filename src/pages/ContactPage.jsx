@@ -11,7 +11,7 @@ const ContactPage = () => {
           <motion.h3 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-[10px] font-mono font bold text-(--accent-color) uppercase tracking-[0.3em] mb-4"
+            className="font-bold text-[10px] font-mono  text-(--accent-color) uppercase tracking-[0.3em] mb-4"
           >
             // CONTACT
           </motion.h3>
