@@ -15,7 +15,7 @@ const ProjectDetailPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    
+
     fetch(`${API_URL}/api/projects/${id}`)
       .then(res => {
         if (!res.ok) throw new Error("Erreur API");
@@ -58,7 +58,7 @@ const ProjectDetailPage = () => {
           {project.category?.toLowerCase() === 'photo' ? (
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
               {imagesArray.map((img, i) => (
-                <motion.div 
+                <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -66,12 +66,12 @@ const ProjectDetailPage = () => {
                   className="break-inside-avoid overflow-hidden cursor-pointer"
                   onClick={() => setHoveredImage(img)}
                 >
-                  <motion.img 
+                  <motion.img
                     whileHover={{ scale: 1.03 }}
                     transition={{ duration: 0.5 }}
-                    src={img} 
+                    src={img}
                     alt={`Photo ${i + 1}`}
-                    className="w-full object-cover grayscale hover:grayscale-0 transition-all duration-700" 
+                    className="w-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                   />
                 </motion.div>
               ))}
@@ -79,13 +79,13 @@ const ProjectDetailPage = () => {
           ) : (
             <div className="mb-16 relative group">
               <AnimatePresence mode='wait'>
-                <motion.img 
+                <motion.img
                   key={currentImageIndex}
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  src={imagesArray[currentImageIndex]} 
-                  alt={project.title} 
-                  className="w-full grayscale group-hover:grayscale-0 transition-all duration-700" 
+                  src={imagesArray[currentImageIndex]}
+                  alt={project.title}
+                  className="w-full grayscale group-hover:grayscale-0 transition-all duration-700"
                 />
               </AnimatePresence>
               {imagesArray.length > 1 && (
@@ -106,14 +106,21 @@ const ProjectDetailPage = () => {
                 <p>Aucune description disponible.</p>
               )}
             </div>
-            
+
             <aside className="space-y-12">
               <div>
                 <h3 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.tech_stack?.split(/[\s,]+/).filter(Boolean).map((tech, i) => (
-                    <span key={i} className="px-3 py-1 border border-primary text-[9px] uppercase">{tech}</span>
-                  ))}
+                  {/* On vérifie si project.technologies existe (si ton backend l'envoie bien) */}
+                  {project.technologies && project.technologies.length > 0 ? (
+                    project.technologies.map((tech, i) => (
+                      <span key={i} className="px-3 py-1 border border-primary text-[9px] uppercase">
+                        {typeof tech === 'string' ? tech : tech.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-[9px] opacity-50 italic">Aucune techno définie</span>
+                  )}
                 </div>
               </div>
               <div className="space-y-4">
@@ -128,18 +135,18 @@ const ProjectDetailPage = () => {
 
       <AnimatePresence>
         {hoveredImage && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-9999 flex items-center justify-center bg-black/90 p-0 cursor-pointer"
             onClick={() => setHoveredImage(null)}
           >
-            <motion.img 
-              initial={{ scale: 0.98 }} 
+            <motion.img
+              initial={{ scale: 0.98 }}
               animate={{ scale: 1 }}
-              src={hoveredImage} 
-              className="w-full h-full object-contain cursor-default" 
+              src={hoveredImage}
+              className="w-full h-full object-contain cursor-default"
             />
           </motion.div>
         )}
