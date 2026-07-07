@@ -44,7 +44,7 @@ const ProjectDetailPage = () => {
           <Link to="/projects" className="text-[10px] uppercase tracking-[0.3em] text-secondary hover:text-accent font-mono mb-12 block">← RETOUR</Link>
 
           <header className="mb-12 text-center">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-accent font-mono mb-4 block">// {project.category || "PROJET"}</span>
+            <span className="font-bold text-[10px] uppercase tracking-[0.3em] text-accent font-mono mb-4 block">// {project.category || "PROJET"}</span>
             <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary">{project.title}</h1>
           </header>
 
@@ -108,7 +108,7 @@ const ProjectDetailPage = () => {
             </div>
 
             <aside className="space-y-12">
-              {/* SECTION STACK CORRIGÉE */}
+              {/* SECTION STACK */}
               <div>
                 <h2 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h2>
                 <div className="flex flex-wrap gap-2">
@@ -154,7 +154,7 @@ const ProjectDetailPage = () => {
       <button 
         className="absolute left-8 text-white/50 hover:text-white text-5xl"
         onClick={(e) => {
-          e.stopPropagation(); // Empêche de fermer la modale
+          e.stopPropagation(); 
           const currentIndex = imagesArray.indexOf(hoveredImage);
           const nextIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
           setHoveredImage(imagesArray[nextIndex]);
