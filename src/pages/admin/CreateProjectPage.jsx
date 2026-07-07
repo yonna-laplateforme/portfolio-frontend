@@ -32,7 +32,7 @@ const CreateProject = () => {
     fetchTechnologies();
   }, [API_URL]);
 
-  // NOUVEAU : Fonction pour ajouter une techno rapidement
+  // NOUVEAU : Fonction pour ajouter une techno
   const handleAddManualTech = async () => {
     if (!manualTech.trim()) return;
     try {
@@ -95,40 +95,108 @@ const CreateProject = () => {
         <h1 className="font-heading text-4xl font-bold uppercase text-(--primary-color) mb-8">Nouveau Projet</h1>
 
         <motion.form onSubmit={handleSubmit(onSubmit)} className="flex flex-col lg:flex-row gap-8">
+          
           <div className="flex-1 space-y-8">
-            <div className="bg-white p-8 border border-(--primary-color)/10 space-y-6">
-              
-              {/* [SECTION TITRE, CLIENT, ANNÉE, CATÉGORIE, DESCRIPTION INCHANGÉE] */}
-              {/* (J'ai abrégé ici pour la lisibilité, garde ton code original pour ces champs) */}
-              
+            <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6">
+
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Titre du projet *</label>
+                <input {...register("title", { required: "Obligatoire" })} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="Nom du projet" />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Client</label>
+                  <input {...register("client")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="Nom du client" />
+                </div>
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Année</label>
+                  <input {...register("date_realisation")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" defaultValue="2026" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Catégorie *</label>
+                <select {...register("category_id", { required: "Veuillez choisir" })} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm appearance-none cursor-pointer focus:border-(--accent-color) outline-none transition-colors">
+                  <option value="">-- Choisir --</option>
+                  <option value="1">Web</option>
+                  <option value="2">Photo</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Description *</label>
+                <textarea {...register("description", { required: "Requis" })} className="w-full p-4 bg-bg/50 border border-(--primary-color)/20 text-sm h-32 resize-none focus:border-(--accent-color) outline-none transition-colors" />
+              </div>
+
+              {/* SECTION TECHNO MODIFIÉE */}
               <div className="space-y-3 pt-2 border-t border-(--primary-color)/10">
                 <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Technologies Utilisées</label>
                 
-                {/* NOUVEAU : Champ d'ajout rapide intégré proprement */}
+                {/* Ajout rapide */}
                 <div className="flex gap-2 mb-2">
                   <input 
                     type="text" 
                     value={manualTech}
                     onChange={(e) => setManualTech(e.target.value)}
-                    placeholder="Ajouter une techno..."
+                    placeholder="Ajouter une techno manquante..."
                     className="flex-1 p-2 bg-bg/50 border border-(--primary-color)/20 text-xs outline-none"
                   />
-                  <button type="button" onClick={handleAddManualTech} className="px-3 bg-(--primary-color) text-white text-[10px] uppercase font-bold cursor-pointer">Ajouter</button>
+                  <button type="button" onClick={handleAddManualTech} className="px-3 bg-(--primary-color) text-white text-[10px] uppercase font-bold cursor-pointer hover:bg-(--accent-color)">Ajouter</button>
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-bg/30 border border-(--primary-color)/10">
                   {techList.map((tech) => (
                     <label key={tech.id} className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" value={tech.id} {...register("technologies")} className="w-4 h-4 accent-(--accent-color)" />
+                      <input type="checkbox" value={tech.id} {...register("technologies")} className="w-4 h-4 cursor-pointer accent-(--accent-color)" />
                       <span className="font-mono text-xs uppercase">{tech.name}</span>
                     </label>
                   ))}
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-(--primary-color)/10">
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Lien GitHub</label>
+                  <input {...register("github_url")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" />
+                </div>
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Lien Démo</label>
+                  <input {...register("demo_url")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" />
+                </div>
+              </div>
             </div>
-            {/* [RESTE DE TON CODE GALERIE INCHANGÉ] */}
+
+            <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+              <h3 className="font-heading text-lg uppercase text-(--primary-color) mb-4">Images du projet</h3>
+              <label className="relative flex flex-col items-center justify-center w-full min-h-50 border-2 border-dashed border-(--primary-color)/30 bg-bg/30 cursor-pointer hover:border-(--accent-color) transition-colors">
+                <div className="flex flex-wrap gap-4 p-4 justify-center">
+                  {previews.map((src, index) => (
+                    <img key={index} src={src} className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm" alt="Aperçu" />
+                  ))}
+                  {previews.length === 0 && <p className="font-mono text-xs opacity-60 uppercase tracking-widest">Glissez-déposez vos images ici</p>}
+                </div>
+                <input type="file" multiple className="hidden" accept="image/*" onChange={handleFileChange} />
+              </label>
+            </div>
           </div>
-          {/* [COLONNE DROITE INCHANGÉE] */}
+
+          <div className="w-full lg:w-80">
+            <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6 sticky top-8">
+              <h3 className="font-heading text-lg uppercase text-(--primary-color) pb-4 border-b border-(--primary-color)/10">Statut & Options</h3>
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input type="checkbox" {...register("isFeatured")} className="w-5 h-5 cursor-pointer accent-(--accent-color)" />
+                <span className="font-mono text-xs uppercase opacity-80 group-hover:text-(--accent-color) transition-colors">Mettre à la une</span>
+              </label>
+              <div className="space-y-2">
+                <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Votre rôle</label>
+                <input {...register("role")} className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors" placeholder="Ex: Développeuse Front-end" />
+              </div>
+              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-(--primary-color) text-white text-xs font-mono font-bold uppercase tracking-widest hover:bg-(--accent-color) transition-colors cursor-pointer disabled:opacity-50 mt-4">
+                {isSubmitting ? "Enregistrement..." : "Créer le projet"}
+              </button>
+            </div>
+          </div>
         </motion.form>
       </div>
     </div>
