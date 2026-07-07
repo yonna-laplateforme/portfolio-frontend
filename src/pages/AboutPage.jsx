@@ -76,16 +76,18 @@ const AboutPage = () => {
       {/* 3. SECTION PHOTO & DUALITÉ */}
       <section className="py-20 px-6 bg-(--text-main) text-(--bg-color)">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-20">
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="w-full md:w-1/2"
-          >
-            <img 
-              src={getOptimizedUrl(data.photo_url)} 
-              alt="Yonna" 
-              className="w-full grayscale hover:grayscale-0 transition-all duration-700" 
-            />
-          </motion.div>
+        <motion.div 
+  initial={{ opacity: 0, y: 50 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1.2, ease: "easeOut" }}
+  className="relative z-10 px-8"
+>
+  {/* On utilise text-6xl sur mobile et text-9xl sur grand écran pour limiter la casse */}
+  <h1 className="text-6xl md:text-9xl font-black uppercase leading-[0.9] text-white">
+    {data.header_line1}<br />
+    <span className="text-(--accent-color)">{data.header_accent}</span>
+  </h1>
+</motion.div>
           <div className="w-full md:w-1/2 space-y-12">
             <h2 className="text-5xl font-black uppercase">Code & Objectif</h2>
             <p className="text-lg opacity-80 leading-relaxed">
