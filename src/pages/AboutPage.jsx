@@ -6,7 +6,6 @@ const AboutPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On garde juste le chargement des données
   useEffect(() => {
     apiFetch('/api/about')
       .then(res => {
@@ -38,6 +37,7 @@ const AboutPage = () => {
 
       {/* PROFILE SECTION */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-32">
+        {/* Photo Column */}
         <div className="lg:col-span-5 relative w-full max-w-sm mx-auto lg:mx-0">
           <div className="group relative">
             <div className="relative border border-(--text-main) p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
@@ -53,19 +53,8 @@ const AboutPage = () => {
             <div className="absolute top-4 left-4 w-full h-full border border-(--text-main) z-0 hidden lg:block"></div>
           </div>
         </div>
-        {data.video_url && (
-          <section className="mt-16">
-            <h2 className="font-heading text-xl mb-6 uppercase">// Vidéo de présentation</h2>
-            <div className="border border-(--text-main) p-2 bg-white">
-              <video
-                src={data.video_url}
-                controls
-                className="w-full aspect-video object-cover"
-              />
-            </div>
-          </section>
-        )}
 
+        {/* Bio & Video Column */}
         <div className="lg:col-span-6 lg:col-start-7">
           <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
           <div className="space-y-12">
@@ -75,6 +64,22 @@ const AboutPage = () => {
               </p>
             ))}
           </div>
+
+          {/* VIDEO SECTION - Integrée dans la colonne pour éviter les conflits de grille */}
+          {data.video_url && (
+            <div className="mt-16">
+              <h2 className="font-heading text-xl mb-6 uppercase">// Vidéo de présentation</h2>
+              <div className="border border-(--text-main) p-2 bg-white">
+                <video
+                  src={data.video_url}
+                  controls
+                  muted        
+                  playsInline  
+                  className="w-full aspect-video object-cover"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -111,7 +116,7 @@ const AboutPage = () => {
             {data.philosophy_text}
           </p>
         </div>
-        <p className="font-mono text-sm text-(--bg-color font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
+        <p className="font-mono text-sm text-(--bg-color) font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
           {data.philosophy_author}
         </p>
       </section>
