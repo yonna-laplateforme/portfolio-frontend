@@ -65,23 +65,32 @@ const AboutPage = () => {
             ))}
           </div>
 
-       {data.video_url && (
-  <div className="mt-16">
-    <h2 className="font-heading text-xl mb-6 uppercase">// Vidéo de présentation</h2>
-    <div className="border border-(--text-main) p-2 bg-white">
-      <video 
-        key={data.video_url} // <--- FORCE LE RENDU LORSQUE L'URL CHANGE
-        controls 
-        muted 
-        playsInline 
-        className="w-full aspect-video object-cover"
-      >
-        <source src={data.video_url} type="video/mp4" />
-      </video>
-    </div>
-  </div>
-)}
-          
+          {/* VIDEO SECTION */}
+          {data.video_url && (
+            <div className="mt-20">
+              <div className="flex items-center gap-4 mb-8">
+                <h2 className="font-heading text-xl uppercase tracking-widest">// Vidéo de présentation</h2>
+                <div className="h-px flex-1 bg-(--text-main) opacity-20"></div>
+              </div>
+              
+              <div className="relative group border border-(--text-main) p-2 bg-white transition-all duration-500 hover:shadow-[8px_8px_0px_var(--accent-color)]">
+                <div className="relative w-full aspect-video overflow-hidden bg-gray-100">
+                  <video 
+                    key={data.video_url}
+                    controls 
+                    muted 
+                    playsInline 
+                    preload="metadata"
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={data.video_url} type="video/mp4" />
+                    <p className="p-4 text-sm font-mono">Votre navigateur ne supporte pas la lecture de vidéos.</p>
+                  </video>
+                  <div className="absolute inset-0 pointer-events-none border border-black/5"></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
