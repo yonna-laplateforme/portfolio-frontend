@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { apiFetch } from '../api/apiFetch';
 import { getOptimizedUrl } from '../utils/imageUtils';
 
@@ -18,119 +19,118 @@ const AboutPage = () => {
       });
   }, []);
 
-  if (loading || !data) return <main className="min-h-screen"></main>;
+  if (loading || !data) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-bg">
+        <div className="text-text-main font-mono text-sm animate-pulse uppercase tracking-widest">Chargement...</div>
+      </main>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-(--bg-color) text-(--text-main) py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
+    <main className="bg-bg text-text-main min-h-screen overflow-hidden">
+      
+      {/* 1. SECTION HÉROS : Immersion totale */}
+      <section className="relative h-screen w-full flex items-end p-8 md:p-20 overflow-hidden">
+        {data.video_url && (
+          <video
+            autoPlay loop muted playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={data.video_url} type="video/mp4" />
+          </video>
+        )}
+        
+        {/* Overlay sombre */}
+        <div className="absolute inset-0 bg-black/30" />
 
-      {/* HEADER SECTION */}
-      <header className="mb-24">
-        <span className="font-mono text-xs font-bold uppercase text-(--accent-color) mb-4 block">// IDENTITÉ_VISUELLE</span>
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <h1 className="font-heading text-5xl md:text-8xl font-black uppercase leading-[0.9]">
-            {data.header_line1} <br />
-            <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="relative z-10"
+        >
+          <h1 className="text-[15vw] font-black uppercase leading-[0.8] text-white">
+            {data.header_line1}<br />
+            <span className="text-(--accent-color)">{data.header_accent}</span>
           </h1>
-          <span className="font-mono text-sm opacity-60 mt-6 md:mt-0">{data.header_subtitle}</span>
-        </div>
-      </header>
+        </motion.div>
+      </section>
 
-      {/* PROFILE SECTION */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-32">
-        {/* Photo Column */}
-        <div className="lg:col-span-5 relative w-full max-w-sm mx-auto lg:mx-0">
-          <div className="group relative">
-            <div className="relative border border-(--text-main) p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
-              <div className="aspect-4/5 bg-gray-200 overflow-hidden">
-                <img
-                  src={getOptimizedUrl(data.photo_url)}
-                  alt="Yonna Merlini"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="bg-(--accent-color) text-white font-mono text-[10px] px-2 py-1 inline-block mt-2">YONNA_MERLINI.JPG</div>
-            </div>
-            <div className="absolute top-4 left-4 w-full h-full border border-(--text-main) z-0 hidden lg:block"></div>
+      {/* 2. SECTION BIO : Typographie "Brutaliste" */}
+      <section className="max-w-6xl mx-auto py-32 px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+          <div className="md:col-span-4">
+            <span className="font-mono text-xs uppercase text-(--accent-color)">// {data.bio_title}</span>
           </div>
-        </div>
-
-        {/* Bio & Video Column */}
-        <div className="lg:col-span-6 lg:col-start-7">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
-          <div className="space-y-12">
+          <div className="md:col-span-8 space-y-12">
             {data.bio_text.split('|').map((part, i) => (
-              <p key={i} className={`leading-relaxed ${i === 0 ? "text-2xl font-black uppercase" : "text-lg opacity-80"}`}>
+              <p key={i} className={`text-2xl md:text-3xl font-light leading-tight ${i === 0 ? "font-bold" : "opacity-70"}`}>
                 {part.trim()}
               </p>
             ))}
           </div>
-
-          {/* VIDEO SECTION */}
-          {data.video_url && (
-            <div className="mt-20">
-              <div className="flex items-center gap-4 mb-8">
-                <h2 className="font-heading text-xl uppercase tracking-widest">// Vidéo de présentation</h2>
-                <div className="h-px flex-1 bg-(--text-main) opacity-20"></div>
-              </div>
-              
-              <div className="relative group border border-(--text-main) p-2 bg-white transition-all duration-500 hover:shadow-[8px_8px_0px_var(--accent-color)]">
-                <div className="relative w-full aspect-video overflow-hidden bg-gray-100">
-                  <video 
-                    key={data.video_url}
-                    controls 
-                    muted 
-                    playsInline 
-                    preload="metadata"
-                    className="w-full h-full object-cover"
-                  >
-                    <source src={data.video_url} type="video/mp4" />
-                    <p className="p-4 text-sm font-mono">Votre navigateur ne supporte pas la lecture de vidéos.</p>
-                  </video>
-                  <div className="absolute inset-0 pointer-events-none border border-black/5"></div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
-      {/* SÉPARATEUR */}
-      <div className="flex items-center gap-6 mb-16 w-full">
-        <div className="h-px flex-1 bg-(--text-main)"></div>
-        <span className="font-mono text-sm uppercase whitespace-nowrap">CHAMPS D'EXPERTISE</span>
-        <div className="h-px flex-1 bg-(--text-main)"></div>
-      </div>
+      {/* 3. SECTION PHOTO & DUALITÉ */}
+      <section className="py-20 px-6 bg-(--text-main) text-(--bg-color)">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-20">
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className="w-full md:w-1/2"
+          >
+            <img 
+              src={getOptimizedUrl(data.photo_url)} 
+              alt="Yonna" 
+              className="w-full grayscale hover:grayscale-0 transition-all duration-700" 
+            />
+          </motion.div>
+          <div className="w-full md:w-1/2 space-y-12">
+            <h2 className="text-5xl font-black uppercase">Code & Objectif</h2>
+            <p className="text-lg opacity-80 leading-relaxed">
+              La rigueur du développement rencontre la sensibilité de la photographie. 
+              Chaque ligne de code est une structure, chaque clic est une émotion.
+            </p>
+            <div className="flex gap-4 font-mono text-xs uppercase border-t border-(--bg-color)/20 pt-8">
+              <span>// Développement</span>
+              <span>// Photographie</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* EXPERTISE CARDS */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+      {/* 4. EXPERTISE (Grille épurée) */}
+      <section className="max-w-7xl mx-auto py-32 px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
         {[
-          { t: "DÉVELOPPEMENT", i: ["REACT / NEXT.JS / NEST.JS", "TAILWIND CSS", "TYPESCRIPT"] },
-          { t: "PHOTOGRAPHIE", i: ["DIRECTION ARTISTIQUE", "ÉDITION NUMÉRIQUE", "ARGENTIQUE", "PORTRAIT"] },
-          { t: "STRATÉGIE", i: ["ANALYSE DE BESOINS", "OPTIMISATION SEO", "BRAND IDENTITY"] }
+          { t: "DÉVELOPPEMENT", i: ["REACT / NEXT.JS", "NEST.JS", "TAILWIND"] },
+          { t: "PHOTOGRAPHIE", i: ["DIRECTION ARTISTIQUE", "PORTRAIT", "ARGENTIQUE"] },
+          { t: "STRATÉGIE", i: ["ANALYSE BESOINS", "SEO", "IDENTITÉ"] }
         ].map((box, i) => (
-          <div key={i} className="border border-(--text-main) p-8 hover:bg-(--text-main) hover:text-(--bg-color) transition-colors duration-300">
-            <h3 className="font-bold text-xl mb-8 uppercase">{box.t}</h3>
-            <ul className="font-mono text-sm space-y-3 opacity-90">
+          <div key={i} className="border-t border-(--text-main) pt-8">
+            <h3 className="font-bold text-sm uppercase mb-8">{box.t}</h3>
+            <ul className="font-mono text-xs space-y-3 opacity-60">
               {box.i.map(item => <li key={item}>— {item}</li>)}
             </ul>
           </div>
         ))}
       </section>
 
-      {/* GRAND CADRE NOIR */}
-      <section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
-        <div className="grow flex flex-col justify-center">
-          <h4 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
-            "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
+      {/* 5. PHILOSOPHIE : Le Grand Final */}
+      <section className="py-32 px-6 text-center bg-(--accent-color) text-white">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="max-w-4xl mx-auto"
+        >
+          <h4 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-12">
+            "{data.philosophy_prefix} <span className="text-(--bg-color)">{data.philosophy_important}</span>"
           </h4>
-          <p className="font-mono text-sm max-w-xl mx-auto opacity-70">
-            {data.philosophy_text}
-          </p>
-        </div>
-        <p className="font-mono text-sm text-(--bg-color) font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
-          {data.philosophy_author}
-        </p>
+          <p className="font-mono opacity-80 uppercase tracking-widest">{data.philosophy_author}</p>
+        </motion.div>
       </section>
+
     </main>
   );
 };
