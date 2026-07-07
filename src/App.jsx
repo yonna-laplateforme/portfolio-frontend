@@ -53,9 +53,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
 
               {/* Routes Admin (Protégées) */}
-              <Route path="/la-porte-secrete-du-portfolio" element={
-                <ProtectedRoute><AdminDashboard /></ProtectedRoute>
-              } />
+              <Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
 
               <Route path="/secret-yonna-create" element={
                 <ProtectedRoute><CreateProject /></ProtectedRoute>
