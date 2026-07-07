@@ -70,10 +70,10 @@ const AboutPage = () => {
             <div className="mt-16">
               <h2 className="font-heading text-xl mb-6 uppercase">// Vidéo de présentation</h2>
               <div className="border border-(--text-main) p-2 bg-white">
-                <video controls muted playsInline className="w-full aspect-video object-cover">
-        <source src={data.video_url} type="video/mp4" />
-        Votre navigateur ne supporte pas la lecture de vidéos.
-      </video>
+          <video controls muted playsInline className="...">
+  {/* On demande à votre backend de servir la vidéo via un proxy */}
+  <source src={`https://portfolio-backend-7xj4.onrender.com/api/video-proxy?url=${encodeURIComponent(data.video_url)}`} type="video/mp4" />
+</video>
               </div>
             </div>
           )}
