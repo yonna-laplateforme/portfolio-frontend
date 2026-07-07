@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../api/apiFetch';
-
+import { aboutApi } from '../api/apiClient';
+import { getOptimizedUrl } from '../utils/imageUtils'; // Importe ton utilitaire d'optimisation
 
 const AboutPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
+  // Charger les données
   useEffect(() => {
     apiFetch('api/about').then(res => {
       setData(res);
@@ -16,10 +20,44 @@ const AboutPage = () => {
     });
   }, []);
 
+  // Fonction d'upload propre
+  const handleUpload = async () => {
+    if (!selectedFile) return alert("Sélectionne un fichier d'abord !");
+    
+    setUploading(true);
+    try {
+      const result = await aboutApi.uploadPhoto(selectedFile);
+      // Mise à jour de l'URL dans le state pour voir le changement immédiatement
+      setData(prev => ({ ...prev, photo_url: result.photoUrl }));
+      alert("Mise à jour réussie !");
+    } catch (err) {
+      alert("Erreur lors de l'upload : " + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading || !data) return <main className="min-h-screen"></main>;
 
   return (
     <main className="min-h-screen bg-(--bg-color) text-(--text-main) py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
+
+      {/* --- SECTION ADMIN (Ajoutée) --- */}
+      <div className="mb-16 p-6 border border-dashed border-(--accent-color) bg-gray-50/5">
+        <h3 className="font-mono text-xs uppercase mb-4 text-(--accent-color)">// Zone Admin : Modifier la photo</h3>
+        <input 
+          type="file" 
+          onChange={(e) => setSelectedFile(e.target.files[0])} 
+          className="text-sm mr-4"
+        />
+        <button 
+          onClick={handleUpload}
+          disabled={uploading}
+          className="bg-(--text-main) text-(--bg-color) px-6 py-2 font-mono text-sm uppercase hover:opacity-80 disabled:opacity-50"
+        >
+          {uploading ? "Chargement..." : "Valider l'upload"}
+        </button>
+      </div>
 
       {/* HEADER SECTION */}
       <header className="mb-24">
@@ -40,7 +78,7 @@ const AboutPage = () => {
             <div className="relative border border-(--text-main) p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
               <div className="aspect-4/5 bg-gray-200 overflow-hidden">
                 <img
-                  src={data.photo_url}
+                  src={getOptimizedUrl(data.photo_url)}
                   alt="Yonna Merlini"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
@@ -86,10 +124,8 @@ const AboutPage = () => {
         ))}
       </section>
 
-      {/* GRAND CADRE NOIR (CITATION DYNAMIQUE) */}
+      {/* GRAND CADRE NOIR */}
       <section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
-
-        {/* Le bloc central qui prend l'espace disponible */}
         <div className="grow flex flex-col justify-center">
           <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
             "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
@@ -98,8 +134,6 @@ const AboutPage = () => {
             {data.philosophy_text}
           </p>
         </div>
-
-
         <p className="font-mono text-sm text-(--bg-color font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
           {data.philosophy_author}
         </p>
