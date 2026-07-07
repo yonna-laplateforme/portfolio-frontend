@@ -56,6 +56,11 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
 
               {/* Porte secrète */}
+
+              <Route path="/la-porte-secrete-du-portfolio" element={
+                <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+              } />
+
               <Route path="/secret-yonna-create" element={
                 <ProtectedRoute><CreateProject /></ProtectedRoute>
               } />
