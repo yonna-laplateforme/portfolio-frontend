@@ -1,5 +1,5 @@
-import { Suspense, lazy, useEffect } from 'react'; // Ajout de useEffect
-import { Routes, Route, useLocation } from 'react-router-dom'; // Ajout de useLocation
+import { Suspense, lazy, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import { useAuth } from './context/AuthProvider';
 import Navbar from './components/Navbar';
@@ -24,13 +24,10 @@ const EditAboutPage = lazy(() => import('./pages/admin/EditAboutPage.jsx'));
 
 const RouteLogger = () => {
   const location = useLocation();
-  useEffect(() => {
-    //console.log("URL tentée :", location.pathname);
-  }, [location]);
+  useEffect(() => {}, [location]);
   return null;
 };
 
-// INTERRUPTEUR DE MAINTENANCE
 const IS_MAINTENANCE = false;
 
 function App() {
@@ -43,7 +40,6 @@ function App() {
         <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
           <RouteLogger />
 
-          {/* Si maintenance = true, on affiche uniquement la page maintenance */}
           {IS_MAINTENANCE ? (
             <MaintenancePage />
           ) : (
@@ -54,9 +50,9 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/login" element={<LoginPage />} />
 
-              {/* Porte secrète */}
-
+              {/* Routes Admin (Protégées) */}
               <Route path="/la-porte-secrete-du-portfolio" element={
                 <ProtectedRoute><AdminDashboard /></ProtectedRoute>
               } />
@@ -65,20 +61,17 @@ function App() {
                 <ProtectedRoute><CreateProject /></ProtectedRoute>
               } />
 
-              <Route path="/dashboard-yonna-2026" element={
-                <ProtectedRoute><AdminDashboard /></ProtectedRoute>
-              } />
-
-              <Route path="/secret-yonna-create" element={
-                <CreateProject />
-              } />
-
               <Route path="/secret-yonna-edit/:id" element={
                 <ProtectedRoute><EditProject /></ProtectedRoute>
               } />
 
               <Route path="/secret-yonna-edit-about" element={
                 <ProtectedRoute><EditAboutPage /></ProtectedRoute>
+              } />
+
+              {/* Redirection pour l'ancienne URL */}
+              <Route path="/dashboard-yonna-2026" element={
+                <ProtectedRoute><AdminDashboard /></ProtectedRoute>
               } />
 
               <Route path="*" element={<NotFoundPage />} />
