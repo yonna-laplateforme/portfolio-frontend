@@ -94,12 +94,60 @@ const EditAboutPage = () => {
             <textarea name="philosophy_text" value={formData.philosophy_text || ''} onChange={handleChange} className="w-full p-4 border border-(--primary-color)/20 text-sm h-32" />
             <input name="philosophy_author" value={formData.philosophy_author || ''} onChange={handleChange} className="w-full p-3.5 border border-(--primary-color)/20 text-sm" />
           </div>
+{/* NOUVEAUX CHAMPS : DUALITÉ & EXPERTISE */}
+<div className="space-y-6">
+  <h3 className="font-heading text-lg uppercase text-(--primary-color) border-b border-(--primary-color)/10 pb-2">
+    Section Dualité & Expertise
+  </h3>
+  
+  {/* Dualité */}
+  <div className="space-y-4">
+    <input 
+      name="dualite_title" 
+      value={formData.dualite_title || ''} 
+      onChange={handleChange} 
+      className="w-full p-3.5 border border-(--primary-color)/20 text-sm" 
+      placeholder="Titre de la section dualité (ex: Code & Vision)" 
+    />
+    <textarea 
+      name="dualite_text" 
+      value={formData.dualite_text || ''} 
+      onChange={handleChange} 
+      className="w-full p-4 border border-(--primary-color)/20 text-sm h-32" 
+      placeholder="Description de la dualité" 
+    />
+  </div>
 
+  {/* Expertises (avec aide pour le séparateur) */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-2">
+      <label className="text-xs uppercase opacity-50">Développement (utiliser | pour séparer)</label>
+      <input 
+        name="tech_dev" 
+        value={formData.tech_dev || ''} 
+        onChange={handleChange} 
+        className="w-full p-3.5 border border-(--primary-color)/20 text-sm" 
+        placeholder="React|Next.js|Nest.js" 
+      />
+    </div>
+    <div className="space-y-2">
+      <label className="text-xs uppercase opacity-50">Photographie (utiliser | pour séparer)</label>
+      <input 
+        name="tech_photo" 
+        value={formData.tech_photo || ''} 
+        onChange={handleChange} 
+        className="w-full p-3.5 border border-(--primary-color)/20 text-sm" 
+        placeholder="Portrait|Argentique|Studio" 
+      />
+    </div>
+  </div>
+</div>
           <button type="submit" className="w-full py-4 bg-(--primary-color) text-white uppercase font-bold tracking-widest text-xs">Enregistrer tout</button>
         </motion.form>
       </div>
     </div>
   );
+  
 };
 
 export default EditAboutPage;
