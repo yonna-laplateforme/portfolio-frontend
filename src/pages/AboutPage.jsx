@@ -51,13 +51,13 @@ const AboutPage = () => {
       {/* 3. PORTRAIT & DUALITÉ DYNAMIQUE */}
       <section className="py-20 px-6 max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          <motion.img
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            src={getOptimizedUrl(data.portrait_url)}
-            alt="Portrait"
-            className="w-full grayscale hover:grayscale-0 transition-all duration-700 aspect-[4/5] object-cover"
-          />
+       <motion.img
+  initial={{ opacity: 0, scale: 0.95 }}
+  whileInView={{ opacity: 1, scale: 1 }}
+  src={data.photo_url} 
+  alt="Portrait"
+  className="w-full grayscale hover:grayscale-0 transition-all duration-700 aspect-[4/5] object-cover"
+/>
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl font-black uppercase mb-6">{data.dualite_title}</h2>
