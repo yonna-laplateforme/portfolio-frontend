@@ -48,7 +48,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* 3. PORTRAIT & DUALITÉ : Restauration de la logique originale */}
+      {/* 3. PORTRAIT & DUALITÉ  */}
 <section className="py-20 px-6 max-w-5xl mx-auto">
   <div className="grid md:grid-cols-2 gap-16 items-center">
     <motion.img
@@ -96,7 +96,7 @@ const AboutPage = () => {
         </section>
       )}
 
-      {/* 5. PHILOSOPHIE : Grand Final */}
+      {/* 5. PHILOSOPHIE */}
       <footer className="py-32 px-6 text-center border-t border-text-main/10 mt-10">
         <div className="max-w-2xl mx-auto text-2xl md:text-4xl font-light leading-tight">
           "{data.philosophy_prefix} <span className="text-(--accent-color) font-black">{data.philosophy_important}</span> {data.philosophy_suffix}"
