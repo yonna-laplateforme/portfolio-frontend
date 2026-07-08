@@ -1,6 +1,6 @@
 export async function apiFetch(endpoint, options = {}) {
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://www-yonnamerlini.com";
+  const baseUrl = import.meta.env.VITE_API_URL || "https://portfolio-backend-7xj4.onrender.com";
   
   const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   
