@@ -23,7 +23,7 @@ const AboutPage = () => {
 
   return (
     <main className="bg-bg text-text-main min-h-screen selection:bg-(--accent-color) selection:text-white">
-      
+
       {/* 1. HERO */}
       <section className="pt-32 pb-16 px-6 max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
@@ -49,39 +49,48 @@ const AboutPage = () => {
       </section>
 
       {/* 3. PORTRAIT & DUALITÉ  */}
-<section className="py-20 px-6 max-w-5xl mx-auto">
-  <div className="grid md:grid-cols-2 gap-16 items-center">
-    <motion.img
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      // On utilise le même appel qui fonctionnait avant
-      src={getOptimizedUrl(data.photo_url)}
-      alt="Portrait"
-      className="w-full grayscale hover:grayscale-0 transition-all duration-700 aspect-[4/5] object-cover"
-    />
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl font-black uppercase mb-6">{data.dualite_title}</h2>
-        <p className="opacity-70 leading-relaxed">{data.dualite_text}</p>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-text-main/20">
-        <div>
-          <h4 className="font-bold text-sm uppercase mb-4">Développement</h4>
-          <ul className="font-mono text-xs space-y-2 opacity-60">
-            {data.tech_dev?.split('|').map(item => <li key={item}>— {item.trim()}</li>)}
-          </ul>
+      <section className="py-20 px-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <motion.img
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            src={getOptimizedUrl(data.photo_url)}
+            alt="Portrait"
+            className="w-full grayscale hover:grayscale-0 transition-all duration-700 aspect-[4/5] object-cover"
+          />
+          <div className="space-y-8">
+            <div>
+              {/* Logique pour le titre avec accent sur une partie */}
+              <h2 className="text-3xl font-black uppercase mb-6">
+                {data.dualite_title?.split('|')[0]}
+                <span className="text-(--accent-color)">{data.dualite_title?.split('|')[1]}</span>
+              </h2>
+
+              {/* Logique pour le texte avec saut de ligne */}
+              {data.dualite_text?.split('|').map((para, i) => (
+                <p key={i} className="opacity-70 leading-relaxed mb-4">
+                  {para.trim()}
+                </p>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-text-main/20">
+              <div>
+                <h4 className="font-bold text-sm uppercase mb-4">Développement</h4>
+                <ul className="font-mono text-xs space-y-2 opacity-60">
+                  {data.tech_dev?.split('|').map(item => <li key={item}>— {item.trim()}</li>)}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm uppercase mb-4">Photographie</h4>
+                <ul className="font-mono text-xs space-y-2 opacity-60">
+                  {data.tech_photo?.split('|').map(item => <li key={item}>— {item.trim()}</li>)}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h4 className="font-bold text-sm uppercase mb-4">Photographie</h4>
-          <ul className="font-mono text-xs space-y-2 opacity-60">
-            {data.tech_photo?.split('|').map(item => <li key={item}>— {item.trim()}</li>)}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* 4. SECTION VIDÉO DYNAMIQUE */}
       {data.video_url && (
