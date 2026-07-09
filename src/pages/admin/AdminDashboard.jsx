@@ -19,15 +19,17 @@ const AdminDashboard = () => {
   };
 
   const deleteProject = async (id) => {
-    if (window.confirm("Supprimer ce projet ?")) {
+    if (window.confirm("Attention : cette action est irréversible. Supprimer ce projet ?")) {
       try {
+        // Envoi de la requête DELETE
         await apiFetch(`api/projects/${id}`, {
           method: 'DELETE',
-       
         });
+        
         fetchProjects();
       } catch (error) {
-        console.error("Erreur :", error);
+        console.error("Erreur lors de la suppression :", error);
+        alert("Impossible de supprimer le projet. Vérifiez votre session.");
       }
     }
   };
