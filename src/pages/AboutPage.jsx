@@ -97,7 +97,7 @@ const AboutPage = () => {
         <section className="relative w-full h-[50vh] overflow-hidden my-10">
           <video
             autoPlay loop muted playsInline
-            className="absolute inset-0 w-full h-full object-cover grayscale-[50%] hover:grayscale-0 transition-all duration-1000"
+           className="absolute inset-0 w-full h-full object-cover brightness-95 hover:brightness-100 transition-all duration-1000"
           >
             <source src={data.video_url} type="video/mp4" />
           </video>
