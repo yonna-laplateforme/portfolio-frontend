@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { useAuth } from '../../context/AuthProvider';
 import { motion } from 'framer-motion';
 import { apiFetch } from '../../api/apiFetch';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
-  const { token } = useAuth(); 
+ 
 
  const fetchProjects = async () => {
     try {
@@ -77,7 +76,7 @@ const AdminDashboard = () => {
               <p className="font-mono text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
             </div>
             <Link 
-              to="/secret-yonna-edit-about" // Assure-toi que cette route existe dans ton App.js
+              to="/secret-yonna-edit-about" 
               className="flex items-center gap-2 border border-(--primary-color)/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-(--primary-color) hover:text-white transition-all"
             >
               <Edit2 size={16} /> Modifier la page

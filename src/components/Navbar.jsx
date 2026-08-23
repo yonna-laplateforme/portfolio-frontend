@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, Menu, X } from 'lucide-react';
 
-const Navbar = ({ token, onLogout }) => {
+const Navbar = ({ isAuthenticated, onLogout }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -66,7 +66,7 @@ const Navbar = ({ token, onLogout }) => {
   </ul>
 
           
-  {token && (
+  {isAuthenticated && (
   <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-zinc-800 pt-8 md:pt-0 md:pl-6">
     <Link 
       to="/dashboard-yonna-2026" 

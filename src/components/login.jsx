@@ -10,20 +10,20 @@ const Login = () => {
   
   const { login } = useAuth(); 
 
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const data = await apiFetch('api/auth/login', {
+      const data = await apiFetch('/api/auth/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
 
-      if (data.token) {
-        login(data.token);
-        
-       
+      if (data?.success) {
+        login();
         navigate('/dashboard-yonna-2026', { replace: true });
+      } else {
+        throw new Error(data?.message || "Échec de la connexion");
       }
     } catch (error) {
       alert(error.message || "Erreur de connexion"); 

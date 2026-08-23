@@ -31,11 +31,11 @@ const RouteLogger = () => {
 const IS_MAINTENANCE = false;
 
 function App() {
-  const { token, logout } = useAuth();
+ const { isAuthenticated, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-bg">
-      <Navbar token={token} onLogout={logout} />
+      <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
       <main className="pt-16">
         <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
           <RouteLogger />
@@ -46,7 +46,7 @@ function App() {
             <Routes>
               {/* Routes publiques */}
               <Route path="/" element={<HomePage />} />
-              <Route path="/projects" element={<ProjectsPage isAdmin={!!token} />} />
+              <Route path="/projects" element={<ProjectsPage isAdmin={isAuthenticated} />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />

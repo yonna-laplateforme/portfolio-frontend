@@ -12,35 +12,31 @@ const LoginPage = () => {
   
   const { login } = useAuth(); 
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    // 1. Appel API via apiFetch
-    const data = await apiFetch('api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      // 1. Appel API (le cookie est envoyé automatiquement par le navigateur)
+      const data = await apiFetch('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
 
-    // 2. Vérification de la présence du token
-    if (data?.token) {
-      // 3. Mise à jour de l'état d'authentification
-      login(data.token);
-      
-      // 4. Redirection vers chemin secret 
-      navigate('/dashboard-yonna-2026', { replace: true });
-    } else {
-      throw new Error("Token manquant dans la réponse du serveur.");
+      // 2. Si succès, le cookie HttpOnly est déjà stocké par le navigateur
+      if (data?.success) {
+        login(); 
+        navigate('/dashboard-yonna-2026', { replace: true });
+      } else {
+        throw new Error(data?.message || "Échec de la connexion");
+      }
+    } catch (error) {
+      console.error('Erreur connexion:', error);
+      alert(error.message || 'Identifiants incorrects');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    // 5. Gestion des erreurs 
-    console.error('Erreur connexion:', error);
-    alert(error.message || 'Identifiants incorrects');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-center items-center p-6 text-text-main font-sans">
       
