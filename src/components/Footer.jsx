@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  // Fonction pour remonter en haut de page en douceur
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -15,7 +15,7 @@ const Footer = () => {
     <footer className="bg-(--bg-color) border-t border-[#333] py-12 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         
-        {/* Identité - Lien propre vers la Home avec scroll */}
+        
         <Link 
           to="/" 
           onClick={scrollToTop}

@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { useAuth } from '../../context/AuthProvider';
 import { motion } from 'framer-motion';
 import { apiFetch } from '../../api/apiFetch';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
-  const { token } = useAuth(); 
+ 
 
  const fetchProjects = async () => {
     try {
-      const data = await apiFetch('/projects'); // Simple et propre
+      const data = await apiFetch('api/projects'); 
       setProjects(data);
     } catch (error) {
       console.error("Erreur :", error);
@@ -19,16 +18,17 @@ const AdminDashboard = () => {
   };
 
   const deleteProject = async (id) => {
-    if (window.confirm("Supprimer ce projet ?")) {
+    if (window.confirm("Attention : cette action est irréversible. Supprimer ce projet ?")) {
       try {
-        await apiFetch(`/projects/${id}`, {
+        // Envoi de la requête DELETE
+        await apiFetch(`api/projects/${id}`, {
           method: 'DELETE',
-          // Plus besoin de gérer le Bearer token manuellement ici,
-          // apiFetch le fait pour toi grâce au localStorage !
         });
+        
         fetchProjects();
       } catch (error) {
-        console.error("Erreur :", error);
+        console.error("Erreur lors de la suppression :", error);
+        alert("Impossible de supprimer le projet. Vérifiez votre session.");
       }
     }
   };
@@ -38,10 +38,10 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    // Le min-h-screen et flex flex-col assurent que le composant prend au moins toute la hauteur de l'écran
+  
     <div className="min-h-screen flex flex-col bg-bg text-text-main font-sans pt-24 pb-20 px-6">
       
-      {/* flex-1 permet à cette zone de s'étirer et de pousser le footer vers le bas */}
+     
       <div className="max-w-5xl mx-auto w-full flex-1">
         
         <motion.div 
@@ -50,9 +50,9 @@ const AdminDashboard = () => {
           className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12"
         >
           <div>
-              <h1 className="text-4xl font-light text-(--primary-color) tracking-wide mb-2">Dashboard</h1>
+              <h1 className="font-heading text-4xl font-bold uppercase text-(--primary-color) mb-2">DASHBOARD</h1>
               <div className="h-0.5 w-12 bg-(--accent-color) mb-4"></div>
-              <p className="text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
+              <p className="font-mono text-[10px] opacity-60 uppercase tracking-widest">Gérez vos projets et votre contenu.</p>
           </div>
           <Link 
             to="/secret-yonna-create" 
@@ -68,15 +68,15 @@ const AdminDashboard = () => {
           transition={{ delay: 0.2 }}
           className="bg-white border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
         >
-          {/* NOUVEAU BLOC : GESTION PAGE À PROPOS */}
+          {/* GESTION PAGE À PROPOS */}
         <section className="mb-12">
           <div className="flex items-center justify-between p-6 bg-white border border-(--primary-color)/10 shadow-sm">
             <div>
               <h2 className="font-bold uppercase text-sm tracking-widest text-(--primary-color)">Page "À Propos"</h2>
-              <p className="text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
+              <p className="font-mono text-[10px] opacity-60 mt-1 uppercase">Gérez votre bio, vos expertises et votre philosophie.</p>
             </div>
             <Link 
-              to="/secret-yonna-edit-about" // Assure-toi que cette route existe dans ton App.js
+              to="/secret-yonna-edit-about" 
               className="flex items-center gap-2 border border-(--primary-color)/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-(--primary-color) hover:text-white transition-all"
             >
               <Edit2 size={16} /> Modifier la page
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
                     <div>
                       <h3 className="font-medium text-(--primary-color) text-lg mb-1">{project.title}</h3>
                       <p className="text-[10px] opacity-60 uppercase tracking-widest">
-                        {project.tech_stack || "Projet"} {project.isFeatured ? "• À la une" : ""}
+                        {project.technologies || "Projet"} {project.isFeatured ? "• À la une" : ""}
                       </p>
                     </div>
                   </div>

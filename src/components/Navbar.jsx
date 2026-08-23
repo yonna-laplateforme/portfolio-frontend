@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, Menu, X } from 'lucide-react';
 
-const Navbar = ({ token, onLogout }) => {
+const Navbar = ({ isAuthenticated, onLogout }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleNavigation = (path) => {
-    setIsOpen(false); // Ferme le menu après clic
+    setIsOpen(false); 
     navigate(path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -66,14 +66,26 @@ const Navbar = ({ token, onLogout }) => {
   </ul>
 
           
-          {token && (
+  {isAuthenticated && (
   <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-zinc-800 pt-8 md:pt-0 md:pl-6">
-   
-    <Link to="/dashboard-yonna-2026" className="hover:text-primary">ADMIN</Link>
-    <button onClick={onLogout} className="hover:text-red-500"><LogOut size={16}/></button>
+    <Link 
+      to="/dashboard-yonna-2026" 
+      className="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary rounded px-1"
+    >
+      ADMIN
+    </Link>
+    
+    <button 
+      onClick={onLogout} 
+      className="hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 rounded p-1"
+      aria-label="Se déconnecter"
+    >
+      <LogOut size={16} aria-hidden="true" />
+    </button>
   </div>
+)}
 
-          )}
+          
         </div>
       </nav>
     </header>

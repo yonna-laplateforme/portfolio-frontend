@@ -1,42 +1,43 @@
 @import "tailwindcss";
 
+/* 1. Importation propre depuis Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* 2. Variables CSS globales */
 :root {
   --primary-color: #090a09;
   --bg-color: #fffcfc;
-  
-  /* Modifie ici pour avoir du noir */
-  --text-main: #000000;      /* Texte principal en noir */
-  --text-secondary: #282727; /* Texte secondaire en gris foncé */
-  
-  /* Garde tes couleurs d'accentuation pour les boutons ou les détails */
+  --text-main: #000000;
+  --text-secondary: #282727;
   --accent-color: #ce1212;
 }
 
+/* 3. Configuration des thèmes Tailwind */
 @theme {
-  /* Couleurs */
   --color-primary: var(--primary-color);
   --color-bg: var(--bg-color);
   --color-main: var(--text-main);
-  --color-secondary: var(--text-secondary); /* Ajouté ici */
+  --color-secondary: var(--text-secondary);
   --color-accent: var(--accent-color);
   
-  /* Tailles de texte utilitaires */
-  --text-sm: 0.875rem;      /* 14px */
-  --text-xs: 0.625rem;      /* 10px (pour ton style mono) */
+  --text-sm: 0.875rem;
+  --text-xs: 0.625rem;
+
+  /* Polices configurées proprement */
+  --font-sans: 'Open Sans', sans-serif;
+  --font-heading: 'Bebas Neue', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
 
 @layer components {
-  /* Bouton principal */
   .btn-primary {
     @apply px-8 py-4 bg-(--primary-color) text-(--bg-color) font-black uppercase tracking-[0.2em] transition-all hover:bg-(--accent-color) disabled:opacity-50 cursor-pointer;
   }
 
-  /* Bouton secondaire */
   .btn-outline {
     @apply px-6 py-2 bg-transparent border border-(--primary-color) text-(--primary-color) font-bold uppercase tracking-[0.2em] transition-all hover:bg-(--primary-color) hover:text-(--bg-color) cursor-pointer;
   }
 
-  /* Input */
   .input-field {
     @apply w-full px-4 py-3 bg-(--bg-color) border-b-2 border-[#333] text-(--text-main) outline-none transition-colors focus:border-(--primary-color);
   }
@@ -46,5 +47,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   margin: 0;
-  font-family: sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

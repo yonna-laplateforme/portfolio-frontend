@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ProjectList from '../components/ProjectList';
 import { apiFetch } from '../api/apiFetch';
@@ -8,7 +8,7 @@ const ProjectsPage = ({ isAdmin }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/projects') 
+    apiFetch('api/projects') 
       .then(data => {
         setProjects(data);
         setLoading(false);

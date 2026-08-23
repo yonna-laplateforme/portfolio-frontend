@@ -1,105 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import { apiFetch } from '../api/apiFetch'; 
-
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { apiFetch } from '../api/apiFetch';
+import { getOptimizedUrl } from '../utils/imageUtils';
 
 const AboutPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch('/about').then(res => {
-      setData(res);
-      setLoading(false);
-    }).catch(err => {
-      console.error("Erreur chargement :", err);
-      setLoading(false);
-    });
+    apiFetch('/api/about')
+      .then(res => {
+        setData(res);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Erreur chargement :", err);
+        setLoading(false);
+      });
   }, []);
 
-  if (loading || !data) return <main className="min-h-screen"></main>;
+  if (loading || !data) return <div className="min-h-screen bg-bg flex items-center justify-center font-mono text-xs">CHARGEMENT...</div>;
 
   return (
-    <main className="min-h-screen bg-(--bg-color) text-(--text-main) py-16 md:py-32 px-6 md:px-16 max-w-7xl mx-auto overflow-x-hidden">
-      
-      {/* HEADER SECTION */}
-      <header className="mb-24">
-        <span className="font-mono text-xs font-bold uppercase text-(--accent-color) mb-4 block">// IDENTITÉ_VISUELLE</span>
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <h1 className="text-5xl md:text-8xl font-black uppercase leading-[0.9]">
-            {data.header_line1} <br />
-            <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
+    <main className="bg-bg text-text-main min-h-screen selection:bg-(--accent-color) selection:text-white">
+
+      {/* 1. HERO */}
+      <section className="pt-32 pb-16 px-6 max-w-7xl mx-auto">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+          <span className="font-mono text-xs uppercase text-(--accent-color) mb-6 block">// Introduction</span>
+          <h1 className="text-4xl md:text-7xl font-black uppercase leading-[0.9] max-w-4xl">
+            {data.header_line1} <span className="text-(--accent-color)">{data.header_accent}</span> {data.header_line2}
           </h1>
-          <span className="font-mono text-sm opacity-60 mt-6 md:mt-0">{data.header_subtitle}</span>
-        </div>
-      </header>
+          <p className="mt-6 font-mono text-xs uppercase opacity-60">{data.header_subtitle}</p>
+        </motion.div>
+      </section>
 
-      {/* PROFILE SECTION */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-32">
-        <div className="lg:col-span-5 relative w-full max-w-sm mx-auto lg:mx-0">
-          <div className="group relative">
-            <div className="relative border border-(--text-main) p-2 bg-white z-10 transition-all duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2 group-hover:shadow-[8px_8px_0px_var(--accent-color)]">
-              <div className="aspect-4/5 bg-gray-200 overflow-hidden">
-                <img 
-                  src={data.photo_url} 
-                  alt="Yonna Merlini" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                />
-              </div>
-              <div className="bg-(--accent-color) text-white font-mono text-[10px] px-2 py-1 inline-block mt-2">YONNA_MERLINI.JPG</div>
+      {/* 2. BIO NARRATIVE */}
+      <section className="py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="space-y-8">
+            {data.bio_text?.split('|').map((part, i) => (
+              <p key={i} className={`text-xl md:text-2xl font-light leading-relaxed ${i === 0 ? "font-bold text-3xl md:text-4xl" : "opacity-80"}`}>
+                {part.trim()}
+              </p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. PORTRAIT & DUALITÉ  */}
+      <section className="py-20 px-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <motion.img
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            src={getOptimizedUrl(data.photo_url)}
+            alt="Portrait"
+            className="w-full grayscale hover:grayscale-0 transition-all duration-700 aspect-[4/5] object-cover"
+          />
+          <div className="space-y-8">
+            <div>
+              {/* Logique pour le titre avec accent sur une partie */}
+              <h2 className="text-3xl font-black uppercase mb-6">
+                {data.dualite_title?.split('|')[0]}
+                <span className="text-(--accent-color)">{data.dualite_title?.split('|')[1]}</span>
+              </h2>
+
+              {/* Logique pour le texte avec saut de ligne */}
+              {data.dualite_text?.split('|').map((para, i) => (
+                <p key={i} className="opacity-70 leading-relaxed mb-4">
+                  {para.trim()}
+                </p>
+              ))}
             </div>
-            <div className="absolute top-4 left-4 w-full h-full border border-(--text-main) z-0 hidden lg:block"></div>
-          </div>
-        </div>
 
-        <div className="lg:col-span-6 lg:col-start-7">
-          <h2 className="text-3xl md:text-4xl font-bold uppercase mb-8">{data.bio_title}</h2>
-          <div className="space-y-6 text-lg opacity-90 leading-relaxed">
-            <p>{data.bio_text}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-text-main/20">
+              <div>
+                <h4 className="font-bold text-sm uppercase mb-4">Développement</h4>
+                <ul className="font-mono text-xs space-y-2 opacity-60">
+                  {data.tech_dev?.split('|').map(item => <li key={item}>— {item.trim()}</li>)}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm uppercase mb-4">Photographie</h4>
+                <ul className="font-mono text-xs space-y-2 opacity-60">
+                  {data.tech_photo?.split('|').map(item => <li key={item}>— {item.trim()}</li>)}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SÉPARATEUR BRUTALISTE */}
-      <div className="flex items-center gap-6 mb-16 w-full">
-        <div className="h-px flex-1 bg-(--text-main)"></div>
-        <span className="font-mono text-sm uppercase whitespace-nowrap">CHAMPS D'EXPERTISE</span>
-        <div className="h-px flex-1 bg-(--text-main)"></div>
-      </div>
+      {/* 4. SECTION VIDÉO DYNAMIQUE */}
+      {data.video_url && (
+        <section className="relative w-full h-[50vh] overflow-hidden my-10">
+          <video
+            autoPlay loop muted playsInline
+           className="absolute inset-0 w-full h-full object-cover brightness-95 hover:brightness-100 transition-all duration-1000"
+          >
+            <source src={data.video_url} type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-black/10" />
+        </section>
+      )}
 
-      {/* EXPERTISE CARDS */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-        {[
-          { t: "DÉVELOPPEMENT", i: ["REACT / NEXT.JS / NEST.JS", "TAILWIND CSS", "TYPESCRIPT"] },
-          { t: "PHOTOGRAPHIE", i: ["DIRECTION ARTISTIQUE", "ÉDITION NUMÉRIQUE", "ARGENTIQUE", "PORTRAIT"] },
-          { t: "STRATÉGIE", i: ["ANALYSE DE BESOINS", "OPTIMISATION SEO", "BRAND IDENTITY"] }
-        ].map((box, i) => (
-          <div key={i} className="border border-(--text-main) p-8 hover:bg-(--text-main) hover:text-(--bg-color) transition-colors duration-300">
-            <h4 className="font-bold text-xl mb-8 uppercase">{box.t}</h4>
-            <ul className="font-mono text-sm space-y-3 opacity-90">
-              {box.i.map(item => <li key={item}>— {item}</li>)}
-            </ul>
-          </div>
-        ))}
-      </section>
+      {/* 5. PHILOSOPHIE */}
+      <footer className="py-32 px-6 text-center border-t border-text-main/10 mt-10">
+        <div className="max-w-2xl mx-auto text-2xl md:text-4xl font-light leading-tight">
+          "{data.philosophy_prefix} <span className="text-(--accent-color) font-black">{data.philosophy_important}</span> {data.philosophy_suffix}"
+        </div>
+        <div className="font-mono text-xs uppercase mt-12 opacity-50 tracking-widest">
+          — {data.philosophy_author}
+        </div>
+      </footer>
 
-     {/* GRAND CADRE NOIR (CITATION DYNAMIQUE) */}
-<section className="bg-(--primary-color) text-(--bg-color) p-12 md:p-24 text-center border border-(--text-main) min-h-100 flex flex-col">
-  
-  {/* Le bloc central qui prend l'espace disponible */}
-  <div className="grow flex flex-col justify-center">
-    <h3 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-8">
-      "{data.philosophy_prefix} <span className="text-(--accent-color)">{data.philosophy_important}</span> {data.philosophy_suffix}"
-    </h3>
-    <p className="font-mono text-sm max-w-xl mx-auto opacity-70"> 
-      {data.philosophy_text}
-    </p>
-  </div>
-
- 
-  <p className="font-mono text-sm text-(--bg-color font-bold max-w-xl mx-auto opacity-70 mt-auto pt-12">
-    {data.philosophy_author}
-  </p>
-</section>
     </main>
   );
 };

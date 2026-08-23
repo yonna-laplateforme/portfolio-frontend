@@ -1,8 +1,11 @@
-// Remplace tout le contenu par ceci :
 export async function apiFetch(endpoint, options = {}) {
-  const baseUrl = "http://localhost:3001/api";
-  const url = `${baseUrl}${endpoint}`;
-  const token = localStorage.getItem('token'); 
+
+  // NOUVELLE URL (masquée derrière Cloudflare)
+  const baseUrl = import.meta.env.VITE_API_URL || "https://api.yonnamerlini.com";
+  
+  const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
+  
+ 
 
   const isFormData = options.body instanceof FormData;
   
@@ -11,11 +14,14 @@ export async function apiFetch(endpoint, options = {}) {
     ...options.headers,
   };
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
+ 
 
-  const response = await fetch(url, { ...options, headers });
+  //  envoie automatiquement les cookies
+  const response = await fetch(url, { 
+    ...options, 
+    headers,
+    credentials: 'include', // ← C'EST ÇA QUI ENVOIE LE COOKIE
+  });
 
   if (response.status === 204) return null;
 

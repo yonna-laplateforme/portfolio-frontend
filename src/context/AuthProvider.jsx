@@ -1,21 +1,51 @@
-import { useState, useContext } from 'react';
-import AuthContext from './AuthContext'; // L'import fonctionne enfin grâce au "export default"
+import { useState, useContext, useEffect } from 'react';
+import AuthContext from './AuthContext';
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const login = (newToken) => {
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
+  // Vérifie si on est connecté au chargement
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('https://api.yonnamerlini.com/api/auth/me', {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const login = () => {
+    setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
+  const logout = async () => {
+    try {
+      await fetch('https://api.yonnamerlini.com/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    setIsAuthenticated(false);
   };
+
+  if (isLoading) return null;
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

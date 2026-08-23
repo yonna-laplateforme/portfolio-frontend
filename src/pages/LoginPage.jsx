@@ -12,42 +12,38 @@ const LoginPage = () => {
   
   const { login } = useAuth(); 
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    // 1. Appel API via apiFetch
-    const data = await apiFetch('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      // 1. Appel API (le cookie est envoyé automatiquement par le navigateur)
+      const data = await apiFetch('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
 
-    // 2. Vérification de la présence du token
-    if (data?.token) {
-      // 3. Mise à jour de l'état d'authentification
-      login(data.token);
-      
-      // 4. Redirection vers ton chemin secret 
-      navigate('/dashboard-yonna-2026', { replace: true });
-    } else {
-      throw new Error("Token manquant dans la réponse du serveur.");
+      // 2. Si succès, le cookie HttpOnly est déjà stocké par le navigateur
+      if (data?.success) {
+        login(); 
+        navigate('/dashboard-yonna-2026', { replace: true });
+      } else {
+        throw new Error(data?.message || "Échec de la connexion");
+      }
+    } catch (error) {
+      console.error('Erreur connexion:', error);
+      alert(error.message || 'Identifiants incorrects');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    // 5. Gestion des erreurs plus explicite
-    console.error('Erreur connexion:', error);
-    alert(error.message || 'Identifiants incorrects');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
   return (
     <div className="min-h-screen bg-bg flex flex-col justify-center items-center p-6 text-text-main font-sans">
       
-      {/* Bouton retour utilisant la couleur principale */}
+      {/* Bouton retour */}
       <button 
         onClick={() => navigate('/')}
-        className="absolute top-8 left-8 text-[10px] font-bold opacity-60 hover:opacity-100 hover:text-[var(--accent-color)] uppercase tracking-widest transition-all flex items-center gap-2"
+        className="absolute top-8 left-8 text-[10px] font-bold opacity-60 hover:opacity-100 hover:text-(--accent-color) uppercase tracking-widest transition-all flex items-center gap-2"
       >
         <span>←</span> Retour à l'accueil
       </button>
@@ -56,14 +52,14 @@ const LoginPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white p-8 md:p-12 border border-[var(--primary-color)]/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
+        className="w-full max-w-md bg-white p-8 md:p-12 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)]"
       >
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-light tracking-wide mb-3 text-[var(--primary-color)]">
+          <h2 className="text-3xl font-light tracking-wide mb-3 text-(--primary-color)">
             Accès Réservé
           </h2>
           {/* Ligne d'accentuation avec ta variable de couleur */}
-          <div className="h-0.5 w-12 bg-[var(--accent-color)] mx-auto"></div>
+          <div className="h-0.5 w-12 bg-(--accent-color) mx-auto"></div>
           <p className="mt-4 text-[10px] opacity-60 uppercase tracking-widest">
             Administration du portfolio
           </p>
@@ -80,7 +76,7 @@ const LoginPage = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3.5 bg-bg/50 border border-[var(--primary-color)]/20 focus:outline-none focus:border-[var(--accent-color)] transition-colors text-sm text-text-main"
+              className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main"
               placeholder="hello@tonportfolio.com"
             />
           </div>
@@ -95,17 +91,17 @@ const LoginPage = () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3.5 bg-bg/50 border border-[var(--primary-color)]/20 focus:outline-none focus:border-[var(--accent-color)] transition-colors text-sm text-text-main"
+              className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 focus:outline-none focus:border-(--accent-color) transition-colors text-sm text-text-main"
               placeholder="••••••••"
             />
           </div>
 
           <div className="pt-4">
-            {/* Bouton principal avec la couleur d'accentuation en fond */}
+            {/* Bouton principal */}
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[var(--accent-color)] text-white py-4 text-xs font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+              className="w-full bg-(--accent-color) text-white py-4 text-xs font-bold uppercase tracking-widest hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
             >
               {isLoading ? (
                 <span className="animate-pulse">Connexion en cours...</span>

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { getOptimizedUrl } from '../utils/imageUtils';
@@ -10,7 +10,7 @@ const ProjectCard = ({ project, index }) => {
   // 1. On sépare toutes les images
   const imagesArray = project.image_url ? project.image_url.split(',').map(url => url.trim()) : [];
   const mainImage = imagesArray[0] || '';
-  const thumbnails = imagesArray.slice(1); // On prend toutes les images sauf la première
+  const thumbnails = imagesArray.slice(1); 
 
   const { scrollYProgress } = useScroll({
     target: cardRef,
@@ -34,7 +34,7 @@ const ProjectCard = ({ project, index }) => {
           />
         </div>
 
-        {/* ZONE MINIATURES (si elles existent) */}
+        {/* ZONE MINIATURES */}
         {thumbnails.length > 0 && (
           <div className="flex gap-2 mt-4">
             {thumbnails.map((thumb, i) => (

@@ -9,7 +9,7 @@ const WordRotation = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % words.length);
-    }, 3000); // 4 secondes de lecture
+    }, 4000); 
     return () => clearInterval(timer);
   }, []);
 
