@@ -28,7 +28,7 @@ useEffect(() => {
   const featured = allProjects.filter(p => Number(p.isFeatured) === 1);
 
   return (
-    <main className="bg-bg text-text-main min-h-screen">
+    <div className="bg-bg text-text-main min-h-screen">
 
       
 {/* SECTION HÉRO */}
@@ -120,7 +120,7 @@ useEffect(() => {
   
   <ContactMinimal />
 </section>
-    </main>
+    </div>
   );
 };
 
