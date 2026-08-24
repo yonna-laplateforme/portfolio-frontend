@@ -1,7 +1,7 @@
 export async function apiFetch(endpoint, options = {}) {
 
   // NOUVELLE URL (masquée derrière Cloudflare)
- const baseUrl = import.meta.env.VITE_API_URL || "https://api.yonnamerlini.com";
+ const baseUrl = import.meta.env.VITE_API_URL || "https://api.www-yonnamerlini.com";
   
   const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   
