@@ -28,7 +28,7 @@ useEffect(() => {
   const featured = allProjects.filter(p => Number(p.isFeatured) === 1);
 
   return (
-    <main className="bg-bg text-text-main min-h-screen">
+    <div className="bg-bg text-text-main min-h-screen">
 
       
 {/* SECTION HÉRO */}
@@ -81,19 +81,20 @@ useEffect(() => {
   </h2>
 
   {loading ? (
-    <p className="text-center font-mono text-secondary">Chargement...</p>
-  ) : (
-   
-    <ul className="space-y-32">
-      {featured.slice(0, visibleCount).map((project, index) => (
-        <li key={project.id}>
-          <Link to={`/projects/${project.id}`} className="block group">
-            <ZigzagProject project={project} index={index} />
-          </Link>
-        </li>
-      ))}
-    </ul>
-  )}
+  <p className="text-center font-mono text-secondary">Chargement...</p>
+) : featured.length > 0 ? (
+  <ul className="space-y-32">
+    {featured.slice(0, visibleCount).map((project, index) => (
+      <li key={project.id}>
+        <Link to={`/projects/${project.id}`} className="block group">
+          <ZigzagProject project={project} index={index} />
+        </Link>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p className="text-center font-mono text-secondary">Aucun projet à afficher.</p>
+)}
 
   {/* Bouton CTA final */}
   <div className="flex justify-end mt-24">
@@ -120,7 +121,7 @@ useEffect(() => {
   
   <ContactMinimal />
 </section>
-    </main>
+    </div>
   );
 };
 

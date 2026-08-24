@@ -1,11 +1,16 @@
 # --- Étape 1 : Build de l'application ---
 FROM node:lts-alpine AS build
 WORKDIR /app
+
+# Reçoit VITE_API_URL de Render au moment du build
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY package*.json ./
 RUN npm install
 COPY . .
 
-# Build de l'application
+
 RUN npm run build
 
 # --- Étape 2 : Serveur Nginx ---

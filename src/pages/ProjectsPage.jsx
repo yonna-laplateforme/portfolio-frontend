@@ -20,7 +20,7 @@ const ProjectsPage = ({ isAdmin }) => {
   }, []);
 
   return (
-    <main className="min-h-screen bg-bg text-text-main pt-32 pb-20"> 
+    <div className="min-h-screen bg-bg text-text-main pt-32 pb-20"> 
       <div className="px-6 md:px-16 max-w-7xl mx-auto">
         
         {/* HEADER DE PAGE */}
@@ -56,7 +56,7 @@ const ProjectsPage = ({ isAdmin }) => {
         </section>
         
       </div>
-    </main>
+    </div>
   );
 };
 

@@ -39,7 +39,7 @@ const ProjectDetailPage = () => {
 
   return (
     <>
-      <main className="min-h-screen bg-(--bg-color) text-(--text-main) px-6 py-24">
+      <div className="min-h-screen bg-(--bg-color) text-(--text-main) px-6 py-24">
         <article className="max-w-5xl mx-auto">
           <Link to="/projects" className="text-[10px] uppercase tracking-[0.3em] text-secondary hover:text-accent font-mono mb-12 block">← RETOUR</Link>
 
@@ -132,7 +132,7 @@ const ProjectDetailPage = () => {
           </section>
 
         </article>
-      </main>
+      </div>
 
       <AnimatePresence>
   {hoveredImage !== null && (

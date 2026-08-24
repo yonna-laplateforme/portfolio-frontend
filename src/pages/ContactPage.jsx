@@ -3,7 +3,7 @@ import ContactForm from '../components/ContactForm';
 
 const ContactPage = () => {
   return (
-    <main className="min-h-screen bg-(--bg-color) pt-32 pb-20 px-6">
+    <div className="min-h-screen bg-(--bg-color) pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
         
         {/* En-tête de page aligné */}
@@ -30,7 +30,7 @@ const ContactPage = () => {
        
 
       </div>
-    </main>
+    </div>
   );
 };
 
