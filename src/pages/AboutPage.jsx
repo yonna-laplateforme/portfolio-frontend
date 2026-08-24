@@ -22,7 +22,7 @@ const AboutPage = () => {
   if (loading || !data) return <div className="min-h-screen bg-bg flex items-center justify-center font-mono text-xs">CHARGEMENT...</div>;
 
   return (
-    <main className="bg-bg text-text-main min-h-screen selection:bg-(--accent-color) selection:text-white">
+    <div className="bg-bg text-text-main min-h-screen selection:bg-(--accent-color) selection:text-white">
 
       {/* 1. HERO */}
       <section className="pt-32 pb-16 px-6 max-w-7xl mx-auto">
@@ -115,7 +115,7 @@ const AboutPage = () => {
         </div>
       </footer>
 
-    </main>
+    </div>
   );
 };
 
