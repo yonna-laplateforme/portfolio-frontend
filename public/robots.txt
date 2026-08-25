@@ -1,2 +1,8 @@
 User-agent: *
+Disallow: /login
+Disallow: /dashboard-yonna-2026
+Disallow: /secret-yonna-create
+Disallow: /secret-yonna-edit-about
+Disallow: /secret-yonna-edit/
+Disallow: /la-porte-secrete-du-portfolio
 Allow: /
