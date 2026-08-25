@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -14,8 +13,7 @@ const Footer = () => {
   return (
     <footer className="bg-(--bg-color) border-t border-[#333] py-12 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        
-        
+
         <Link 
           to="/" 
           onClick={scrollToTop}
@@ -54,6 +52,15 @@ const Footer = () => {
               >
                 Email
               </a>
+            </li>
+            <li>
+              <Link 
+                to="/mentions-legales" 
+                onClick={scrollToTop}
+                className="text-(--primary-color) hover:text-(--accent-color) transition-colors font-bold"
+              >
+                Mentions légales
+              </Link>
             </li>
           </ul>
         </nav>

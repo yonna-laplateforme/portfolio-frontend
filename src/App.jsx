@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer.jsx';
 
+
 // Pages
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
@@ -15,6 +16,8 @@ const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage.jsx'));
 const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
 const MaintenancePage = lazy(() => import('./pages/MaintenancePage.jsx'));
+const MentionsLegalePage = lazy(() => import('./pages/MentionsLegalePage.jsx'));
+
 
 // Pages Admin
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
@@ -51,6 +54,7 @@ function App() {
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/mentions-legales" element={<MentionsLegalePage />} />
 
               {/* Routes Admin (Protégées) */}
               <Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
