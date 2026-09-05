@@ -33,9 +33,11 @@ export async function apiFetch(endpoint, options = {}) {
     data = text;
   }
 
-  if (!response.ok) {
-    throw new Error(data?.message || data || 'Une erreur est survenue');
-  }
-
+ if (!response.ok) {
+  const error = new Error(data?.message || data || 'Une erreur est survenue');
+  error.status = response.status;
+  error.errors = data?.errors; 
+  throw error;
+}
   return data;
 }

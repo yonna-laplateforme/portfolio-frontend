@@ -7,13 +7,14 @@ import { apiFetch } from '../../api/apiFetch';
 const CreateProject = () => {
   const navigate = useNavigate();
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [techList, setTechList] = useState([]);
   const [manualTech, setManualTech] = useState('');
+  const [serverErrors, setServerErrors] = useState([]);
 
   useEffect(() => {
     const fetchTechnologies = async () => {
@@ -64,6 +65,7 @@ const CreateProject = () => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
+    setServerErrors([]);
 
     const formData = new FormData();
 
@@ -103,7 +105,11 @@ const CreateProject = () => {
       alert('Projet créé avec succès !');
       navigate('/dashboard-yonna-2026');
     } catch (err) {
-      alert(`Erreur : ${err.message}`);
+      if (err.errors) {
+        setServerErrors(err.errors);
+      } else {
+        setServerErrors([{ msg: err.message || 'Erreur serveur, réessaie plus tard' }]);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -116,6 +122,14 @@ const CreateProject = () => {
           Nouveau Projet
         </h1>
 
+        {serverErrors.length > 0 && (
+          <div role="alert" className="mb-6 p-4 border border-(--accent-color) bg-(--accent-color)/5">
+            {serverErrors.map((e, i) => (
+              <p key={i} className="text-sm text-(--accent-color)">{e.msg}</p>
+            ))}
+          </div>
+        )}
+
         <motion.form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col lg:flex-row gap-8"
@@ -127,10 +141,13 @@ const CreateProject = () => {
                   Titre du projet *
                 </label>
                 <input
-                  {...register('title', { required: 'Obligatoire' })}
+                  {...register('title', { required: 'Le titre est obligatoire' })}
                   className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors"
                   placeholder="Nom du projet"
                 />
+                {errors.title && (
+                  <p role="alert" className="text-xs text-(--accent-color)">{errors.title.message}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -163,7 +180,7 @@ const CreateProject = () => {
                 </label>
                 <select
                   {...register('category_id', {
-                    required: 'Veuillez choisir',
+                    required: 'Veuillez choisir une catégorie',
                   })}
                   className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm appearance-none cursor-pointer focus:border-(--accent-color) outline-none transition-colors"
                 >
@@ -171,6 +188,9 @@ const CreateProject = () => {
                   <option value="1">Web</option>
                   <option value="2">Photo</option>
                 </select>
+                {errors.category_id && (
+                  <p role="alert" className="text-xs text-(--accent-color)">{errors.category_id.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -178,9 +198,12 @@ const CreateProject = () => {
                   Description *
                 </label>
                 <textarea
-                  {...register('description', { required: 'Requis' })}
+                  {...register('description', { required: 'La description est obligatoire' })}
                   className="w-full p-4 bg-bg/50 border border-(--primary-color)/20 text-sm h-32 resize-none focus:border-(--accent-color) outline-none transition-colors"
                 />
+                {errors.description && (
+                  <p role="alert" className="text-xs text-(--accent-color)">{errors.description.message}</p>
+                )}
               </div>
 
               <div className="space-y-3 pt-2 border-t border-(--primary-color)/10">
@@ -232,9 +255,17 @@ const CreateProject = () => {
                     Lien GitHub
                   </label>
                   <input
-                    {...register('github_url')}
+                    {...register('github_url', {
+                      pattern: {
+                        value: /^https?:\/\/.+/,
+                        message: 'URL invalide (commence par https://)',
+                      },
+                    })}
                     className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors"
                   />
+                  {errors.github_url && (
+                    <p role="alert" className="text-xs text-(--accent-color)">{errors.github_url.message}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -242,9 +273,17 @@ const CreateProject = () => {
                     Lien Démo
                   </label>
                   <input
-                    {...register('demo_url')}
+                    {...register('demo_url', {
+                      pattern: {
+                        value: /^https?:\/\/.+/,
+                        message: 'URL invalide (commence par https://)',
+                      },
+                    })}
                     className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors"
                   />
+                  {errors.demo_url && (
+                    <p role="alert" className="text-xs text-(--accent-color)">{errors.demo_url.message}</p>
+                  )}
                 </div>
               </div>
             </div>
