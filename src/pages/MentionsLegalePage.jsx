@@ -8,7 +8,7 @@ export default function MentionsLegalePage() {
         <p>
           Yonna Merlini<br />
           Contact : via le formulaire de contact du site<br />
-          Site : https://www-yonnamerlini.com
+          Site : https://www.yonnamerlini.com
         </p>
       </section>
 
