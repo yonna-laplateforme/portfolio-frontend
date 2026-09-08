@@ -38,13 +38,21 @@ function App() {
 
   return (
     <div className="min-h-screen bg-bg">
-      <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
-      <main className="pt-16">
+      {/* Navbar cachée en mode maintenance */}
+      {!IS_MAINTENANCE && (
+        <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
+      )}
+
+      {/* pt-16 seulement quand la navbar fixed est présente */}
+      <main className={!IS_MAINTENANCE ? "pt-16" : ""}>
         <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
           <RouteLogger />
 
           {IS_MAINTENANCE ? (
-            <MaintenancePage />
+            <Routes>
+              {/* Toutes les URL renvoient vers la page maintenance */}
+              <Route path="*" element={<MaintenancePage />} />
+            </Routes>
           ) : (
             <Routes>
               {/* Routes publiques */}
@@ -80,7 +88,9 @@ function App() {
             </Routes>
           )}
         </Suspense>
-        <Footer />
+
+        {/* Footer aussi caché en mode maintenance */}
+        {!IS_MAINTENANCE && <Footer />}
       </main>
     </div>
   );
