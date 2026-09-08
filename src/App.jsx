@@ -31,7 +31,7 @@ const RouteLogger = () => {
   return null;
 };
 
-const IS_MAINTENANCE = true;
+const IS_MAINTENANCE = false;
 
 function App() {
  const { isAuthenticated, logout } = useAuth();
