@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { apiFetch } from '../../api/apiFetch';
+import { compressImage } from '../../utils/imageCompression';
 
 const CreateProject = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const CreateProject = () => {
   const [techList, setTechList] = useState([]);
   const [manualTech, setManualTech] = useState('');
   const [serverErrors, setServerErrors] = useState([]);
+  const [isCompressing, setIsCompressing] = useState(false);
 
   useEffect(() => {
     const fetchTechnologies = async () => {
@@ -45,11 +47,30 @@ const CreateProject = () => {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
     previews.forEach((src) => URL.revokeObjectURL(src));
-    setSelectedFiles(files);
-    setPreviews(files.map((file) => URL.createObjectURL(file)));
+
+    setIsCompressing(true);
+    try {
+      const compressed = await Promise.all(
+        files.map(async (file) => {
+          try {
+            return await compressImage(file, 2560, 0.85);
+          } catch {
+            return file;
+          }
+        })
+      );
+
+      setSelectedFiles(compressed);
+      setPreviews(compressed.map((file) => URL.createObjectURL(file)));
+    } finally {
+      setIsCompressing(false);
+      e.target.value = '';
+    }
   };
 
   const onSubmit = async (data) => {
@@ -85,14 +106,11 @@ const CreateProject = () => {
       alert('Projet créé avec succès !');
       navigate('/dashboard-yonna-2026');
     } catch (err) {
-      // ⬇️ DÉBOGAGE : tout le détail dans la console (F12)
       console.error('DÉTAIL ERREUR CRÉATION:', err);
-
-      // ⬇️ Affichage robuste : le vrai message, quel que soit le format du back
       if (Array.isArray(err.errors) && err.errors.length > 0) {
         setServerErrors(
           err.errors.map((e) =>
-            typeof e === 'string' ? e : (e.msg || e.message || JSON.stringify(e))
+            typeof e === 'string' ? e : (e.msg || e.message || e.error || JSON.stringify(e))
           )
         );
       } else {
@@ -291,7 +309,7 @@ const CreateProject = () => {
 
                   {previews.length === 0 && (
                     <p className="font-mono text-xs opacity-60 uppercase tracking-widest">
-                      Glissez-déposez vos images ici
+                      {isCompressing ? 'Compression en cours…' : 'Glissez-déposez vos images ici'}
                     </p>
                   )}
                 </div>

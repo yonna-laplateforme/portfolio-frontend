@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useRef, useMemo, useState, useEffect } from 'react';
+import { getOptimizedUrl } from '../utils/imageUtils';
 
 const ZigzagProject = ({ project, index }) => {
     // 1. Référence DOM pour lier le composant au scroll
@@ -50,7 +51,7 @@ const ZigzagProject = ({ project, index }) => {
                         <AnimatePresence mode="wait">
                             <motion.img
                                 key={imagesArray[currentIndex]}
-                                src={imagesArray[currentIndex]}
+                                src={getOptimizedUrl(imagesArray[currentIndex], 1600)}
                                 alt={project.title}
                                 initial={{ opacity: 0, scale: 1.04 }}
                                 animate={{ opacity: 1, scale: 1 }}

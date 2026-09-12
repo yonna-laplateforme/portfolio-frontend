@@ -27,6 +27,7 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
 const CreateProject = lazy(() => import('./pages/admin/CreateProjectPage.jsx'));
 const EditProject = lazy(() => import('./pages/admin/EditProjectPage.jsx'));
 const EditAboutPage = lazy(() => import('./pages/admin/EditAboutPage.jsx'));
+const EditHomePage = lazy(() => import('./pages/admin/EditHomePage.jsx'));
 
 const RouteLogger = () => {
   const location = useLocation();
@@ -96,6 +97,11 @@ function App() {
                       <Route path="/dashboard-yonna-2026" element={
                         <ProtectedRoute><AdminDashboard /></ProtectedRoute>
                       } />
+                      <Route path="/secret-yonna-edit-home" element={
+                        <ProtectedRoute><EditHomePage /></ProtectedRoute>
+                      } />
+
+                      {/* Page 404 */}
 
                       <Route path="*" element={<NotFoundPage />} />
                     </>

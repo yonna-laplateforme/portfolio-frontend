@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useTransform, useAnimationFrame } from 'framer-motion';
 import { apiFetch } from '../api/apiFetch';
+import { getOptimizedUrl } from '../utils/imageUtils';
 
 const wrap = (min, max, v) => {
   const range = max - min;
@@ -13,7 +14,7 @@ const CarouselAwwwards = () => {
   const [paused, setPaused] = useState(false);
   const SPEED = -6; // vitesse en %/seconde
 
-  // ⬇️ Récupère TOUTES les images de TON API (comme ZigzagProject : image_url séparé par des virgules)
+  // ⬇️ Récupère TOUTES les images de l' API (comme ZigzagProject : image_url séparé par des virgules)
   useEffect(() => {
     apiFetch('api/projects/home')
       .then((projects) => {
@@ -47,11 +48,11 @@ const CarouselAwwwards = () => {
           <div key={copy} className="flex gap-6" aria-hidden={copy === 1}>
             {images.map((src, i) => (
               <img
-                key={`${copy}-${i}`}
-                src={src}
-                alt=""
-                loading="lazy"
-                draggable={false}
+                 key={`${copy}-${i}`}
+                 src={getOptimizedUrl(src, 1200)}
+                 alt=""
+                 loading="lazy"
+                 draggable={false}
                 className="h-64 md:h-96 w-auto object-cover select-none"
               />
             ))}

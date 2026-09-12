@@ -8,6 +8,7 @@ import ContactMinimal from '../components/ContactMinimal';
 import { apiFetch } from '../api/apiFetch';
 import CarouselAwwwards from '../components/CarouselAwwwards';
 
+
 const HomePage = () => {
   const [allProjects, setAllProjects] = useState([]);
   const [visibleCount, setVisibleCount] = useState(3);
@@ -57,11 +58,8 @@ const HomePage = () => {
       </section>
 
 {/* BANDE PHOTO */}
-<CarouselAwwwards 
-  src="https://res.cloudinary.com/dltejn5sh/image/upload/w_1800,q_auto,f_auto/v1788823489/portfolio_uploads/iofcdhccpgjogd5h7qib.jpg"
-  alt="Photographie — Yonna Merlini"
-  className="h-[55vh] md:h-[70vh] mx-4 md:mx-8 my-24"
-/>
+<CarouselAwwwards/>
+  
       {/* PROJETS */}
       <section className="py-24 px-6 md:px-12 border-t border-ink/10">
         <div className="max-w-6xl mx-auto">
