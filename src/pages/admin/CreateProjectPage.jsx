@@ -22,10 +22,7 @@ const CreateProject = () => {
         const data = await apiFetch('/api/technologies');
         setTechList(data);
       } catch (err) {
-        console.error(
-          'Erreur lors de la récupération des technologies:',
-          err
-        );
+        console.error('Erreur lors de la récupération des technologies:', err);
       }
     };
 
@@ -38,16 +35,10 @@ const CreateProject = () => {
     try {
       const newTech = await apiFetch('/api/technologies', {
         method: 'POST',
-        body: JSON.stringify({
-          name: manualTech,
-        }),
+        body: JSON.stringify({ name: manualTech }),
       });
 
-      setTechList((previousTechList) => [
-        ...previousTechList,
-        newTech,
-      ]);
-
+      setTechList((previousTechList) => [...previousTechList, newTech]);
       setManualTech('');
     } catch (err) {
       console.error("Erreur lors de l'ajout:", err);
@@ -56,9 +47,7 @@ const CreateProject = () => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-
     previews.forEach((src) => URL.revokeObjectURL(src));
-
     setSelectedFiles(files);
     setPreviews(files.map((file) => URL.createObjectURL(file)));
   };
@@ -71,23 +60,14 @@ const CreateProject = () => {
 
     Object.keys(data).forEach((key) => {
       if (key === 'technologies') {
-        const techs = Array.isArray(data[key])
-          ? data[key]
-          : [data[key]];
-
+        const techs = Array.isArray(data[key]) ? data[key] : [data[key]];
         techs.forEach((techId) => {
-          if (techId) {
-            formData.append('technologies[]', techId);
-          }
+          if (techId) formData.append('technologies[]', techId);
         });
       } else {
         formData.append(
           key,
-          key === 'isFeatured'
-            ? data.isFeatured
-              ? 1
-              : 0
-            : data[key]
+          key === 'isFeatured' ? (data.isFeatured ? 1 : 0) : data[key]
         );
       }
     });
@@ -104,21 +84,26 @@ const CreateProject = () => {
 
       alert('Projet créé avec succès !');
       navigate('/dashboard-yonna-2026');
-    } } catch (err) {
-  console.error('DÉTAIL ERREUR CRÉATION:', err);   // ← tout le détail dans la console F12
+    } catch (err) {
+      // ⬇️ DÉBOGAGE : tout le détail dans la console (F12)
+      console.error('DÉTAIL ERREUR CRÉATION:', err);
 
-  if (Array.isArray(err.errors) && err.errors.length > 0) {
-    setServerErrors(
-      err.errors.map((e) =>
-        typeof e === 'string' ? e : (e.msg || e.message || JSON.stringify(e))
-      )
-    );
-  } else {
-    setServerErrors([
-      typeof err.message === 'string' ? err.message : JSON.stringify(err.message)
-    ]);
-  }
-}
+      // ⬇️ Affichage robuste : le vrai message, quel que soit le format du back
+      if (Array.isArray(err.errors) && err.errors.length > 0) {
+        setServerErrors(
+          err.errors.map((e) =>
+            typeof e === 'string' ? e : (e.msg || e.message || JSON.stringify(e))
+          )
+        );
+      } else {
+        setServerErrors([
+          typeof err.message === 'string' ? err.message : JSON.stringify(err.message)
+        ]);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">
@@ -129,8 +114,8 @@ const CreateProject = () => {
 
         {serverErrors.length > 0 && (
           <div role="alert" className="mb-6 p-4 border border-(--accent-color) bg-(--accent-color)/5">
-            {serverErrors.map((e, i) => (
-              <p key={i} className="text-sm text-(--accent-color)">{e.msg}</p>
+            {serverErrors.map((msg, i) => (
+              <p key={i} className="text-sm text-(--accent-color)">{msg}</p>
             ))}
           </div>
         )}
@@ -236,19 +221,14 @@ const CreateProject = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-bg/30 border border-(--primary-color)/10">
                   {techList.map((tech) => (
-                    <label
-                      key={tech.id}
-                      className="flex items-center gap-3 cursor-pointer group"
-                    >
+                    <label key={tech.id} className="flex items-center gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
                         value={tech.id}
                         {...register('technologies')}
                         className="w-4 h-4 cursor-pointer accent-(--accent-color)"
                       />
-                      <span className="font-mono text-xs uppercase">
-                        {tech.name}
-                      </span>
+                      <span className="font-mono text-xs uppercase">{tech.name}</span>
                     </label>
                   ))}
                 </div>
