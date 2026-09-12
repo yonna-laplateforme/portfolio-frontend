@@ -1,11 +1,15 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
 import { useAuth } from './context/AuthProvider';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer.jsx';
-
+import Preloader from './components/Preloader';
+import Cursor from './components/Cursor';
+import PageWrapper from './components/PageWrapper';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -17,7 +21,6 @@ const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
 const MaintenancePage = lazy(() => import('./pages/MaintenancePage.jsx'));
 const MentionsLegalePage = lazy(() => import('./pages/MentionsLegalePage.jsx'));
-
 
 // Pages Admin
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
@@ -34,64 +37,77 @@ const RouteLogger = () => {
 const IS_MAINTENANCE = false;
 
 function App() {
- const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-bg">
-      {/* Navbar cachée en mode maintenance */}
-      {!IS_MAINTENANCE && (
-        <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
-      )}
+    <div className="min-h-screen bg-paper">
+      {/* Preloader */}
+      <AnimatePresence>
+        {loading && <Preloader onDone={() => setLoading(false)} />}
+      </AnimatePresence>
 
-      {/* pt-16 seulement quand la navbar fixed est présente */}
-      <main className={!IS_MAINTENANCE ? "pt-16" : ""}>
-        <Suspense fallback={<div className="flex justify-center items-center h-screen">CHARGEMENT...</div>}>
-          <RouteLogger />
+      {/* Curseur custom */}
+      <Cursor />
 
-          {IS_MAINTENANCE ? (
-            <Routes>
-              {/* Toutes les URL renvoient vers la page maintenance */}
-              <Route path="*" element={<MaintenancePage />} />
-            </Routes>
-          ) : (
-            <Routes>
-              {/* Routes publiques */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/projects" element={<ProjectsPage isAdmin={isAuthenticated} />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/projects/:id" element={<ProjectDetailPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/mentions-legales" element={<MentionsLegalePage />} />
-
-              {/* Routes Admin (Protégées) */}
-              <Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
-
-              <Route path="/secret-yonna-create" element={
-                <ProtectedRoute><CreateProject /></ProtectedRoute>
-              } />
-
-              <Route path="/secret-yonna-edit/:id" element={
-                <ProtectedRoute><EditProject /></ProtectedRoute>
-              } />
-
-              <Route path="/secret-yonna-edit-about" element={
-                <ProtectedRoute><EditAboutPage /></ProtectedRoute>
-              } />
-
-              {/* Redirection pour l'ancienne URL */}
-              <Route path="/dashboard-yonna-2026" element={
-                <ProtectedRoute><AdminDashboard /></ProtectedRoute>
-              } />
-
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+      {/* Le site n'apparaît qu'après le preloader */}
+      {!loading && (
+        <>
+          {!IS_MAINTENANCE && (
+            <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
           )}
-        </Suspense>
 
-        {/* Footer aussi caché en mode maintenance */}
-        {!IS_MAINTENANCE && <Footer />}
-      </main>
+          <main className={!IS_MAINTENANCE ? 'pt-16' : ''}>
+            <Suspense fallback={
+              <div className="flex justify-center items-center h-screen font-mono text-sm tracking-widest text-ink-soft">
+                CHARGEMENT…
+              </div>
+            }>
+              <RouteLogger />
+              <ScrollToTop />
+
+              <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
+                  {IS_MAINTENANCE ? (
+                    <Route path="*" element={<MaintenancePage />} />
+                  ) : (
+                    <>
+                      {/* Routes publiques */}
+                      <Route path="/" element={<PageWrapper><HomePage /></PageWrapper>} />
+                      <Route path="/projects" element={<PageWrapper><ProjectsPage isAdmin={isAuthenticated} /></PageWrapper>} />
+                      <Route path="/about" element={<PageWrapper><AboutPage /></PageWrapper>} />
+                      <Route path="/projects/:id" element={<PageWrapper><ProjectDetailPage /></PageWrapper>} />
+                      <Route path="/contact" element={<PageWrapper><ContactPage /></PageWrapper>} />
+                      <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
+                      <Route path="/mentions-legales" element={<PageWrapper><MentionsLegalePage /></PageWrapper>} />
+
+                      {/* Routes Admin (Protégées) */}
+                      <Route path="/la-porte-secrete-du-portfolio" element={<LoginPage />} />
+                      <Route path="/secret-yonna-create" element={
+                        <ProtectedRoute><CreateProject /></ProtectedRoute>
+                      } />
+                      <Route path="/secret-yonna-edit/:id" element={
+                        <ProtectedRoute><EditProject /></ProtectedRoute>
+                      } />
+                      <Route path="/secret-yonna-edit-about" element={
+                        <ProtectedRoute><EditAboutPage /></ProtectedRoute>
+                      } />
+                      <Route path="/dashboard-yonna-2026" element={
+                        <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+                      } />
+
+                      <Route path="*" element={<NotFoundPage />} />
+                    </>
+                  )}
+                </Routes>
+              </AnimatePresence>
+            </Suspense>
+
+            {!IS_MAINTENANCE && <Footer />}
+          </main>
+        </>
+      )}
     </div>
   );
 }
