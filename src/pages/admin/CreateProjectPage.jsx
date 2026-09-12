@@ -104,16 +104,21 @@ const CreateProject = () => {
 
       alert('Projet créé avec succès !');
       navigate('/dashboard-yonna-2026');
-    } catch (err) {
-      if (err.errors) {
-        setServerErrors(err.errors);
-      } else {
-        setServerErrors([{ msg: err.message || 'Erreur serveur, réessaie plus tard' }]);
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    } } catch (err) {
+  console.error('DÉTAIL ERREUR CRÉATION:', err);   // ← tout le détail dans la console F12
+
+  if (Array.isArray(err.errors) && err.errors.length > 0) {
+    setServerErrors(
+      err.errors.map((e) =>
+        typeof e === 'string' ? e : (e.msg || e.message || JSON.stringify(e))
+      )
+    );
+  } else {
+    setServerErrors([
+      typeof err.message === 'string' ? err.message : JSON.stringify(err.message)
+    ]);
+  }
+}
 
   return (
     <div className="bg-bg text-text-main font-sans p-6 md:p-10 min-h-screen">
