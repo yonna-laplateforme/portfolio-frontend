@@ -48,30 +48,32 @@ const CreateProject = () => {
   };
 
   const handleFileChange = async (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
 
-    previews.forEach((src) => URL.revokeObjectURL(src));
+  previews.forEach((src) => URL.revokeObjectURL(src));
 
-    setIsCompressing(true);
-    try {
-      const compressed = await Promise.all(
-        files.map(async (file) => {
-          try {
-            return await compressImage(file, 2560, 0.85);
-          } catch {
-            return file;
-          }
-        })
-      );
+  setIsCompressing(true);
+  try {
+    const compressed = await Promise.all(
+      files.map(async (file) => {
+        // 🎬 GIF animé : on ne touche à RIEN (le canvas tuerait l'animation)
+        if (file.type === 'image/gif') return file;
+        try {
+          return await compressImage(file, 2560, 0.85);
+        } catch {
+          return file;
+        }
+      })
+    );
 
-      setSelectedFiles(compressed);
-      setPreviews(compressed.map((file) => URL.createObjectURL(file)));
-    } finally {
-      setIsCompressing(false);
-      e.target.value = '';
-    }
-  };
+    setSelectedFiles(compressed);
+    setPreviews(compressed.map((file) => URL.createObjectURL(file)));
+  } finally {
+    setIsCompressing(false);
+    e.target.value = '';
+  }
+};
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
