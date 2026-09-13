@@ -59,7 +59,7 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
             <nav>
               <ul className="space-y-3 md:space-y-5">
                 {LINKS.map((link, i) => (
-                  <li key={link.path} className="overflow-hidden">
+                  <li key={link.path} className="overflow-hidden pb-[0.2em] -mb-[0.2em]">
                     <motion.button
                       initial={{ y: '110%' }}
                       animate={{ y: 0 }}
@@ -69,7 +69,7 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
                       className="group flex items-baseline gap-6 text-left"
                     >
                       <span className="font-mono text-sm text-brick">{link.num}</span>
-                      <span className="font-display font-light text-6xl md:text-8xl leading-none transition-all duration-300 group-hover:italic group-hover:text-brick group-hover:translate-x-4">
+                      <span className="font-display font-light text-6xl md:text-8xl leading-[1.05] transition-all duration-300 group-hover:italic group-hover:text-brick group-hover:translate-x-4">
                         {link.label}
                       </span>
                     </motion.button>
