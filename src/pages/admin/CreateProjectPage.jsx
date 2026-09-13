@@ -48,32 +48,32 @@ const CreateProject = () => {
   };
 
   const handleFileChange = async (e) => {
-  const files = Array.from(e.target.files);
-  if (files.length === 0) return;
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
 
-  previews.forEach((src) => URL.revokeObjectURL(src));
+    previews.forEach((src) => URL.revokeObjectURL(src));
 
-  setIsCompressing(true);
-  try {
-    const compressed = await Promise.all(
-      files.map(async (file) => {
-        // 🎬 GIF animé : on ne touche à RIEN (le canvas tuerait l'animation)
-        if (file.type === 'image/gif') return file;
-        try {
-          return await compressImage(file, 2560, 0.85);
-        } catch {
-          return file;
-        }
-      })
-    );
+    setIsCompressing(true);
+    try {
+      const compressed = await Promise.all(
+        files.map(async (file) => {
+          // 🎬 GIF animé : on ne touche à RIEN (le canvas tuerait l'animation)
+          if (file.type === 'image/gif' || file.type.startsWith('video/')) return file;
+          try {
+            return await compressImage(file, 2560, 0.85);
+          } catch {
+            return file;
+          }
+        })
+      );
 
-    setSelectedFiles(compressed);
-    setPreviews(compressed.map((file) => URL.createObjectURL(file)));
-  } finally {
-    setIsCompressing(false);
-    e.target.value = '';
-  }
-};
+      setSelectedFiles(compressed);
+      setPreviews(compressed.map((file) => URL.createObjectURL(file)));
+    } finally {
+      setIsCompressing(false);
+      e.target.value = '';
+    }
+  };
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -197,7 +197,7 @@ const CreateProject = () => {
                   <option value="">-- Choisir --</option>
                   <option value="1">Web</option>
                   <option value="2">Photo</option>
-                  <option value="3">Vidéo</option> 
+                  <option value="3">Vidéo</option>
                 </select>
                 {errors.category_id && (
                   <p role="alert" className="text-xs text-(--accent-color)">{errors.category_id.message}</p>
@@ -301,15 +301,15 @@ const CreateProject = () => {
 
               <label className="relative flex flex-col items-center justify-center w-full min-h-50 border-2 border-dashed border-(--primary-color)/30 bg-bg/30 cursor-pointer hover:border-(--accent-color) transition-colors">
                 <div className="flex flex-wrap gap-4 p-4 justify-center">
-                  {previews.map((src, index) => (
-                    <img
-                      key={index}
-                      src={src}
-                      className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm"
-                      alt="Aperçu"
-                    />
-                  ))}
-
+                  {previews.map((src, index) => {
+                    const isVideo = selectedFiles[index]?.type?.startsWith('video/');
+                    return isVideo ? (
+                      <video key={index} src={src} muted autoPlay loop playsInline
+                        className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm" />
+                    ) : (
+                      <img key={index} src={src} className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm" alt="Aperçu" />
+                    );
+                  })}
                   {previews.length === 0 && (
                     <p className="font-mono text-xs opacity-60 uppercase tracking-widest">
                       {isCompressing ? 'Compression en cours…' : 'Glissez-déposez vos images ici'}
@@ -321,7 +321,7 @@ const CreateProject = () => {
                   type="file"
                   multiple
                   className="hidden"
-                  accept="image/*"
+                  accept="image/*,video/mp4,video/webm,video/quicktime"
                   onChange={handleFileChange}
                 />
               </label>

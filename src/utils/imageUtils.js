@@ -2,6 +2,10 @@ export const getOptimizedUrl = (url, w = 1200, h = null) => {
   if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) {
     return url;
   }
+  // 🎥 Vidéo Cloudinary : URL intacte (sinon la transfo casse le player)
+if (url.includes('/video/upload/')) {
+  return url;
+}
 
   // 🎬 GIF animé : on ne touche à RIEN (crop/transfo = animation cassée)
   if (url.includes('.gif')) {

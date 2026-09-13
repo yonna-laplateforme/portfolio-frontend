@@ -14,13 +14,14 @@ const CarouselAwwwards = () => {
   const [paused, setPaused] = useState(false);
   const SPEED = -6; // vitesse en %/seconde
 
-  // ⬇️ Récupère TOUTES les images de l' API (comme ZigzagProject : image_url séparé par des virgules)
+  // Récupère les images de l'API (images + GIF, PAS les vidéos)
   useEffect(() => {
     apiFetch('api/projects/home')
       .then((projects) => {
         const urls = projects
           .flatMap((p) => (p.image_url ? p.image_url.split(',').map((u) => u.trim()) : []))
-          .filter(Boolean);
+          .filter(Boolean)
+          .filter((u) => !u.includes('/video/upload/')); // 🎥 les vidéos restent dans les cards
         setImages(urls);
       })
       .catch((err) => console.error('Erreur carousel:', err));
@@ -48,11 +49,11 @@ const CarouselAwwwards = () => {
           <div key={copy} className="flex gap-6" aria-hidden={copy === 1}>
             {images.map((src, i) => (
               <img
-                 key={`${copy}-${i}`}
-                 src={getOptimizedUrl(src, 1200)}
-                 alt=""
-                 loading="lazy"
-                 draggable={false}
+                key={`${copy}-${i}`}
+                src={getOptimizedUrl(src, 1200)}
+                alt=""
+                loading="lazy"
+                draggable={false}
                 className="h-64 md:h-96 w-auto object-cover select-none"
               />
             ))}

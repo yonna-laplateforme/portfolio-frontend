@@ -3,68 +3,102 @@ import { useRef, useMemo, useState, useEffect } from 'react';
 import { getOptimizedUrl } from '../utils/imageUtils';
 
 const ZigzagProject = ({ project, index }) => {
-    // 1. Référence DOM pour lier le composant au scroll
     const ref = useRef(null);
 
-    // 2. useMemo : évite de re-splitter la chaîne d'URLs à chaque rendu
-    const imagesArray = useMemo(() => 
-        project.image_url ? project.image_url.split(',').map(u => u.trim()) : [], 
+    // useMemo : évite de re-splitter la chaîne d'URLs à chaque rendu
+    const imagesArray = useMemo(
+        () => (project.image_url ? project.image_url.split(',').map((u) => u.trim()).filter(Boolean) : []),
         [project.image_url]
     );
 
-    // 3. État local du carrousel d'images du projet
+    // État du carrousel d'images du projet
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // 4. Timer auto + nettoyage mémoire (clearInterval)
-    useEffect(() => {
-        if (imagesArray.length <= 1) return;
-        const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % imagesArray.length);
-        }, 3000);
-        return () => clearInterval(interval);
-    }, [imagesArray.length]);
+    // Images cassées ignorées (fallback si une URL 404)
+    const [brokenIndexes, setBrokenIndexes] = useState([]);
+    const visibleIndexes = imagesArray.map((_, i) => i).filter((i) => !brokenIndexes.includes(i));
+    const activeIndex = visibleIndexes.includes(currentIndex) ? currentIndex : (visibleIndexes[0] ?? 0);
 
-    // 5. Parallax / apparition au scroll
+    const handleImageError = (idx) => {
+        setBrokenIndexes((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
+    };
+
+    // Timer auto + nettoyage mémoire
+    useEffect(() => {
+        if (visibleIndexes.length <= 1) return;
+        const interval = setInterval(() => {
+            setCurrentIndex((prev) => {
+                const pos = visibleIndexes.indexOf(prev);
+                return visibleIndexes[(pos + 1) % visibleIndexes.length];
+            });
+        }, 4000);
+        return () => clearInterval(interval);
+    }, [visibleIndexes]);
+
+    // Parallax / apparition au scroll
     const isReverse = index % 2 !== 0;
-    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-    
-    // 6. Effet de translation uniquement sur desktop
+    const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
+
     const [isDesktop, setIsDesktop] = useState(false);
     useEffect(() => {
         setIsDesktop(window.innerWidth >= 768);
     }, []);
 
     const x = useTransform(scrollYProgress, [0, 1], [isReverse ? 80 : -80, 0]);
-    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0, 1, 1, 0.6]);  
-    
+    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0, 1, 1, 0.6]);
+
+    // 🎬 Détection du type de média
+    const currentUrl = imagesArray[activeIndex];
+    const isVideo = /\/video\/upload\//.test(currentUrl || '');
+    const currentSrc = isVideo || currentUrl?.includes('.gif')
+        ? currentUrl                        // vidéo/GIF : URL intacte
+        : getOptimizedUrl(currentUrl, 1600); // image : optimisée
 
     return (
-        <motion.div 
-            ref={ref} 
-            style={{ x: isDesktop ? x : 0, opacity }} 
+        <motion.div
+            ref={ref}
+            style={{ x: isDesktop ? x : 0, opacity }}
             className="flex justify-center w-full"
         >
             <article className="group w-full max-w-5xl">
                 <div className={`flex flex-col gap-10 items-center ${isReverse ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
 
-                    {/* BLOC IMAGE(S) */}
+                    {/* BLOC MÉDIA */}
                     <div className="w-full md:w-3/5 relative overflow-hidden h-72 md:h-[26rem] bg-sand/40">
-                        <AnimatePresence mode="wait">
-                            <motion.img
-                                key={imagesArray[currentIndex]}
-                                src={getOptimizedUrl(imagesArray[currentIndex], 1600)}
-                                alt={project.title}
-                                initial={{ opacity: 0, scale: 1.04 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.6 }}
-                                className="zoom-img w-full h-full object-cover"
-                            />
-                        </AnimatePresence>
-                        {/* Indicateur d'images multiples */}
-                        {imagesArray.length > 1 && (
+                        {currentSrc && (
+                            <AnimatePresence mode="wait">
+                                {isVideo ? (
+                                    <motion.video
+                                        key={currentSrc}
+                                        src={currentSrc}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        playsInline
+                                        initial={{ opacity: 0, scale: 1.04 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.6 }}
+                                        className="zoom-img w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <motion.img
+                                        key={currentSrc}
+                                        src={currentSrc}
+                                        alt={project.title}
+                                        onError={() => handleImageError(activeIndex)}
+                                        initial={{ opacity: 0, scale: 1.04 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.6 }}
+                                        className="zoom-img w-full h-full object-cover"
+                                    />
+                                )}
+                            </AnimatePresence>
+                        )}
+                        {visibleIndexes.length > 1 && (
                             <span className="absolute bottom-3 right-3 font-mono text-[10px] tracking-widest text-paper bg-ink/60 px-2 py-1">
-                                {currentIndex + 1} / {imagesArray.length}
+                                {visibleIndexes.indexOf(activeIndex) + 1} / {visibleIndexes.length}
                             </span>
                         )}
                     </div>
