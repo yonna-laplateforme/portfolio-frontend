@@ -48,14 +48,16 @@ const CarouselAwwwards = () => {
         {[0, 1].map((copy) => (
           <div key={copy} className="flex gap-6" aria-hidden={copy === 1}>
             {images.map((src, i) => (
-              <img
-                key={`${copy}-${i}`}
-                src={getOptimizedUrl(src, 1200)}
-                alt=""
-                loading="lazy"
-                draggable={false}
-                className="h-64 md:h-96 w-auto object-cover select-none"
-              />
+            <img
+  key={`${copy}-${i}`}
+  src={getOptimizedUrl(src, 1200)}
+  alt=""
+  loading="lazy"
+  width="800"
+  height="600"
+  draggable={false}
+  className="h-64 md:h-96 w-auto object-cover select-none"
+/>
             ))}
           </div>
         ))}
