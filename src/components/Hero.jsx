@@ -63,7 +63,7 @@ const Hero = () => {
           loop
           playsInline
           preload="auto"
-          poster={content.poster_url || ''}
+          // poster={content.poster_url || ''}
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={content.video_url} type="video/mp4" />
