@@ -15,7 +15,7 @@ const EditProject = () => {
     // États pour les technologies
     const [techList, setTechList] = useState([]);
     const [selectedTechs, setSelectedTechs] = useState([]);
-    const [manualTech, setManualTech] = useState(""); // Pour l'ajout rapide de techno
+    const [manualTech, setManualTech] = useState("");
 
     const [project, setProject] = useState({
         title: '', description: '', client: '', date_realisation: '', role: '',
@@ -23,7 +23,6 @@ const EditProject = () => {
     });
 
     useEffect(() => {
-        // On charge les technologies ET le projet en parallèle pour gagner du temps
         Promise.all([
             apiFetch(`api/projects/${id}`),
             apiFetch(`api/technologies`)
@@ -31,7 +30,6 @@ const EditProject = () => {
             if (techsData) setTechList(techsData);
 
             if (projectData) {
-                // Sanitize : transforme null en ""
                 const sanitizedData = Object.keys(projectData).reduce((acc, key) => {
                     acc[key] = projectData[key] === null ? "" : projectData[key];
                     return acc;
@@ -40,7 +38,6 @@ const EditProject = () => {
 
                 setExistingImages(projectData.image_url ? projectData.image_url.split(',').map(u => u.trim()) : []);
 
-                // Logique sécurisée pour pré-cocher les bonnes technologies
                 if (projectData.technologies && typeof projectData.technologies === 'string' && techsData) {
                     const projectTechNames = projectData.technologies.split(',').map(t => t.trim());
                     const matchedIds = techsData
@@ -52,7 +49,6 @@ const EditProject = () => {
         }).catch(err => console.error("Erreur de chargement des données:", err));
     }, [id]);
 
-    // Fonction d'ajout rapide d'une technologie
     const handleAddManualTech = async () => {
         if (!manualTech.trim()) return;
         try {
@@ -76,7 +72,6 @@ const EditProject = () => {
         setPreviews(files.map(file => URL.createObjectURL(file)));
     };
 
-    // Gestion individuelle des cases à cocher
     const handleTechChange = (e) => {
         const { value, checked } = e.target;
         if (checked) {
@@ -91,17 +86,16 @@ const EditProject = () => {
         const formData = new FormData();
 
         Object.keys(project).forEach(key => {
-            // On exclut les champs virtuels ou obsolètes pour ne pas polluer l'envoi
             if (key !== 'tech_stack' && key !== 'technologies' && key !== 'image_url' && key !== 'category') {
                 formData.append(key, key === 'isFeatured' ? (project.isFeatured ? 1 : 0) : project[key]);
             }
         });
 
-        // On attache le tableau des identifiants des technologies cochées
         selectedTechs.forEach(techId => {
             formData.append('technologies[]', techId);
         });
 
+        // ✅ Liste des médias CONSERVÉS (les retirés ont été enlevés du state)
         formData.append('existingImages', JSON.stringify(existingImages));
 
         newFiles.forEach((file) => {
@@ -156,11 +150,10 @@ const EditProject = () => {
                                 <textarea className="w-full p-4 bg-bg/50 border border-(--primary-color)/20 text-sm h-32 resize-none focus:border-(--accent-color) outline-none transition-colors" value={project.description} onChange={e => setProject({ ...project, description: e.target.value })} />
                             </div>
 
-                            {/* SECTION MODIFIÉE : Champ d'ajout rapide + Checkboxes */}
+                            {/* TECHNOLOGIES */}
                             <div className="space-y-3 pt-4 border-t border-(--primary-color)/10">
                                 <label className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest">Technologies Utilisées</label>
 
-                                {/* Formulaire d'ajout rapide inline */}
                                 <div className="flex gap-2 mb-4">
                                     <input
                                         type="text"
@@ -211,15 +204,36 @@ const EditProject = () => {
                             </div>
                         </div>
 
-                        {/* MÉDIAS COMPLETS */}
+                        {/* MÉDIAS */}
                         <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6">
-                            <h3 className="font-heading text-lg uppercase text-(--primary-color) mb-4 border-b border-(--primary-color)/10 pb-2">Galerie Photos</h3>
+                            <h3 className="font-heading text-lg uppercase text-(--primary-color) mb-4 border-b border-(--primary-color)/10 pb-2">Galerie médias</h3>
 
                             {existingImages.length > 0 && (
                                 <div className="space-y-2">
-                                    <p className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest mb-2">Images actuelles</p>
+                                    <p className="font-mono text-[10px] font-bold opacity-60 uppercase tracking-widest mb-2">
+                                        Médias actuels — survole puis ✕ pour retirer
+                                    </p>
                                     <div className="grid grid-cols-4 gap-4 mb-6">
-                                        {existingImages.map((url, i) => <img key={i} src={url} className="w-full h-24 object-cover border border-(--primary-color)/20 shadow-sm" alt="existant" />)}
+                                        {existingImages.map((url, i) => {
+                                            const isVideo = url.includes('/video/upload/');
+                                            return (
+                                                <div key={`${url}-${i}`} className="relative group/thumb">
+                                                    {isVideo ? (
+                                                        <video src={url} muted autoPlay loop playsInline className="w-full h-24 object-cover border border-(--primary-color)/20 shadow-sm" />
+                                                    ) : (
+                                                        <img src={url} className="w-full h-24 object-cover border border-(--primary-color)/20 shadow-sm" alt="existant" />
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setExistingImages((prev) => prev.filter((u) => u !== url))}
+                                                        className="absolute top-1 right-1 bg-(--accent-color) text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity cursor-pointer"
+                                                        title="Retirer ce média"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
@@ -238,7 +252,7 @@ const EditProject = () => {
                                             })}
                                         </div>
                                     ) : (
-                                        <p className="font-mono text-xs opacity-60 uppercase tracking-widest">Ajouter de nouvelles photos</p>
+                                        <p className="font-mono text-xs opacity-60 uppercase tracking-widest">Ajouter des images ou des vidéos</p>
                                     )}
                                 </div>
                                 <input type="file" multiple className="hidden" accept="image/*,video/mp4,video/webm,video/quicktime" onChange={handleFileChange} />
@@ -246,7 +260,7 @@ const EditProject = () => {
                         </div>
                     </div>
 
-                    {/* COLONNE DROITE COMPLÈTE */}
+                    {/* COLONNE DROITE */}
                     <div className="w-full lg:w-80 space-y-8">
                         <div className="bg-white p-8 border border-(--primary-color)/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] space-y-6 sticky top-8">
                             <h3 className="font-heading text-lg uppercase text-(--primary-color) pb-4 border-b border-(--primary-color)/10">Statut & Options</h3>
