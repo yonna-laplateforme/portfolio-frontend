@@ -4,11 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const EASE = [0.76, 0, 0.24, 1];
 
-const LINKS = [
+
+  const LINKS = [
   { label: 'Projets', path: '/projects', num: '01' },
   { label: 'À propos', path: '/about', num: '02' },
   { label: 'Contact', path: '/contact', num: '03' },
+  { label: 'Devis', path: '/devis', num: '04' },
 ];
+
 
 const Navbar = ({ isAuthenticated, onLogout }) => {
   const navigate = useNavigate();
@@ -22,11 +25,10 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
   return (
     <>
       {/* BARRE DU HAUT */}
-      <header className={`fixed top-0 left-0 w-full z-[60] px-6 md:px-12 h-16 flex items-center justify-between transition-colors duration-500 ${open ? 'text-paper' : 'text-ink'}`}>
-        <button onClick={() => go('/')} className="font-display italic text-3xl" aria-label="Accueil">
-          M<span className="text-brick">.</span>
-        </button>
-
+    <header className="fixed top-0 left-0 w-full z-[60] px-6 md:px-12 h-16 flex items-center justify-between text-[#f4f1ea] mix-blend-difference">
+       <button onClick={() => go('/')} className="font-display italic text-3xl" aria-label="Accueil">
+  M<span className="opacity-60">.</span>
+</button>
         <div className="flex items-center gap-8">
           {isAuthenticated && !open && (
             <>
