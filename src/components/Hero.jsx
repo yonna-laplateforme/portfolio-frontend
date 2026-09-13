@@ -16,9 +16,9 @@ const DEFAULTS = {
   cta2_label: 'Demander un devis',
   cta2_url: '/devis',
   video_url: '',
-  poster_url:
+  
 
-  'https://res.cloudinary.com/dltejn5sh/image/upload/q_auto,f_auto/v1789309403/portfolio_uploads/jzunc0xwbu3w2aasa0dk.jpg'
+  
 };
 
 const Masked = ({ children, delay = 0 }) => (
