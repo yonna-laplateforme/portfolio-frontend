@@ -64,7 +64,7 @@ const ZigzagProject = ({ project, index }) => {
                 <div className={`flex flex-col gap-10 items-center ${isReverse ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
 
                     {/* BLOC MÉDIA */}
-                    <div className="w-full md:w-3/5 relative overflow-hidden h-72 md:h-[26rem] bg-sand/40">
+                    <div className="w-full md:w-3/5 relative overflow-hidden aspect-video bg-sand/40">
                         {currentSrc && (
                             <AnimatePresence mode="wait">
                                 {isVideo ? (
