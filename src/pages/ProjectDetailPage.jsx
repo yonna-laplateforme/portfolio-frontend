@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getOptimizedUrl } from '../utils/imageUtils';
 
-const API_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-7xj4.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.yonnamerlini.com';
+
+// 🎬 Détecte une vidéo Cloudinary
+const isVideoUrl = (url) => /\/video\/upload\//.test(url || '');
+
+// 🖼️ Source d'affichage : vidéo/GIF intacts, images optimisées
+const mediaSrc = (url) =>
+  isVideoUrl(url) || url?.includes('.gif') ? url : getOptimizedUrl(url, 1600);
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
@@ -17,16 +25,16 @@ const ProjectDetailPage = () => {
     setLoading(true);
 
     fetch(`${API_URL}/api/projects/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Erreur API");
+      .then((res) => {
+        if (!res.ok) throw new Error('Erreur API');
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setProject(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error("DEBUG : Le fetch a échoué :", err);
+      .catch((err) => {
+        console.error('DEBUG : Le fetch a échoué :', err);
         setLoading(false);
         navigate('/404', { replace: true });
       });
@@ -35,7 +43,8 @@ const ProjectDetailPage = () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center font-mono">CHARGEMENT...</div>;
   if (!project) return null;
 
-  const imagesArray = project?.image_url ? project.image_url.split(',').map(u => u.trim()) : [];
+  const imagesArray = project?.image_url ? project.image_url.split(',').map((u) => u.trim()).filter(Boolean) : [];
+  const currentMedia = imagesArray[currentImageIndex];
 
   return (
     <>
@@ -44,20 +53,20 @@ const ProjectDetailPage = () => {
           <Link to="/projects" className="text-[10px] uppercase tracking-[0.3em] text-secondary hover:text-accent font-mono mb-12 block">← RETOUR</Link>
 
           <header className="mb-12 text-center">
-            <span className="font-bold text-[10px] uppercase tracking-[0.3em] text-accent font-mono mb-4 block">// {project.category || "PROJET"}</span>
+            <span className="font-bold text-[10px] uppercase tracking-[0.3em] text-accent font-mono mb-4 block">// {project.category || 'PROJET'}</span>
             <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary">{project.title}</h1>
           </header>
 
           <div className="flex justify-center gap-8 text-[10px] uppercase tracking-[0.3em] font-mono text-secondary mb-16">
-            <span>RÔLE : {project.role || "N/A"}</span>
-            <span>CLIENT : {project.client || "Personnel"}</span>
-            <span>DATE : {project.date_realisation || "N/A"}</span>
+            <span>RÔLE : {project.role || 'N/A'}</span>
+            <span>CLIENT : {project.client || 'Personnel'}</span>
+            <span>DATE : {project.date_realisation || 'N/A'}</span>
           </div>
 
-          {/* Affichage conditionnel de la galerie vs carrousel */}
+          {/* GALERIE PHOTO (masonry) — images uniquement */}
           {project.category?.toLowerCase() === 'photo' ? (
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-              {imagesArray.map((img, i) => (
+              {imagesArray.filter((u) => !isVideoUrl(u)).map((img, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -69,7 +78,7 @@ const ProjectDetailPage = () => {
                   <motion.img
                     whileHover={{ scale: 1.03 }}
                     transition={{ duration: 0.5 }}
-                    src={img}
+                    src={mediaSrc(img)}
                     alt={`Photo ${i + 1}`}
                     className="w-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                   />
@@ -77,21 +86,52 @@ const ProjectDetailPage = () => {
               ))}
             </div>
           ) : (
+            /* CARROUSEL MULTIMÉDIA (web / vidéo) */
             <div className="mb-16 relative group">
-              <AnimatePresence mode='wait'>
-                <motion.img
-                  key={currentImageIndex}
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  src={imagesArray[currentImageIndex]}
-                  alt={project.title}
-                  className="w-full grayscale group-hover:grayscale-0 transition-all duration-700"
-                />
+              <AnimatePresence mode="wait">
+                {isVideoUrl(currentMedia) ? (
+                  <motion.video
+                    key={currentMedia}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    src={currentMedia}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    className="w-full"
+                  />
+                ) : (
+                  <motion.img
+                    key={currentImageIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    src={mediaSrc(currentMedia)}
+                    alt={project.title}
+                    className="w-full grayscale group-hover:grayscale-0 transition-all duration-700"
+                  />
+                )}
               </AnimatePresence>
+
               {imagesArray.length > 1 && (
-                <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => setCurrentImageIndex(prev => (prev === 0 ? imagesArray.length - 1 : prev - 1))} className="bg-black/50 text-white p-4">←</button>
-                  <button onClick={() => setCurrentImageIndex(prev => (prev === imagesArray.length - 1 ? 0 : prev + 1))} className="bg-black/50 text-white p-4">→</button>
+                <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <button
+                    onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? imagesArray.length - 1 : prev - 1))}
+                    className="bg-black/50 text-white p-4 pointer-events-auto cursor-pointer"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={() => setCurrentImageIndex((prev) => (prev === imagesArray.length - 1 ? 0 : prev + 1))}
+                    className="bg-black/50 text-white p-4 pointer-events-auto cursor-pointer"
+                  >
+                    →
+                  </button>
                 </div>
               )}
             </div>
@@ -108,12 +148,10 @@ const ProjectDetailPage = () => {
             </div>
 
             <aside className="space-y-12">
-              {/* SECTION STACK */}
               <div>
                 <h2 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h2>
                 <div className="flex flex-wrap gap-2">
                   {project.technologies ? (
-                    // On transforme la chaîne en tableau ici avec .split(',')
                     project.technologies.split(',').filter(Boolean).map((tech, i) => (
                       <span key={i} className="px-3 py-1 border border-primary text-[9px] uppercase">
                         {tech.trim()}
@@ -130,61 +168,72 @@ const ProjectDetailPage = () => {
               </div>
             </aside>
           </section>
-
         </article>
       </div>
 
+      {/* LIGHTBOX PLEIN ÉCRAN (image ou vidéo) — boutons avec curseur visible */}
       <AnimatePresence>
-  {hoveredImage !== null && (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4"
-    >
-      {/* Bouton pour fermer la vue plein écran */}
-      <button 
-        className="absolute top-8 right-8 text-white/50 hover:text-white text-4xl"
-        onClick={() => setHoveredImage(null)}
-      >
-        ×
-      </button>
+        {hoveredImage !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4"
+          >
+            <button
+              className="absolute top-8 right-8 text-white/50 hover:text-white text-4xl cursor-pointer"
+              onClick={() => setHoveredImage(null)}
+            >
+              ×
+            </button>
 
-      {/* Boutons de navigation */}
-      <button 
-        className="absolute left-8 text-white/50 hover:text-white text-5xl"
-        onClick={(e) => {
-          e.stopPropagation(); 
-          const currentIndex = imagesArray.indexOf(hoveredImage);
-          const nextIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
-          setHoveredImage(imagesArray[nextIndex]);
-        }}
-      >
-        ←
-      </button>
+            <button
+              className="absolute left-8 text-white/50 hover:text-white text-5xl cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                const currentIndex = imagesArray.indexOf(hoveredImage);
+                const nextIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
+                setHoveredImage(imagesArray[nextIndex]);
+              }}
+            >
+              ←
+            </button>
 
-      <motion.img
-        key={hoveredImage} 
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        src={hoveredImage}
-        className="max-h-[90vh] max-w-[90vw] object-contain"
-      />
+            {isVideoUrl(hoveredImage) ? (
+              <video
+                key={hoveredImage}
+                src={hoveredImage}
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls
+                className="max-h-[90vh] max-w-[90vw]"
+              />
+            ) : (
+              <motion.img
+                key={hoveredImage}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                src={mediaSrc(hoveredImage)}
+                className="max-h-[90vh] max-w-[90vw] object-contain"
+              />
+            )}
 
-      <button 
-        className="absolute right-8 text-white/50 hover:text-white text-5xl"
-        onClick={(e) => {
-          e.stopPropagation(); 
-          const currentIndex = imagesArray.indexOf(hoveredImage);
-          const nextIndex = (currentIndex + 1) % imagesArray.length;
-          setHoveredImage(imagesArray[nextIndex]);
-        }}
-      >
-        →
-      </button>
-    </motion.div>
-  )}
-</AnimatePresence>
+            <button
+              className="absolute right-8 text-white/50 hover:text-white text-5xl cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                const currentIndex = imagesArray.indexOf(hoveredImage);
+                const nextIndex = (currentIndex + 1) % imagesArray.length;
+                setHoveredImage(imagesArray[nextIndex]);
+              }}
+            >
+              →
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

@@ -21,10 +21,12 @@ const Cursor = () => {
 
   return (
     <div className="hidden md:block" aria-hidden>
-      <motion.div style={{ x, y }} className="fixed top-0 left-0 z-[99] pointer-events-none">
+      {/* point — z au-dessus de tout, même la lightbox */}
+      <motion.div style={{ x, y }} className="fixed top-0 left-0 z-[99999] pointer-events-none">
         <div className="w-1.5 h-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brick" />
       </motion.div>
-      <motion.div style={{ x: ringX, y: ringY }} className="fixed top-0 left-0 z-[98] pointer-events-none">
+      {/* anneau */}
+      <motion.div style={{ x: ringX, y: ringY }} className="fixed top-0 left-0 z-[99998] pointer-events-none">
         <motion.div
           animate={{ scale: hover ? 2.2 : 1, opacity: hover ? 0.9 : 0.5 }}
           transition={{ duration: 0.25 }}
