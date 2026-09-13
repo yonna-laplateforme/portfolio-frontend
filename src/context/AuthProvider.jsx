@@ -12,12 +12,9 @@ export const AuthProvider = ({ children }) => {
         const res = await fetch('https://api.yonnamerlini.com/api/auth/me', {
           credentials: 'include',
         });
-        if (res.ok) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (err) {
+        const data = await res.json();                    // ← toujours 200 maintenant
+        setIsAuthenticated(data.authenticated === true);  // ← on lit le flag
+      } catch {
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -37,8 +34,7 @@ export const AuthProvider = ({ children }) => {
         credentials: 'include',
       });
     } catch (err) {
-  if (err.status !== 401) console.error(err);   // ← le 401 "non connectée" n'est pas une erreur
-  setIsAuthenticated(false);
+      console.error(err);
     }
     setIsAuthenticated(false);
   };
