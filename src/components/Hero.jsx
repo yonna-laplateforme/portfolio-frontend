@@ -50,9 +50,9 @@ const Hero = () => {
   return (
     <section className="relative -mt-16 h-screen flex flex-col justify-end overflow-hidden">
       {/* FOND : vidéo si dispo, sinon poster */}
-      {content.video_url ? (
+    {content.video_url ? (
   <>
-    {/* Image = le LCP mesuré (rapide, stable) */}
+    {/* Image en dessous = LCP rapide + visible tant que la vidéo charge */}
     <motion.img
       src={content.poster_url}
       alt=""
@@ -62,7 +62,7 @@ const Hero = () => {
       fetchpriority="high"
       className="absolute inset-0 w-full h-full object-cover"
     />
-    {/* Vidéo : invisible au départ, fondu quand prête */}
+    {/* Vidéo au-dessus : transparente tant qu'elle n'a pas de frame, puis recouvre l'image */}
     <video
       ref={(el) => {
         if (el) {
@@ -75,13 +75,13 @@ const Hero = () => {
       loop
       playsInline
       preload="auto"
-      onCanPlay={(e) => e.target.classList.remove('opacity-0')}
-      className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000"
+      className="absolute inset-0 w-full h-full object-cover"
     >
       <source src={content.video_url} type="video/mp4" />
     </video>
   </>
 ) : (
+  
         <motion.img
           src={content.poster_url}
           alt=""
