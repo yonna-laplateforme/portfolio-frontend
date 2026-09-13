@@ -51,24 +51,37 @@ const Hero = () => {
     <section className="relative -mt-16 h-screen flex flex-col justify-end overflow-hidden">
       {/* FOND : vidéo si dispo, sinon poster */}
       {content.video_url ? (
-        <video
-          ref={(el) => {
-            if (el) {
-              el.muted = true;
-              el.play().catch(() => {});
-            }
-          }}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          // poster={content.poster_url || ''}
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src={content.video_url} type="video/mp4" />
-        </video>
-      ) : (
+  <>
+    {/* Image = le LCP mesuré (rapide, stable) */}
+    <motion.img
+      src={content.poster_url}
+      alt=""
+      initial={{ scale: 1.18 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 2.6, ease: EASE }}
+      fetchpriority="high"
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+    {/* Vidéo : invisible au départ, fondu quand prête */}
+    <video
+      ref={(el) => {
+        if (el) {
+          el.muted = true;
+          el.play().catch(() => {});
+        }
+      }}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      onCanPlay={(e) => e.target.classList.remove('opacity-0')}
+      className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000"
+    >
+      <source src={content.video_url} type="video/mp4" />
+    </video>
+  </>
+) : (
         <motion.img
           src={content.poster_url}
           alt=""
