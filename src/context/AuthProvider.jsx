@@ -37,7 +37,8 @@ export const AuthProvider = ({ children }) => {
         credentials: 'include',
       });
     } catch (err) {
-      console.error(err);
+  if (err.status !== 401) console.error(err);   // ← le 401 "non connectée" n'est pas une erreur
+  setIsAuthenticated(false);
     }
     setIsAuthenticated(false);
   };
