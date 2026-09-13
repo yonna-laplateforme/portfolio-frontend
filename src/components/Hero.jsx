@@ -4,7 +4,7 @@ import { homeApi } from '../api/homeApi';
 
 const EASE = [0.22, 1, 0.36, 1];
 
-// Valeurs de secours : si l'API ne répond pas, le hero affiche quand même ça
+// Valeurs de secours : si l'API ne répond pas, on affiche l'IMAGE (pas de vidéo en dur)
 const DEFAULTS = {
   label: 'Studio — Lyon, France',
   title_line1: 'MRLN',
@@ -15,10 +15,9 @@ const DEFAULTS = {
   cta1_url: '/projects',
   cta2_label: 'Demander un devis',
   cta2_url: '/devis',
-  video_url:
-    'https://res.cloudinary.com/dltejn5sh/video/upload/w_1920,q_auto/v1789242431/dji_fly_20260907_011822_0301_1788716033973_video_d_log.mp4',
+  video_url: '',
   poster_url:
-    'https://res.cloudinary.com/dltejn5sh/image/upload/w_2000,q_auto,f_auto/v1788823489/portfolio_uploads/iofcdhccpgjogd5h7qib.jpg',
+    'https://res.cloudinary.com/dltejn5sh/image/upload/w_1600,q_auto,f_auto/v1788823489/portfolio_uploads/iofcdhccpgjogd5h7qib.jpg',
 };
 
 const Masked = ({ children, delay = 0 }) => (
@@ -37,59 +36,46 @@ const Masked = ({ children, delay = 0 }) => (
 const Hero = () => {
   const [content, setContent] = useState(DEFAULTS);
 
-  // ⬇️ Le hero lit maintenant TON API — modifiable depuis l'admin !
+  // Le hero lit TON API — modifiable depuis l'admin, rien en dur
   useEffect(() => {
     homeApi
       .get()
       .then((data) => {
         if (data) setContent({ ...DEFAULTS, ...data });
       })
-      .catch(() => {}); // silencieux : les defaults suffisent
+      .catch(() => {});
   }, []);
 
   return (
     <section className="relative -mt-16 h-screen flex flex-col justify-end overflow-hidden">
-      {/* FOND : vidéo si dispo, sinon poster */}
-    {content.video_url ? (
-  <>
-    {/* Image en dessous = LCP rapide + visible tant que la vidéo charge */}
-    <motion.img
-      src={content.poster_url}
-      alt=""
-      initial={{ scale: 1.18 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 2.6, ease: EASE }}
-      fetchpriority="high"
-      className="absolute inset-0 w-full h-full object-cover"
-    />
-    {/* Vidéo au-dessus : transparente tant qu'elle n'a pas de frame, puis recouvre l'image */}
-    <video
-      ref={(el) => {
-        if (el) {
-          el.muted = true;
-          el.play().catch(() => {});
-        }
-      }}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      className="absolute inset-0 w-full h-full object-cover"
-    >
-      <source src={content.video_url} type="video/mp4" />
-    </video>
-  </>
-) : (
-  
-        <motion.img
-          src={content.poster_url}
-          alt=""
-          initial={{ scale: 1.18 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2.6, ease: EASE }}
+      {/* Image en dessous : LCP rapide + visible tant que la vidéo charge */}
+      <motion.img
+        src={content.poster_url}
+        alt=""
+        initial={{ scale: 1.18 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 2.6, ease: EASE }}
+        fetchpriority="high"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {/* Vidéo au-dessus : transparente tant qu'elle n'a pas de frame, puis recouvre l'image */}
+      {content.video_url && (
+        <video
+          ref={(el) => {
+            if (el) {
+              el.muted = true;
+              el.play().catch(() => {});
+            }
+          }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
-        />
+        >
+          <source src={content.video_url} type="video/mp4" />
+        </video>
       )}
       {/* Voile sombre */}
       <div className="absolute inset-0 bg-ink/55" />
