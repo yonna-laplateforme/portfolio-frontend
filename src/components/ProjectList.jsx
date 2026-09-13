@@ -35,7 +35,7 @@ const ProjectList = ({ isAdmin }) => {
       
       {/* BARRE DE FILTRAGE */}
       <nav aria-label="Filtres de projets" className="flex gap-8 mb-20 justify-center">
-        {["TOUT", "WEB", "PHOTO"].map((cat) => (
+        {["TOUT", "WEB", "PHOTO", "VIDÉO"].map((cat) => (
           <button
             key={cat}
             onClick={() => setFilter(cat)}

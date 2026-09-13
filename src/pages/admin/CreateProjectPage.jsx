@@ -197,6 +197,7 @@ const CreateProject = () => {
                   <option value="">-- Choisir --</option>
                   <option value="1">Web</option>
                   <option value="2">Photo</option>
+                  <option value="3">Vidéo</option> 
                 </select>
                 {errors.category_id && (
                   <p role="alert" className="text-xs text-(--accent-color)">{errors.category_id.message}</p>

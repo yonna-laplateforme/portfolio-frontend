@@ -35,7 +35,8 @@ const ZigzagProject = ({ project, index }) => {
     }, []);
 
     const x = useTransform(scrollYProgress, [0, 1], [isReverse ? 80 : -80, 0]);
-    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0, 1, 1, 0.6]);
+    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0, 1, 1, 0.6]);  
+    
 
     return (
         <motion.div 
