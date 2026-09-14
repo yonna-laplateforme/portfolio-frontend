@@ -92,24 +92,25 @@ const HomePage = () => {
       </section>
 
       {/* CONTACT */}
-      <section className="py-24 px-6 md:px-12 border-t border-ink/10">
-        <div className="max-w-3xl mx-auto text-center">
-          <Reveal>
-            <p className="font-mono text-xs tracking-[0.35em] uppercase text-brick mb-8">
-              // Collaboration
-            </p>
-          </Reveal>
-          <h2 className="font-display font-light text-5xl md:text-7xl leading-tight">
-            <RevealLine delay={0.1}>Discutons de</RevealLine>
-            <RevealLine delay={0.2}>votre <em className="italic text-brick">projet</em>.</RevealLine>
-          </h2>
-          <Reveal delay={0.25}>
-            <div className="mt-14">
-              <ContactMinimal />
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      {/* CONTACT — section sombre pour contraster */}
+<section className="py-24 px-6 md:px-12 bg-ink text-paper">
+  <div className="max-w-3xl mx-auto text-center">
+    <Reveal>
+      <p className="font-mono text-xs tracking-[0.35em] uppercase text-brick mb-8">
+        // Collaboration
+      </p>
+    </Reveal>
+    <h2 className="font-display font-light text-5xl md:text-7xl leading-tight text-paper">
+      <RevealLine delay={0.1}>Discutons de</RevealLine>
+      <RevealLine delay={0.2}>votre <em className="italic text-brick">projet</em>.</RevealLine>
+    </h2>
+    <Reveal delay={0.25}>
+      <div className="mt-14">
+        <ContactMinimal />
+      </div>
+    </Reveal>
+  </div>
+</section>
     </div>
   );
 };
