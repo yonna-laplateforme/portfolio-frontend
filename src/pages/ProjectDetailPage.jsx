@@ -100,29 +100,38 @@ const ProjectDetailPage = () => {
           </section>
 
           {/* GALERIE COMPLÈTE */}
-          {gallery.length > 0 && (
-            <section className="mt-24">
-              <p className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-10">// Galerie</p>
-              <div className="grid md:grid-cols-2 gap-6">
-                {gallery.map((media, i) => (
-                  <motion.button
-                    key={i}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    onClick={() => setHoveredImage(media)}
-                    className="block w-full overflow-hidden bg-sand/40 cursor-pointer"
-                  >
-                    {isVideoUrl(media) ? (
-                      <video src={media} muted autoPlay loop playsInline className="w-full aspect-video object-cover" />
-                    ) : (
-                      <img src={mediaSrc(media)} alt={`${project.title} — ${i + 2}`} loading="lazy" className="w-full aspect-video object-cover zoom-img" />
-                    )}
-                  </motion.button>
-                ))}
-              </div>
-            </section>
+        
+{gallery.length > 0 && (
+  <section className="mt-24">
+    <p className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-10">// Galerie</p>
+    <div className="columns-2 md:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6">
+      {gallery.map((media, i) => (
+        <motion.button
+          key={i}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          onClick={() => setHoveredImage(media)}
+          className="block w-full overflow-hidden bg-sand/40 cursor-pointer break-inside-avoid"
+        >
+          {isVideoUrl(media) ? (
+            // vidéo : ratio natif 16:9 (aucun rognage)
+            <video src={media} muted autoPlay loop playsInline className="w-full aspect-video object-cover block" />
+          ) : (
+            // photo : sa VRAIE proportion (portrait ou paysage)
+            <img
+              src={mediaSrc(media)}
+              alt={`${project.title} — ${i + 1}`}
+              loading="lazy"
+              className="w-full h-auto block zoom-img"
+            />
           )}
+        </motion.button>
+      ))}
+    </div>
+  </section>
+)}
+          
         </div>
       </article>
 
