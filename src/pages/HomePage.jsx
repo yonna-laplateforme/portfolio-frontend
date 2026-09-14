@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import Marquee from '../components/Marquee';
 import { Reveal, RevealLine } from '../components/Reveal';
-import ZigzagProject from '../components/ZigzagProject';
+import ProjectsEditorial from '../components/ProjectsEditorial';
 import ContactMinimal from '../components/ContactMinimal';
 import { apiFetch } from '../api/apiFetch';
 import CarouselAwwwards from '../components/CarouselAwwwards';
@@ -73,17 +73,9 @@ const HomePage = () => {
           {loading ? (
             <p className="font-mono text-sm text-ink-soft">Chargement…</p>
           ) : featured.length > 0 ? (
-            <ul className="space-y-28">
-              {featured.slice(0, visibleCount).map((project, index) => (
-                <li key={project.id}>
-                  <Reveal delay={0.05 * index}>
-                    <Link to={`/projects/${project.id}`} className="block group">
-                      <ZigzagProject project={project} index={index} />
-                    </Link>
-                  </Reveal>
-                </li>
-              ))}
-            </ul>
+            <Reveal>
+  <ProjectsEditorial projects={featured.slice(0, visibleCount)} />
+</Reveal>
           ) : (
             <p className="font-mono text-sm text-ink-soft">Aucun projet à afficher.</p>
           )}
