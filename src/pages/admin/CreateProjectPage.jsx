@@ -3,17 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { apiFetch } from '../../api/apiFetch';
+import { compressImage } from '../../utils/imageCompression';
 
 const CreateProject = () => {
   const navigate = useNavigate();
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [techList, setTechList] = useState([]);
   const [manualTech, setManualTech] = useState('');
+  const [serverErrors, setServerErrors] = useState([]);
+  const [isCompressing, setIsCompressing] = useState(false);
 
   useEffect(() => {
     const fetchTechnologies = async () => {
@@ -21,10 +24,7 @@ const CreateProject = () => {
         const data = await apiFetch('/api/technologies');
         setTechList(data);
       } catch (err) {
-        console.error(
-          'Erreur lors de la récupération des technologies:',
-          err
-        );
+        console.error('Erreur lors de la récupération des technologies:', err);
       }
     };
 
@@ -37,55 +37,60 @@ const CreateProject = () => {
     try {
       const newTech = await apiFetch('/api/technologies', {
         method: 'POST',
-        body: JSON.stringify({
-          name: manualTech,
-        }),
+        body: JSON.stringify({ name: manualTech }),
       });
 
-      setTechList((previousTechList) => [
-        ...previousTechList,
-        newTech,
-      ]);
-
+      setTechList((previousTechList) => [...previousTechList, newTech]);
       setManualTech('');
     } catch (err) {
       console.error("Erreur lors de l'ajout:", err);
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
+    if (files.length === 0) return;
 
     previews.forEach((src) => URL.revokeObjectURL(src));
 
-    setSelectedFiles(files);
-    setPreviews(files.map((file) => URL.createObjectURL(file)));
+    setIsCompressing(true);
+    try {
+      const compressed = await Promise.all(
+        files.map(async (file) => {
+          // 🎬 GIF animé : on ne touche à RIEN (le canvas tuerait l'animation)
+          if (file.type === 'image/gif' || file.type.startsWith('video/')) return file;
+          try {
+            return await compressImage(file, 2560, 0.85);
+          } catch {
+            return file;
+          }
+        })
+      );
+
+      setSelectedFiles(compressed);
+      setPreviews(compressed.map((file) => URL.createObjectURL(file)));
+    } finally {
+      setIsCompressing(false);
+      e.target.value = '';
+    }
   };
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
+    setServerErrors([]);
 
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
       if (key === 'technologies') {
-        const techs = Array.isArray(data[key])
-          ? data[key]
-          : [data[key]];
-
+        const techs = Array.isArray(data[key]) ? data[key] : [data[key]];
         techs.forEach((techId) => {
-          if (techId) {
-            formData.append('technologies[]', techId);
-          }
+          if (techId) formData.append('technologies[]', techId);
         });
       } else {
         formData.append(
           key,
-          key === 'isFeatured'
-            ? data.isFeatured
-              ? 1
-              : 0
-            : data[key]
+          key === 'isFeatured' ? (data.isFeatured ? 1 : 0) : data[key]
         );
       }
     });
@@ -103,7 +108,18 @@ const CreateProject = () => {
       alert('Projet créé avec succès !');
       navigate('/dashboard-yonna-2026');
     } catch (err) {
-      alert(`Erreur : ${err.message}`);
+      console.error('DÉTAIL ERREUR CRÉATION:', err);
+      if (Array.isArray(err.errors) && err.errors.length > 0) {
+        setServerErrors(
+          err.errors.map((e) =>
+            typeof e === 'string' ? e : (e.msg || e.message || e.error || JSON.stringify(e))
+          )
+        );
+      } else {
+        setServerErrors([
+          typeof err.message === 'string' ? err.message : JSON.stringify(err.message)
+        ]);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -116,6 +132,14 @@ const CreateProject = () => {
           Nouveau Projet
         </h1>
 
+        {serverErrors.length > 0 && (
+          <div role="alert" className="mb-6 p-4 border border-(--accent-color) bg-(--accent-color)/5">
+            {serverErrors.map((msg, i) => (
+              <p key={i} className="text-sm text-(--accent-color)">{msg}</p>
+            ))}
+          </div>
+        )}
+
         <motion.form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col lg:flex-row gap-8"
@@ -127,10 +151,13 @@ const CreateProject = () => {
                   Titre du projet *
                 </label>
                 <input
-                  {...register('title', { required: 'Obligatoire' })}
+                  {...register('title', { required: 'Le titre est obligatoire' })}
                   className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors"
                   placeholder="Nom du projet"
                 />
+                {errors.title && (
+                  <p role="alert" className="text-xs text-(--accent-color)">{errors.title.message}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -163,14 +190,18 @@ const CreateProject = () => {
                 </label>
                 <select
                   {...register('category_id', {
-                    required: 'Veuillez choisir',
+                    required: 'Veuillez choisir une catégorie',
                   })}
                   className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm appearance-none cursor-pointer focus:border-(--accent-color) outline-none transition-colors"
                 >
                   <option value="">-- Choisir --</option>
                   <option value="1">Web</option>
                   <option value="2">Photo</option>
+                  <option value="3">Vidéo</option>
                 </select>
+                {errors.category_id && (
+                  <p role="alert" className="text-xs text-(--accent-color)">{errors.category_id.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -178,9 +209,12 @@ const CreateProject = () => {
                   Description *
                 </label>
                 <textarea
-                  {...register('description', { required: 'Requis' })}
+                  {...register('description', { required: 'La description est obligatoire' })}
                   className="w-full p-4 bg-bg/50 border border-(--primary-color)/20 text-sm h-32 resize-none focus:border-(--accent-color) outline-none transition-colors"
                 />
+                {errors.description && (
+                  <p role="alert" className="text-xs text-(--accent-color)">{errors.description.message}</p>
+                )}
               </div>
 
               <div className="space-y-3 pt-2 border-t border-(--primary-color)/10">
@@ -208,19 +242,14 @@ const CreateProject = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-bg/30 border border-(--primary-color)/10">
                   {techList.map((tech) => (
-                    <label
-                      key={tech.id}
-                      className="flex items-center gap-3 cursor-pointer group"
-                    >
+                    <label key={tech.id} className="flex items-center gap-3 cursor-pointer group">
                       <input
                         type="checkbox"
                         value={tech.id}
                         {...register('technologies')}
                         className="w-4 h-4 cursor-pointer accent-(--accent-color)"
                       />
-                      <span className="font-mono text-xs uppercase">
-                        {tech.name}
-                      </span>
+                      <span className="font-mono text-xs uppercase">{tech.name}</span>
                     </label>
                   ))}
                 </div>
@@ -232,9 +261,17 @@ const CreateProject = () => {
                     Lien GitHub
                   </label>
                   <input
-                    {...register('github_url')}
+                    {...register('github_url', {
+                      pattern: {
+                        value: /^https?:\/\/.+/,
+                        message: 'URL invalide (commence par https://)',
+                      },
+                    })}
                     className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors"
                   />
+                  {errors.github_url && (
+                    <p role="alert" className="text-xs text-(--accent-color)">{errors.github_url.message}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -242,9 +279,17 @@ const CreateProject = () => {
                     Lien Démo
                   </label>
                   <input
-                    {...register('demo_url')}
+                    {...register('demo_url', {
+                      pattern: {
+                        value: /^https?:\/\/.+/,
+                        message: 'URL invalide (commence par https://)',
+                      },
+                    })}
                     className="w-full p-3.5 bg-bg/50 border border-(--primary-color)/20 text-sm focus:border-(--accent-color) outline-none transition-colors"
                   />
+                  {errors.demo_url && (
+                    <p role="alert" className="text-xs text-(--accent-color)">{errors.demo_url.message}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -256,18 +301,18 @@ const CreateProject = () => {
 
               <label className="relative flex flex-col items-center justify-center w-full min-h-50 border-2 border-dashed border-(--primary-color)/30 bg-bg/30 cursor-pointer hover:border-(--accent-color) transition-colors">
                 <div className="flex flex-wrap gap-4 p-4 justify-center">
-                  {previews.map((src, index) => (
-                    <img
-                      key={index}
-                      src={src}
-                      className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm"
-                      alt="Aperçu"
-                    />
-                  ))}
-
+                  {previews.map((src, index) => {
+                    const isVideo = selectedFiles[index]?.type?.startsWith('video/');
+                    return isVideo ? (
+                      <video key={index} src={src} muted autoPlay loop playsInline
+                        className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm" />
+                    ) : (
+                      <img key={index} src={src} className="w-20 h-20 object-cover border border-(--primary-color)/20 shadow-sm" alt="Aperçu" />
+                    );
+                  })}
                   {previews.length === 0 && (
                     <p className="font-mono text-xs opacity-60 uppercase tracking-widest">
-                      Glissez-déposez vos images ici
+                      {isCompressing ? 'Compression en cours…' : 'Glissez-déposez vos images ici'}
                     </p>
                   )}
                 </div>
@@ -276,7 +321,7 @@ const CreateProject = () => {
                   type="file"
                   multiple
                   className="hidden"
-                  accept="image/*"
+                  accept="image/*,video/mp4,video/webm,video/quicktime"
                   onChange={handleFileChange}
                 />
               </label>

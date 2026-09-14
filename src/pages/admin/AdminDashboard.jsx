@@ -97,7 +97,7 @@ const AdminDashboard = () => {
                 >
                   <div className="flex items-center gap-6">
                     {/* Conteneur image stylisé */}
-                    {/* Conteneur image stylisé */}
+                   
                     <div className="w-24 h-16 bg-bg/50 border border-(--primary-color)/10 overflow-hidden shrink-0">
                       {project.image_url ? (
                         <img 
@@ -137,8 +137,24 @@ const AdminDashboard = () => {
                 </motion.div>
               ))}
             </div>
+            
           )}
         </motion.div>
+        {/* GESTION PAGE D'ACCUEIL */}
+<section className="mb-12">
+  <div className="flex items-center justify-between p-6 bg-white border border-(--primary-color)/10 shadow-sm">
+    <div>
+      <h2 className="font-bold uppercase text-sm tracking-widest text-(--primary-color)">Page "Accueil"</h2>
+      <p className="font-mono text-[10px] opacity-60 mt-1 uppercase">Gérez les titres, textes, vidéo et poster du hero.</p>
+    </div>
+    <Link 
+      to="/secret-yonna-edit-home" 
+      className="flex items-center gap-2 border border-(--primary-color)/20 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-(--primary-color) hover:text-white transition-all"
+    >
+      <Edit2 size={16} /> Modifier la page
+    </Link>
+  </div>
+</section>
       </div>
     </div>
   );
