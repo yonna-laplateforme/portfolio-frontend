@@ -30,9 +30,7 @@ const ContactMinimal = () => {
                         N'hésitez pas à me solliciter pour une collaboration,
                         une question technique ou simplement pour échanger.
                     </p>
-                    <a href="mailto:contact@yonnamerlini.com" className="block font-mono text-sm text-brick underline underline-offset-4 decoration-brick/40 hover:decoration-brick transition">
-                        contact@yonnamerlini.com
-                    </a>
+                   
                 </div>
 
                 <div className="w-full">
