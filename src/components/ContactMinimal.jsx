@@ -39,7 +39,7 @@ const ContactMinimal = () => {
                 <div className="w-full">
                     {isSubmitted ? (
                         <p className="font-mono text-sm uppercase tracking-widest text-brick">
-                            // Message transmis. Réponse sous 48 h. 🎉
+                            // Message transmis. Réponse sous 48 h. 
                         </p>
                     ) : (
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
