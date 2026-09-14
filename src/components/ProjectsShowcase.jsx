@@ -9,7 +9,7 @@ const ProjectsShowcase = ({ projects }) => {
   if (!projects?.length) return null;
 
   return (
-    <div className="space-y-8 md:space-y-14">
+    <div className="border-t border-ink/10">
       {projects.map((p, i) => {
         const media = firstMedia(p);
         const video = isVideoUrl(media);
@@ -17,56 +17,55 @@ const ProjectsShowcase = ({ projects }) => {
         return (
           <motion.div
             key={p.id}
-            initial={{ opacity: 0, y: 48 }}
+            initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <Link
               to={`/projects/${p.id}`}
-              className="group relative block overflow-hidden h-[62vh] md:h-[78vh] bg-sand/40"
+              className="group grid grid-cols-12 items-center gap-4 md:gap-8 py-8 md:py-12 border-b border-ink/10 transition-colors duration-300 hover:bg-cream"
             >
-              {/* MÉDIA */}
-              {video ? (
-                <video
-                  src={media}
-                  muted
-                  autoPlay
-                  loop
-                  playsInline
-                  className="w-full h-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
-                />
-              ) : (
-                <img
-                  src={getOptimizedUrl(media, 1800)}
-                  alt={p.title}
-                  loading="lazy"
-                  className="zoom-img w-full h-full object-cover"
-                />
-              )}
+              {/* Numéro */}
+              <span className="col-span-2 md:col-span-1 font-mono text-xs text-ink-soft">
+                {String(i + 1).padStart(2, '0')}
+              </span>
 
-              {/* VOILE + DÉGRADÉ */}
-              <div className="absolute inset-0 bg-ink/25 transition-colors duration-500 group-hover:bg-ink/45" />
-              <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent pointer-events-none" />
-
-              {/* CONTENU */}
-              <div className="absolute inset-x-0 bottom-0 p-8 md:p-14 flex items-end justify-between gap-6">
-                <div>
-                  <p className="font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-paper/70 mb-4">
-                    {String(i + 1).padStart(2, '0')} — {p.category}
-                  </p>
-                  <h3 className="font-display font-light text-paper text-4xl md:text-6xl leading-[0.95] transition-all duration-500 group-hover:translate-x-3">
-                    {p.title}
-                  </h3>
-                </div>
-
-                <span className="hidden md:inline-flex shrink-0 items-center gap-3 rounded-full border border-paper/50 px-7 py-3.5 text-sm font-medium text-paper transition-all duration-300 group-hover:bg-paper group-hover:text-ink">
-                  Voir le projet <span aria-hidden>→</span>
-                </span>
+              {/* Titre */}
+              <div className="col-span-10 md:col-span-7">
+                <h3 className="font-display font-light text-3xl md:text-6xl leading-[0.95] text-ink transition-all duration-500 group-hover:text-brick group-hover:translate-x-3">
+                  {p.title}
+                </h3>
+                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-soft mt-3">
+                  {p.category}
+                </p>
               </div>
 
+              {/* FRAGMENT TEASER : un morceau caché, révélé au survol */}
+              <span className="hidden md:block md:col-span-4 justify-self-end">
+                <span className="block overflow-hidden w-64 h-40 lg:w-80 lg:h-44 bg-sand/40">
+                  {video ? (
+                    <video
+                      src={media}
+                      muted
+                      autoPlay
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover scale-[1.5] transition-transform duration-700 ease-out group-hover:scale-100"
+                    />
+                  ) : (
+                    <img
+                      src={getOptimizedUrl(media, 900)}
+                      alt=""
+                      loading="lazy"
+                      className="w-full h-full object-cover scale-[1.5] transition-transform duration-700 ease-out group-hover:scale-100"
+                    />
+                  )}
+                </span>
+              </span>
+
               {/* Flèche mobile */}
-              <span className="md:hidden absolute top-6 right-6 text-paper/80 text-2xl">→</span>
+              <span className="md:hidden col-start-12 text-right text-xl text-ink">→</span>
             </Link>
           </motion.div>
         );
