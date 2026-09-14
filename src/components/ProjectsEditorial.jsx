@@ -66,8 +66,8 @@ const ProjectsEditorial = ({ projects }) => {
         })}
       </ul>
 
-      {/* APERÇU FLOTTANT (desktop) */}
-      <AnimatePresence>
+      APERÇU FLOTTANT (desktop)
+      {/* <AnimatePresence>
         {activeProject && activeMedia && (
           <motion.div
             key={activeProject.id}
@@ -87,7 +87,7 @@ const ProjectsEditorial = ({ projects }) => {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </div>
   );
 };
