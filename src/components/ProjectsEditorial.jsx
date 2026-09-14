@@ -78,7 +78,7 @@ const ProjectsEditorial = ({ projects }) => {
             style={{ x: px, y: py }}
             className="hidden md:block fixed top-0 left-0 z-40 pointer-events-none"
           >
-            <div className="-translate-x-1/2 -translate-y-1/2 w-[22rem] aspect-video overflow-hidden shadow-2xl shadow-ink/30 border border-ink/10">
+           <div className="-translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden shadow-2xl shadow-ink/30 ring-1 ring-ink/10">
               {isVideoUrl(activeMedia) ? (
                 <video src={activeMedia} muted autoPlay loop playsInline className="w-full h-full object-cover" />
               ) : (
