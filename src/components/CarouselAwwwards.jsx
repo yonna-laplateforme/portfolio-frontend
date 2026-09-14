@@ -10,20 +10,23 @@ const wrap = (min, max, v) => {
 };
 
 const CarouselAwwwards = () => {
-  const [items, setItems] = useState([]); // [{ url, projectId }]
+  const [items, setItems] = useState([]); // [{ url, projectId, isVideo }]
   const baseX = useMotionValue(0);
   const [paused, setPaused] = useState(false);
   const SPEED = -6;
 
-  // Récupère images + GIF avec l'ID de leur projet (les vidéos restent dans les cards)
+  // Tous les médias : images, GIF et VIDÉOS
   useEffect(() => {
     apiFetch('api/projects/home')
       .then((projects) => {
         const list = projects.flatMap((p) =>
           (p.image_url ? p.image_url.split(',').map((u) => u.trim()) : [])
             .filter(Boolean)
-            .filter((u) => !u.includes('/video/upload/'))
-            .map((u) => ({ url: u, projectId: p.id }))
+            .map((u) => ({
+              url: u,
+              projectId: p.id,
+              isVideo: u.includes('/video/upload/'),
+            }))
         );
         setItems(list);
       })
@@ -56,15 +59,28 @@ const CarouselAwwwards = () => {
                 className="block shrink-0"
                 aria-label="Voir le projet"
               >
-                <img
-                  src={getOptimizedUrl(item.url, 1200)}
-                  alt=""
-                  loading="lazy"
-                  width="800"
-                  height="600"
-                  draggable={false}
-                  className="h-64 md:h-96 w-auto object-cover select-none transition-opacity duration-300 hover:opacity-80"
-                />
+                {item.isVideo ? (
+                  <video
+                    src={item.url}
+                    muted
+                    autoPlay
+                    loop
+                    playsInline
+                    preload="metadata"
+                    draggable={false}
+                    className="h-64 md:h-96 w-auto object-cover select-none transition-opacity duration-300 hover:opacity-80"
+                  />
+                ) : (
+                  <img
+                    src={getOptimizedUrl(item.url, 1200)}
+                    alt=""
+                    loading="lazy"
+                    width="800"
+                    height="600"
+                    draggable={false}
+                    className="h-64 md:h-96 w-auto object-cover select-none transition-opacity duration-300 hover:opacity-80"
+                  />
+                )}
               </Link>
             ))}
           </div>
