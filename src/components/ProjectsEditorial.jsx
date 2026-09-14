@@ -66,7 +66,7 @@ const ProjectsEditorial = ({ projects }) => {
         })}
       </ul>
 
-      APERÇU FLOTTANT (desktop)
+     
       {/* <AnimatePresence>
         {activeProject && activeMedia && (
           <motion.div
