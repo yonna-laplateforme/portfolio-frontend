@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { homeApi } from '../api/homeApi';
+import { getOptimizedUrl } from '../utils/imageUtils';
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -58,7 +59,7 @@ const Hero = () => {
     <section className="relative -mt-16 h-screen flex flex-col justify-end overflow-hidden">
       {/* Image en dessous : LCP rapide + visible tant que la vidéo charge */}
       <motion.img
-        src={content.poster_url}
+        src={getOptimizedUrl(content.poster_url, 1600)}
         alt=""
         initial={{ scale: 1.18 }}
         animate={{ scale: 1 }}
