@@ -16,9 +16,6 @@ const DEFAULTS = {
   cta2_label: 'Demander un devis',
   cta2_url: '/devis',
   video_url: '',
-  
-
-  
 };
 
 const Masked = ({ children, delay = 0 }) => (
@@ -36,6 +33,16 @@ const Masked = ({ children, delay = 0 }) => (
 
 const Hero = () => {
   const [content, setContent] = useState(DEFAULTS);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 📱 Détection mobile : la vidéo ne charge que sur desktop/tablette
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   // Le hero lit TON API — modifiable depuis l'admin, rien en dur
   useEffect(() => {
@@ -59,8 +66,8 @@ const Hero = () => {
         fetchpriority="high"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      {/* Vidéo au-dessus : transparente tant qu'elle n'a pas de frame, puis recouvre l'image */}
-      {content.video_url && (
+      {/* Vidéo au-dessus : desktop uniquement (sur mobile, le poster animé suffit) */}
+      {content.video_url && !isMobile && (
         <video
           ref={(el) => {
             if (el) {
@@ -93,10 +100,10 @@ const Hero = () => {
         </motion.p>
 
         <h1 className="font-display font-light text-paper leading-[0.88] text-[18vw] md:text-[11.5vw]">
-        <Masked delay={0.2}>{content.title_line1}</Masked>
-<Masked delay={0.3}>
-  <em className="italic font-normal text-brick">{content.title_line2}</em>
-</Masked>
+          <Masked delay={0.2}>{content.title_line1}</Masked>
+          <Masked delay={0.3}>
+            <em className="italic font-normal text-brick">{content.title_line2}</em>
+          </Masked>
         </h1>
 
         <div className="overflow-hidden mt-10 pb-[0.3em] -mb-[0.3em]">
