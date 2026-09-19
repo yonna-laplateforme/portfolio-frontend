@@ -93,8 +93,8 @@ const Hero = () => {
         </motion.p>
 
         <h1 className="font-display font-light text-paper leading-[0.88] text-[18vw] md:text-[11.5vw]">
-          <Masked delay={0.35}>{content.title_line1}</Masked>
-          <Masked delay={0.48}>
+          <Masked delay={0.2}>{content.title_line1}</Masked>
+          <Masked delay={0.3}>
             <em className="italic font-normal text-brick">{content.title_line2}</em>
           </Masked>
         </h1>
