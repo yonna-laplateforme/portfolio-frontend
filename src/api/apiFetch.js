@@ -1,26 +1,19 @@
 export async function apiFetch(endpoint, options = {}) {
+  const baseUrl = import.meta.env.VITE_API_URL || 'https://api.yonnamerlini.com';
 
-  // NOUVELLE URL (masquée derrière Cloudflare)
- const baseUrl = "https://api.www-yonnamerlini.com";
-  
   const url = `${baseUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
-  
- 
 
   const isFormData = options.body instanceof FormData;
-  
+
   const headers = {
     ...(!isFormData && { 'Content-Type': 'application/json' }),
     ...options.headers,
   };
 
- 
-
-  //  envoie automatiquement les cookies
-  const response = await fetch(url, { 
-    ...options, 
+  const response = await fetch(url, {
+    ...options,
     headers,
-    credentials: 'include', // ← C'EST ÇA QUI ENVOIE LE COOKIE
+    credentials: 'include',
   });
 
   if (response.status === 204) return null;
@@ -34,8 +27,16 @@ export async function apiFetch(endpoint, options = {}) {
   }
 
   if (!response.ok) {
-    throw new Error(data?.message || data || 'Une erreur est survenue');
+    const error = new Error(
+      data?.message ||
+      data?.error ||
+      (Array.isArray(data) && data[0]?.msg) ||
+      (typeof data === 'string' ? data : 'Une erreur est survenue')
+    );
+    error.status = response.status;
+    error.errors = Array.isArray(data) ? data : data?.errors;
+    throw error;
   }
 
-  return data;
+  return data;  
 }

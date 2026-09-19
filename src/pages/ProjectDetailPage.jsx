@@ -1,190 +1,155 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getOptimizedUrl } from '../utils/imageUtils';
 
-const API_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-7xj4.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.yonnamerlini.com';
+const isVideoUrl = (u) => /\/video\/upload\//.test(u || '');
+const mediaSrc = (url) =>
+  isVideoUrl(url) || url?.includes('.gif') ? url : getOptimizedUrl(url, 1600);
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredImage, setHoveredImage] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setLoading(true);
-
     fetch(`${API_URL}/api/projects/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Erreur API");
+      .then((res) => {
+        if (!res.ok) throw new Error('Erreur API');
         return res.json();
       })
-      .then(data => {
-        setProject(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("DEBUG : Le fetch a échoué :", err);
-        setLoading(false);
-        navigate('/404', { replace: true });
-      });
+      .then((data) => { setProject(data); setLoading(false); })
+      .catch(() => { setLoading(false); navigate('/404', { replace: true }); });
   }, [id, navigate]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center font-mono">CHARGEMENT...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center font-mono text-sm tracking-widest text-ink-soft">CHARGEMENT…</div>;
   if (!project) return null;
 
-  const imagesArray = project?.image_url ? project.image_url.split(',').map(u => u.trim()) : [];
+  const mediaArray = project.image_url ? project.image_url.split(',').map((u) => u.trim()).filter(Boolean) : [];
+  const heroMedia = mediaArray[0];
+  const gallery = mediaArray.slice(1);
 
   return (
     <>
-      <div className="min-h-screen bg-(--bg-color) text-(--text-main) px-6 py-24">
-        <article className="max-w-5xl mx-auto">
-          <Link to="/projects" className="text-[10px] uppercase tracking-[0.3em] text-secondary hover:text-accent font-mono mb-12 block">← RETOUR</Link>
+      <article className="min-h-screen bg-paper text-ink px-6 md:px-12 pt-28 pb-24">
+        <div className="max-w-6xl mx-auto">
 
-          <header className="mb-12 text-center">
-            <span className="font-bold text-[10px] uppercase tracking-[0.3em] text-accent font-mono mb-4 block">// {project.category || "PROJET"}</span>
-            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary">{project.title}</h1>
+          {/* EN-TÊTE ÉDITORIAL */}
+          <Link to="/projects" className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-soft hover:text-brick transition-colors">← Retour aux projets</Link>
+
+          <header className="mt-10 mb-6">
+            <p className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-6">
+              // {project.category || 'PROJET'}
+            </p>
+            <h1 className="font-display font-light text-5xl md:text-7xl leading-[0.95]">
+              {project.title}
+            </h1>
           </header>
 
-          <div className="flex justify-center gap-8 text-[10px] uppercase tracking-[0.3em] font-mono text-secondary mb-16">
-            <span>RÔLE : {project.role || "N/A"}</span>
-            <span>CLIENT : {project.client || "Personnel"}</span>
-            <span>DATE : {project.date_realisation || "N/A"}</span>
+          <div className="flex flex-wrap gap-x-10 gap-y-2 font-mono text-[10px] uppercase tracking-[0.25em] text-ink-soft border-y border-ink/10 py-5 mb-14">
+            {project.client && <span>Client — {project.client}</span>}
+            {project.date_realisation && <span>Date — {project.date_realisation}</span>}
+            {project.role && <span>Rôle — {project.role}</span>}
           </div>
 
-          {/* Affichage conditionnel de la galerie vs carrousel */}
-          {project.category?.toLowerCase() === 'photo' ? (
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-              {imagesArray.map((img, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="break-inside-avoid overflow-hidden cursor-pointer"
-                  onClick={() => setHoveredImage(img)}
-                >
-                  <motion.img
-                    whileHover={{ scale: 1.03 }}
-                    transition={{ duration: 0.5 }}
-                    src={img}
-                    alt={`Photo ${i + 1}`}
-                    className="w-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="mb-16 relative group">
-              <AnimatePresence mode='wait'>
-                <motion.img
-                  key={currentImageIndex}
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  src={imagesArray[currentImageIndex]}
-                  alt={project.title}
-                  className="w-full grayscale group-hover:grayscale-0 transition-all duration-700"
-                />
-              </AnimatePresence>
-              {imagesArray.length > 1 && (
-                <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => setCurrentImageIndex(prev => (prev === 0 ? imagesArray.length - 1 : prev - 1))} className="bg-black/50 text-white p-4">←</button>
-                  <button onClick={() => setCurrentImageIndex(prev => (prev === imagesArray.length - 1 ? 0 : prev + 1))} className="bg-black/50 text-white p-4">→</button>
-                </div>
+          {/* MÉDIA HERO */}
+          {heroMedia && (
+            <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+              {isVideoUrl(heroMedia) ? (
+                <video src={heroMedia} autoPlay muted loop playsInline controls className="w-full aspect-video object-cover bg-sand/40" />
+              ) : (
+                <img src={mediaSrc(heroMedia)} alt={project.title} className="w-full aspect-video object-cover bg-sand/40" />
               )}
-            </div>
+            </motion.div>
           )}
 
-          {/* SECTION DESCRIPTION */}
-          <section className="grid md:grid-cols-3 gap-16 border-t border-secondary/20 pt-16 mt-16">
-            <div className="md:col-span-2 text-primary text-lg font-mono leading-relaxed space-y-6">
-              {project.description ? (
-                <p>{project.description.replace(/^"|"$/g, '')}</p>
-              ) : (
-                <p>Aucune description disponible.</p>
-              )}
+          {/* CONTENU : texte + sidebar */}
+          <section className="grid md:grid-cols-3 gap-12 md:gap-16 mt-20">
+            <div className="md:col-span-2">
+              <p className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-8">// Le projet</p>
+              <div className="text-lg md:text-xl leading-relaxed text-ink-soft space-y-6 max-w-2xl">
+                {project.description
+                  ? project.description.replace(/^"|"$/g, '').split('\n').filter(Boolean).map((para, i) => <p key={i}>{para}</p>)
+                  : <p>Aucune description disponible.</p>}
+              </div>
             </div>
 
             <aside className="space-y-12">
-              {/* SECTION STACK */}
-              <div>
-                <h2 className="text-[10px] uppercase tracking-[0.3em] text-secondary mb-6">Stack</h2>
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies ? (
-                    // On transforme la chaîne en tableau ici avec .split(',')
-                    project.technologies.split(',').filter(Boolean).map((tech, i) => (
-                      <span key={i} className="px-3 py-1 border border-primary text-[9px] uppercase">
-                        {tech.trim()}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-[9px] opacity-50 italic">Aucune techno définie</span>
-                  )}
+              {project.technologies && (
+                <div>
+                  <h2 className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-6">Stack</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.split(',').filter(Boolean).map((tech, i) => (
+                      <span key={i} className="px-3 py-1.5 border border-ink/15 font-mono text-[10px] uppercase tracking-widest text-ink">{tech.trim()}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-4">
-                {project.demo_url && <a href={project.demo_url} target="_blank" rel="noreferrer" className="block text-[10px] uppercase text-accent hover:underline">→ Voir le projet</a>}
-                {project.github_url && <a href={project.github_url} target="_blank" rel="noreferrer" className="block text-[10px] uppercase text-primary hover:underline">→ GitHub</a>}
-              </div>
+              )}
+              {(project.demo_url || project.github_url) && (
+                <div className="space-y-4">
+                  <h2 className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-6">Liens</h2>
+                  {project.demo_url && <a href={project.demo_url} target="_blank" rel="noreferrer" className="block font-mono text-xs uppercase tracking-[0.25em] text-ink hover:text-brick transition-colors">→ Voir le projet</a>}
+                  {project.github_url && <a href={project.github_url} target="_blank" rel="noreferrer" className="block font-mono text-xs uppercase tracking-[0.25em] text-ink hover:text-brick transition-colors">→ GitHub</a>}
+                </div>
+              )}
             </aside>
           </section>
 
-        </article>
-      </div>
+          {/* GALERIE COMPLÈTE */}
+        
+{gallery.length > 0 && (
+  <section className="mt-24">
+    <p className="font-mono text-xs uppercase tracking-[0.35em] text-brick mb-10">// Galerie</p>
+    <div className="columns-2 md:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6">
+      {gallery.map((media, i) => (
+        <motion.button
+          key={i}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          onClick={() => setHoveredImage(media)}
+          className="block w-full overflow-hidden bg-sand/40 cursor-pointer break-inside-avoid"
+        >
+          {isVideoUrl(media) ? (
+            // vidéo : ratio natif 16:9 (aucun rognage)
+            <video src={media} muted autoPlay loop playsInline className="w-full aspect-video object-cover block" />
+          ) : (
+            // photo : sa VRAIE proportion (portrait ou paysage)
+            <img
+              src={mediaSrc(media)}
+              alt={`${project.title} — ${i + 1}`}
+              loading="lazy"
+              className="w-full h-auto block zoom-img"
+            />
+          )}
+        </motion.button>
+      ))}
+    </div>
+  </section>
+)}
+          
+        </div>
+      </article>
 
+      {/* LIGHTBOX */}
       <AnimatePresence>
-  {hoveredImage !== null && (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4"
-    >
-      {/* Bouton pour fermer la vue plein écran */}
-      <button 
-        className="absolute top-8 right-8 text-white/50 hover:text-white text-4xl"
-        onClick={() => setHoveredImage(null)}
-      >
-        ×
-      </button>
-
-      {/* Boutons de navigation */}
-      <button 
-        className="absolute left-8 text-white/50 hover:text-white text-5xl"
-        onClick={(e) => {
-          e.stopPropagation(); 
-          const currentIndex = imagesArray.indexOf(hoveredImage);
-          const nextIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
-          setHoveredImage(imagesArray[nextIndex]);
-        }}
-      >
-        ←
-      </button>
-
-      <motion.img
-        key={hoveredImage} 
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        src={hoveredImage}
-        className="max-h-[90vh] max-w-[90vw] object-contain"
-      />
-
-      <button 
-        className="absolute right-8 text-white/50 hover:text-white text-5xl"
-        onClick={(e) => {
-          e.stopPropagation(); 
-          const currentIndex = imagesArray.indexOf(hoveredImage);
-          const nextIndex = (currentIndex + 1) % imagesArray.length;
-          setHoveredImage(imagesArray[nextIndex]);
-        }}
-      >
-        →
-      </button>
-    </motion.div>
-  )}
-</AnimatePresence>
+        {hoveredImage !== null && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 p-4">
+            <button className="absolute top-8 right-8 text-white/50 hover:text-white text-4xl cursor-pointer" onClick={() => setHoveredImage(null)}>×</button>
+            <button className="absolute left-8 text-white/50 hover:text-white text-5xl cursor-pointer" onClick={(e) => { e.stopPropagation(); const idx = mediaArray.indexOf(hoveredImage); setHoveredImage(mediaArray[(idx - 1 + mediaArray.length) % mediaArray.length]); }}>←</button>
+            {isVideoUrl(hoveredImage) ? (
+              <video key={hoveredImage} src={hoveredImage} autoPlay muted loop playsInline controls className="max-h-[90vh] max-w-[90vw]" />
+            ) : (
+              <motion.img key={hoveredImage} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} src={mediaSrc(hoveredImage)} className="max-h-[90vh] max-w-[90vw] object-contain" />
+            )}
+            <button className="absolute right-8 text-white/50 hover:text-white text-5xl cursor-pointer" onClick={(e) => { e.stopPropagation(); const idx = mediaArray.indexOf(hoveredImage); setHoveredImage(mediaArray[(idx + 1) % mediaArray.length]); }}>→</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

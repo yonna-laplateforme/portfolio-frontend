@@ -3,65 +3,99 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { getOptimizedUrl } from '../utils/imageUtils';
 
+const isVideoUrl = (url) => /\/video\/upload\//.test(url || '');
+const mediaSrc = (url) =>
+  isVideoUrl(url) || url?.includes('.gif') ? url : getOptimizedUrl(url, 1400);
+
 const ProjectCard = ({ project, index }) => {
   const navigate = useNavigate();
   const cardRef = useRef(null);
 
-  // 1. On sépare toutes les images
-  const imagesArray = project.image_url ? project.image_url.split(',').map(url => url.trim()) : [];
-  const mainImage = imagesArray[0] || '';
-  const thumbnails = imagesArray.slice(1); 
+  const mediaArray = project.image_url ? project.image_url.split(',').map((u) => u.trim()).filter(Boolean) : [];
+  const mainMedia = mediaArray[0] || '';
+  const thumbnails = mediaArray.slice(1);
 
   const { scrollYProgress } = useScroll({
     target: cardRef,
-    offset: ["start end", "end start"]
+    offset: ['start end', 'end start'],
   });
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
   const handleNavigate = () => navigate(`/projects/${project.id}`);
 
   return (
-    <article ref={cardRef} className="group relative">
-      <button onClick={handleNavigate} className="w-full text-left focus:outline-none">
-        
-        {/* GRANDE IMAGE PRINCIPALE */}
-        <div className="overflow-hidden bg-bg aspect-video relative border border-zinc-800 transition-colors group-hover:border-primary">
-          <motion.img 
-            style={{ scale: imageScale }}
-            className="w-full h-full object-cover grayscale-50 group-hover:grayscale-0 transition-all duration-1000" 
-            src={getOptimizedUrl(mainImage)} 
-            alt={project.title} 
-          />
+    <motion.article
+      ref={cardRef}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative"
+    >
+      <button onClick={handleNavigate} className="w-full text-left focus:outline-none cursor-pointer">
+
+        {/* MÉDIA PRINCIPAL */}
+        <div className="relative overflow-hidden h-64 md:h-80 bg-sand/40">
+          {isVideoUrl(mainMedia) ? (
+            <video
+              src={mainMedia}
+              muted
+              loop
+              playsInline
+              autoPlay
+              onClick={(e) => e.stopPropagation()}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <motion.img
+              style={{ scale: imageScale }}
+              src={mediaSrc(mainMedia)}
+              alt={project.title}
+              className="zoom-img w-full h-full object-cover"
+            />
+          )}
+          {/* Fine bordure qui s'illumine au survol */}
+          <div className="absolute inset-0 border border-ink/10 group-hover:border-brick/60 transition-colors duration-500 pointer-events-none" />
         </div>
 
-        {/* ZONE MINIATURES */}
+        {/* MINIATURES */}
         {thumbnails.length > 0 && (
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-3 mt-4">
             {thumbnails.map((thumb, i) => (
-              <div key={i} className="w-16 h-12 overflow-hidden border border-zinc-800">
-                <img 
-                  src={getOptimizedUrl(thumb)} 
-                  alt={`Miniature ${i + 1}`} 
-                  className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"
-                />
+              <div key={i} className="w-16 h-12 overflow-hidden border border-ink/10">
+                {isVideoUrl(thumb) ? (
+                  <video src={thumb} muted autoPlay loop playsInline className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+                ) : (
+                  <img
+                    src={mediaSrc(thumb)}
+                    alt={`Miniature ${i + 1}`}
+                    className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500"
+                  />
+                )}
               </div>
             ))}
           </div>
         )}
 
-        {/* TEXTE */}
-        <div className="mt-6 flex gap-4 items-start">
-          <div className="w-[60%]">
-            <span className="block text-xs font-mono text-primary tracking-[0.2em] mb-2 uppercase">
-              0{index + 1} — {project.category || 'PROJET'}
-            </span>
-            <h3 className="font-black text-2xl md:text-3xl text-main leading-tight uppercase">
-              {project.title}
-            </h3>
-          </div>
+        {/* TEXTE — style éditorial */}
+        <div className="mt-8 pb-8 border-b border-ink/10">
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-brick">
+            0{index + 1} — {project.category || 'PROJET'}
+          </span>
+          <h3 className="font-display font-light text-3xl md:text-4xl leading-tight mt-3 text-ink transition-colors duration-300 group-hover:text-brick">
+            {project.title}
+          </h3>
+          {project.client && (
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-ink-soft mt-3">
+              {project.client} — {project.date_realisation}
+            </p>
+          )}
+          <span className="mt-5 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-ink transition-all duration-300 group-hover:gap-4 group-hover:text-brick">
+            Voir le projet <span aria-hidden>→</span>
+          </span>
         </div>
       </button>
-    </article>
+    </motion.article>
   );
 };
 
