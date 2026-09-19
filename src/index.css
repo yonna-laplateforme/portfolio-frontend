@@ -8,9 +8,11 @@
   --color-brick: #b3442c;
   --color-sand: #c9c2b4;
 
-  --font-display: "Fraunces", Georgia, serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "Space Mono", monospace;
+ @theme {
+  --font-display: "Fraunces Variable", Georgia, serif;  
+  --font-sans: "InterVariable", system-ui, sans-serif;   
+  --font-mono: "Space Mono", monospace;                  
+}
 }
 
 /* Anciennes variables → remappées sur la nouvelle palette
