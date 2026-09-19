@@ -8,12 +8,12 @@
   --color-brick: #b3442c;
   --color-sand: #c9c2b4;
 
- @theme {
+
   --font-display: "Fraunces Variable", Georgia, serif;  
   --font-sans: "InterVariable", system-ui, sans-serif;   
   --font-mono: "Space Mono", monospace;                  
 }
-}
+
 
 /* Anciennes variables → remappées sur la nouvelle palette
    (ça re-thème tes pages existantes automatiquement) */

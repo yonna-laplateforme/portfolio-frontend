@@ -5,7 +5,7 @@ const Preloader = ({ onDone }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const duration = 1600;
+    const duration = 900;
     const start = performance.now();
     let raf;
     const tick = (now) => {
@@ -22,7 +22,7 @@ const Preloader = ({ onDone }) => {
     <motion.div
       className="fixed inset-0 z-[100] bg-ink text-paper flex items-center justify-center"
       exit={{ y: '-100%' }}
-      transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+      transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
     >
       <div className="overflow-hidden pb-[0.25em] -mb-[0.25em]">
         <motion.p
