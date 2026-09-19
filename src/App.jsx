@@ -56,11 +56,11 @@ function App() {
       {/* Le site n'apparaît qu'après le preloader */}
       {!loading && (
         <>
-         {(!IS_MAINTENANCE || isAuthenticated) && (
-  <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
-)}
+          {(!IS_MAINTENANCE || isAuthenticated) && (
+            <Navbar isAuthenticated={isAuthenticated} onLogout={logout} />
+          )}
 
-          <main className={(!IS_MAINTENANCE || isAuthenticated) ? 'pt-16' : ''}>
+          <main className={(!IS_MAINTENANCE || isAuthenticated) ? "pt-16" : ""}>
             <Suspense
               fallback={
                 <div className="flex justify-center items-center h-screen font-mono text-sm tracking-widest text-ink-soft">
@@ -75,12 +75,58 @@ function App() {
                 <Routes location={location} key={location.pathname}>
                   {IS_MAINTENANCE && !isAuthenticated ? (
                     <>
-                      {/* 🚧 Maintenance : réservé aux VISITEURS non connectés */}
+                      {/* 🚧 Maintenance visiteurs — l'admin reste accessible pour TOI */}
+                      <Route
+                        path="/la-porte-secrete-du-portfolio"
+                        element={<LoginPage />}
+                      />
+                      <Route
+                        path="/secret-yonna-create"
+                        element={
+                          <ProtectedRoute>
+                            <CreateProject />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/secret-yonna-edit/:id"
+                        element={
+                          <ProtectedRoute>
+                            <EditProject />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/secret-yonna-edit-home"
+                        element={
+                          <ProtectedRoute>
+                            <EditHomePage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/secret-yonna-edit-about"
+                        element={
+                          <ProtectedRoute>
+                            <EditAboutPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/dashboard-yonna-2026"
+                        element={
+                          <ProtectedRoute>
+                            <AdminDashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      {/* Tout le reste → page maintenance */}
                       <Route path="*" element={<MaintenancePage />} />
                     </>
                   ) : (
                     <>
-                      {/* Site complet : visiteurs (hors maintenance) OU admin connectée (pendant la maintenance) */}
+                      {/* Site complet : visiteurs (hors maintenance) OU toi connectée (pendant la maintenance) */}
                       <Route
                         path="/"
                         element={
@@ -199,7 +245,7 @@ function App() {
               </AnimatePresence>
             </Suspense>
 
-           {(!IS_MAINTENANCE || isAuthenticated) && <Footer />}
+            {(!IS_MAINTENANCE || isAuthenticated) && <Footer />}
           </main>
         </>
       )}
